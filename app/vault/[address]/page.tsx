@@ -1,0 +1,330 @@
+"use client";
+
+import { useCallback, useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import Nav from "../../components/Nav";
+import { useWallet } from "../../components/WalletProvider";
+import { useTx } from "../../components/useTx";
+import { AddrLink, DataBanner, Empty, LtvBar, Stat, Tok, TxLink, bps, pct } from "../../components/ui";
+import { usd, ago, amount } from "../../components/format";
+
+type Lp = { tokenId: string; fee: number; tickLower: number; tickUpper: number; inRange: boolean; priceLower: number | null; priceUpper: number | null; currentPrice: number | null; amountCollateral: number; amountLoan: number; valueUsd: number | null; uncollected: { collateral: number; loan: number; usd: number | null } | null; costBasis: number };
+type Vault = {
+  address: string; owner: string; operator: string; pendingOwner: string; paused: boolean; createdAt: number;
+  collateral: { address: string; symbol: string; decimals: number }; loan: { address: string; symbol: string; decimals: number };
+  market: { id: string; lltv: number; borrowApy: number | null; known: boolean };
+  policy: { maxLtvBps: number; triggerLtvBps: number; repayBps: number; maxSlippageBps: number };
+  position: { collateral: number; collateralUsd: number | null; debt: number; ltvBps: number | null; ltv: number | null; healthFactor: number | null; liquidationPrice: number | null; collateralPrice: number | null };
+  balances: { loan: number; collateral: number };
+  stats: { totalBorrowed: number; totalRepaid: number; totalRepaidFromFees: number; totalHarvested: number; totalProtocolFees: number; refinanceCount: number };
+  lp: Lp[]; lpValueUsd: number | null; netValueUsd: number | null; allowedMarkets: string[];
+};
+type Plan = { at: string; actions: Array<{ kind: string; reason: string; valueUsd: number | null; built: { tx: { description: string }; notes?: string[] } }>; skipped: Array<{ rule: string; why: string }>; settings: Record<string, unknown> };
+type Activity = { entries: Array<{ block: number; time: number | null; tx: string; type: string; title: string; detail: string }> };
+type Target = { id: string; lltv: number; borrowApy: number | null; liquidity: string; listed: boolean };
+
+async function get<T>(url: string): Promise<T> {
+  const res = await fetch(url);
+  const j = await res.json();
+  if (!res.ok || j.error) throw new Error(j.error ?? `HTTP ${res.status}`);
+  return j as T;
+}
+
+export default function VaultPage() {
+  const { address } = useParams<{ address: string }>();
+  const w = useWallet();
+  const tx = useTx();
+  const [v, setV] = useState<Vault | null>(null);
+  const [err, setErr] = useState<string | null>(null);
+  const [plan, setPlan] = useState<Plan | null>(null);
+  const [act, setAct] = useState<Activity | null>(null);
+  const [targets, setTargets] = useState<Target[] | null>(null);
+  const [tab, setTab] = useState<"position" | "agent" | "activity" | "settings">("position");
+  const [tick, setTick] = useState(0);
+  const refresh = useCallback(() => setTick((t) => t + 1), []);
+
+  useEffect(() => {
+    let dead = false;
+    setErr(null);
+    get<Vault>(`/api/vaults/${address}`).then((d) => { if (!dead) setV(d); }).catch((e) => { if (!dead) setErr(e.message); });
+    get<Plan>(`/api/vaults/${address}/plan`).then((d) => { if (!dead) setPlan(d); }).catch(() => {});
+    get<Activity>(`/api/vaults/${address}/activity?limit=100`).then((d) => { if (!dead) setAct(d); }).catch(() => {});
+    get<{ targets: Target[] }>(`/api/vaults/${address}/targets`).then((d) => { if (!dead) setTargets(d.targets); }).catch(() => {});
+    return () => { dead = true; };
+  }, [address, tick]);
+
+  const isOwner = !!w.address && !!v && w.address.toLowerCase() === v.owner.toLowerCase();
+  const isOperator = !!w.address && !!v && w.address.toLowerCase() === v.operator.toLowerCase();
+  const can = isOwner || isOperator;
+
+  async function send(body: unknown) {
+    const hash = await tx.run(`/api/vaults/${address}/tx`, body);
+    if (hash) setTimeout(refresh, 4000);
+  }
+
+  if (err) return (<><Nav /><main className="wrap" style={{ padding: 48 }}><Empty>{err}</Empty></main></>);
+  if (!v) return (<><Nav /><main className="wrap" style={{ padding: 48 }}><p className="skeleton">loading vault</p></main></>);
+
+  const p = v.position;
+  const maxBorrow = p.collateralUsd === null ? null : p.collateralUsd * v.policy.maxLtvBps / 10_000 - p.debt;
+
+  return (
+    <>
+      <Nav />
+      <DataBanner live={true} loading={false} error={null} what="" />
+      <main className="wrap" style={{ padding: "40px 24px 80px" }}>
+        <div className="row" style={{ justifyContent: "space-between", alignItems: "flex-end" }}>
+          <div>
+            <span className="eyebrow">Vault · <AddrLink address={v.address} /></span>
+            <h2 style={{ display: "flex", alignItems: "center", gap: 14 }}><Tok symbol={v.collateral.symbol} /> {v.collateral.symbol} / {v.loan.symbol}</h2>
+            <div className="row faint mono" style={{ fontSize: 12, marginTop: 8 }}>
+              <span>owner <AddrLink address={v.owner} /></span><span>operator {v.operator === "0x0000000000000000000000000000000000000000" ? "none" : <AddrLink address={v.operator} />}</span><span>created {ago(v.createdAt)}</span>
+              {v.paused ? <span className="pill a">paused</span> : <span className="pill g">agent on</span>}
+              {isOwner && <span className="pill g">you own this</span>}{isOperator && <span className="pill">you operate this</span>}
+            </div>
+          </div>
+          <div className="row">
+            {isOwner && <button className="btn sm" onClick={() => send({ action: "setPaused", paused: !v.paused })} disabled={tx.busy}>{v.paused ? "Resume agent" : "Pause agent"}</button>}
+            <button className="btn sm" onClick={refresh}>Refresh</button>
+          </div>
+        </div>
+
+        <div className="stats" style={{ marginTop: 28 }}>
+          <Stat label="Collateral" value={usd(p.collateralUsd)} sub={`${amount(p.collateral)} ${v.collateral.symbol} @ ${p.collateralPrice ? usd(p.collateralPrice, 2) : "—"}`} />
+          <Stat label="Debt" value={usd(p.debt, 2)} sub={`borrowing at ${pct(v.market.borrowApy)} · LLTV ${(v.market.lltv * 100).toFixed(0)}%`} />
+          <Stat label="Repaid from fees" value={usd(v.stats.totalRepaidFromFees, 2)} tone="green" sub={`harvested ${usd(v.stats.totalHarvested, 2)} · ${v.stats.refinanceCount} hop${v.stats.refinanceCount === 1 ? "" : "s"}`} />
+          <Stat label="Net value" value={usd(v.netValueUsd)} sub={`liquidity ${usd(v.lpValueUsd)} · idle ${amount(v.balances.loan, 2)} ${v.loan.symbol}`} />
+        </div>
+        <div style={{ marginTop: 18 }}>
+          <LtvBar ltv={p.ltv} max={v.policy.maxLtvBps / 10_000} trigger={v.policy.triggerLtvBps / 10_000} lltv={v.market.lltv} />
+          <div className="row faint mono" style={{ fontSize: 12, marginTop: 6 }}>
+            <span>health {p.healthFactor === null ? "—" : p.healthFactor.toFixed(2)}</span>
+            <span>liquidation price {p.liquidationPrice === null ? "—" : usd(p.liquidationPrice, 2)}</span>
+            {p.ltvBps !== null && p.ltvBps >= v.policy.triggerLtvBps && <span className="pill r">at trigger — protection due</span>}
+          </div>
+        </div>
+
+        <div className="tabs" style={{ marginTop: 32 }}>
+          {(["position", "agent", "activity", "settings"] as const).map((t) => <button key={t} className={tab === t ? "on" : ""} onClick={() => setTab(t)}>{t === "agent" ? "What the agent would do" : t[0].toUpperCase() + t.slice(1)}</button>)}
+        </div>
+
+        {tx.error && <p className="note bad" style={{ marginBottom: 14 }}>{tx.error}</p>}
+        {tx.busy && <p className="note" style={{ marginBottom: 14 }}>{tx.step}</p>}
+        {tx.hash && !tx.busy && <p className="note good" style={{ marginBottom: 14 }}>Sent: <TxLink hash={tx.hash} /> — the page refreshes in a moment.</p>}
+
+        {tab === "position" && (
+          <div className="grid g2">
+            <div>
+              <h3>Liquidity positions</h3>
+              {v.lp.length === 0 ? <p className="note" style={{ marginTop: 10 }}>No open positions. {v.balances.loan > 0 ? `${amount(v.balances.loan, 2)} ${v.loan.symbol} sits idle in the vault; the agent deploys it on its next tick, or open a position below.` : "Borrow first; the agent deploys what it borrows."}</p> : v.lp.map((l) => (
+                <div className="panel" key={l.tokenId} style={{ marginTop: 10 }}>
+                  <div className="row" style={{ justifyContent: "space-between" }}><span className="med">#{l.tokenId} · {l.fee / 10_000}% pool</span>{l.inRange ? <span className="pill g">in range</span> : <span className="pill a">out of range</span>}</div>
+                  <div className="kv"><span>Range</span><b>{l.priceLower === null ? "—" : usd(l.priceLower, 2)} – {l.priceUpper === null ? "—" : usd(l.priceUpper, 2)} <span className="lbl">now {l.currentPrice === null ? "—" : usd(l.currentPrice, 2)}</span></b></div>
+                  <div className="kv"><span>Holds</span><b>{amount(l.amountCollateral)} {v.collateral.symbol} + {amount(l.amountLoan, 2)} {v.loan.symbol} = {usd(l.valueUsd, 2)}</b></div>
+                  <div className="kv"><span>Uncollected fees</span><b className="green">{l.uncollected ? `${usd(l.uncollected.usd, 2)} (${amount(l.uncollected.collateral)} ${v.collateral.symbol} + ${amount(l.uncollected.loan, 2)} ${v.loan.symbol})` : "—"}</b></div>
+                  <div className="kv"><span>Cost basis</span><b>{usd(l.costBasis, 2)} → {l.valueUsd === null ? "—" : `${((l.valueUsd + (l.uncollected?.usd ?? 0)) / l.costBasis * 100 - 100).toFixed(2)}%`}</b></div>
+                  {can && <div className="row" style={{ marginTop: 12 }}>
+                    <button className="btn xs" style={{ borderColor: "var(--panel-mute)", color: "var(--panel-ink)" }} disabled={tx.busy} onClick={() => send({ action: "harvest", tokenId: l.tokenId })}>Harvest → debt</button>
+                    <button className="btn xs" style={{ borderColor: "var(--panel-mute)", color: "var(--panel-ink)" }} disabled={tx.busy} onClick={() => send({ action: "closeLp", tokenId: l.tokenId, swapToLoan: true })}>Close → repay</button>
+                    <button className="btn xs" style={{ borderColor: "var(--panel-mute)", color: "var(--panel-ink)" }} disabled={tx.busy} onClick={() => send({ action: "closeLp", tokenId: l.tokenId, swapToLoan: false })}>Close, keep both</button>
+                  </div>}
+                </div>
+              ))}
+              {can && <OpenLpForm vault={v} busy={tx.busy} onSend={send} />}
+            </div>
+            <div>
+              <h3>Collateral and debt</h3>
+              <div className="card" style={{ marginTop: 10 }}>
+                <div className="kv"><span>Collateral in Morpho</span><b>{amount(p.collateral)} {v.collateral.symbol}</b></div>
+                <div className="kv"><span>Debt</span><b>{usd(p.debt, 2)}</b></div>
+                <div className="kv"><span>Room to borrow (policy)</span><b>{maxBorrow === null ? "—" : usd(Math.max(0, maxBorrow), 2)}</b></div>
+                <div className="kv"><span>Idle in vault</span><b>{amount(v.balances.loan, 2)} {v.loan.symbol} · {amount(v.balances.collateral)} {v.collateral.symbol}</b></div>
+                <div className="kv"><span>Total borrowed / repaid</span><b>{usd(v.stats.totalBorrowed, 2)} / {usd(v.stats.totalRepaid, 2)}</b></div>
+                <div className="kv"><span>Protocol fees paid</span><b>{usd(v.stats.totalProtocolFees, 2)}</b></div>
+              </div>
+              {isOwner && <AmountForm label={`Deposit ${v.collateral.symbol} collateral`} hint="approve, then deposit into Morpho under the vault" busy={tx.busy} onSubmit={(a) => send({ action: "depositCollateral", amount: a })} />}
+              {can && <AmountForm label={`Borrow ${v.loan.symbol}`} hint={maxBorrow === null ? "" : `up to ${usd(Math.max(0, maxBorrow), 2)} within the policy ceiling`} busy={tx.busy} onSubmit={(a) => send({ action: "borrow", amount: a })} />}
+              {can && <AmountForm label={`Repay ${v.loan.symbol} from the vault`} hint="empty = everything the vault holds" busy={tx.busy} allowEmpty onSubmit={(a) => send({ action: "repay", amount: a || undefined })} />}
+              {isOwner && <AmountForm label={`Deposit ${v.loan.symbol}`} hint="to repay, or to LP without borrowing" busy={tx.busy} onSubmit={(a) => send({ action: "depositLoanToken", amount: a })} />}
+              {isOwner && <AmountForm label={`Withdraw ${v.collateral.symbol} collateral`} hint="to the owner; Morpho refuses if it would leave the loan unhealthy" busy={tx.busy} onSubmit={(a) => send({ action: "withdrawCollateral", amount: a })} />}
+              {isOwner && <div className="row" style={{ marginTop: 12 }}>
+                <button className="btn xs" disabled={tx.busy || v.balances.loan === 0} onClick={() => send({ action: "withdrawToken", token: v.loan.address })}>Withdraw idle {v.loan.symbol}</button>
+                <button className="btn xs" disabled={tx.busy || v.balances.collateral === 0} onClick={() => send({ action: "withdrawToken", token: v.collateral.address })}>Withdraw idle {v.collateral.symbol}</button>
+              </div>}
+              {!w.address && <p className="note" style={{ marginTop: 12 }}>Connect the owner wallet to act on this vault.</p>}
+            </div>
+          </div>
+        )}
+
+        {tab === "agent" && (
+          <div>
+            <p className="lede" style={{ marginTop: 0 }}>The rules the runner follows, evaluated against this vault right now. The runner signs exactly this on its next tick; the owner can sign any of it here first.</p>
+            {!plan ? <p className="skeleton" style={{ marginTop: 16 }}>evaluating</p> : (
+              <>
+                {plan.actions.length === 0 && <p className="note good" style={{ marginTop: 16 }}>Nothing to do right now.</p>}
+                {plan.actions.map((a, i) => (
+                  <div className="panel" key={i} style={{ marginTop: 12 }}>
+                    <div className="row" style={{ justifyContent: "space-between" }}><span className="med">{a.kind.toUpperCase()}</span>{a.valueUsd !== null && <span className="green mono">{usd(a.valueUsd, 2)}{a.kind === "refinance" ? "/yr" : ""}</span>}</div>
+                    <p style={{ marginTop: 8 }}>{a.reason}</p>
+                    <p className="lbl" style={{ marginTop: 8 }}>{a.built.tx.description}</p>
+                    {a.built.notes?.map((n, j) => <p key={j} className="lbl" style={{ marginTop: 4, textTransform: "none", letterSpacing: 0 }}>{n}</p>)}
+                    {can && <div className="row" style={{ marginTop: 12 }}><button className="btn xs" style={{ borderColor: "var(--panel-mute)", color: "var(--panel-ink)" }} disabled={tx.busy} onClick={() => sendPlanned(a.kind, plan, v, send)}>Sign this now</button></div>}
+                  </div>
+                ))}
+                <h3 style={{ marginTop: 28 }}>Rules that did not fire</h3>
+                <div className="card soft" style={{ marginTop: 10 }}>{plan.skipped.map((s, i) => <div className="kv" key={i}><span>{s.rule}</span><b style={{ fontWeight: 400, textAlign: "right" }}>{s.why}</b></div>)}</div>
+                <p className="faint mono" style={{ fontSize: 11, marginTop: 10 }}>evaluated {new Date(plan.at).toLocaleTimeString()} · settings {JSON.stringify(plan.settings)}</p>
+              </>
+            )}
+          </div>
+        )}
+
+        {tab === "activity" && (
+          <div className="log">
+            {!act ? <p className="skeleton">reading events</p> : act.entries.length === 0 ? <Empty>No activity yet.</Empty> : act.entries.map((e, i) => (
+              <div className="e" key={i}>
+                <span className="t">{e.time ? new Date(e.time * 1000).toLocaleString() : `block ${e.block}`}</span>
+                <span className="ty">{e.title}</span>
+                <span className="d">{e.detail}</span>
+                <TxLink hash={e.tx} />
+              </div>
+            ))}
+          </div>
+        )}
+
+        {tab === "settings" && (
+          <div className="grid g2">
+            <div>
+              <h3>Policy</h3>
+              <PolicyForm policy={v.policy} lltv={v.market.lltv} busy={tx.busy} disabled={!isOwner} onSubmit={(pol) => send({ action: "setPolicy", policy: pol })} />
+              <h3 style={{ marginTop: 28 }}>Operator</h3>
+              <div className="card" style={{ marginTop: 10 }}>
+                <div className="kv"><span>Current</span><b>{v.operator}</b></div>
+                {isOwner && <AddressForm label="New operator" busy={tx.busy} onSubmit={(a) => send({ action: "setOperator", operator: a })} />}
+              </div>
+              <h3 style={{ marginTop: 28 }}>Ownership</h3>
+              <div className="card" style={{ marginTop: 10 }}>
+                <div className="kv"><span>Owner</span><b>{v.owner}</b></div>
+                {v.pendingOwner !== "0x0000000000000000000000000000000000000000" && <div className="kv"><span>Pending</span><b>{v.pendingOwner} {w.address?.toLowerCase() === v.pendingOwner.toLowerCase() && <button className="btn xs" disabled={tx.busy} onClick={() => send({ action: "acceptOwnership" })}>Accept</button>}</b></div>}
+                {isOwner && <AddressForm label="Propose new owner (they must accept)" busy={tx.busy} onSubmit={(a) => send({ action: "proposeOwner", newOwner: a })} />}
+              </div>
+            </div>
+            <div>
+              <h3>Markets the agent may refinance into</h3>
+              <p className="faint" style={{ fontSize: 13, marginTop: 6 }}>Same pair only. The agent moves the debt when an allowed market is cheaper by at least the savings threshold, has the liquidity, and keeps LTV inside the ceiling.</p>
+              <div className="tblwrap" style={{ marginTop: 10 }}>
+                <table className="tbl" style={{ fontSize: 12 }}>
+                  <thead><tr><th>Market</th><th className="r">LLTV</th><th className="r">Borrow APY</th><th className="r">Available</th><th className="r">Allowed</th></tr></thead>
+                  <tbody>
+                    {(targets ?? []).map((t) => {
+                      const allowed = v.allowedMarkets.includes(t.id);
+                      const current = t.id === v.market.id;
+                      return (
+                        <tr key={t.id}>
+                          <td className="mono">{t.id.slice(0, 10)}… {current && <span className="pill g">current</span>} {t.listed && <span className="pill">listed</span>}</td>
+                          <td className="r">{(t.lltv * 100).toFixed(1)}%</td>
+                          <td className="r">{pct(t.borrowApy)}</td>
+                          <td className="r">{usd(Number(t.liquidity) / 10 ** v.loan.decimals)}</td>
+                          <td className="r">{isOwner && !current ? <button className="btn xs" disabled={tx.busy} onClick={() => send({ action: "setMarketAllowed", marketId: t.id, allowed: !allowed })}>{allowed ? "Remove" : "Allow"}</button> : allowed ? "yes" : "no"}</td>
+                        </tr>
+                      );
+                    })}
+                    {!targets && <tr><td colSpan={5} className="faint">reading…</td></tr>}
+                  </tbody>
+                </table>
+              </div>
+              {can && targets && <div style={{ marginTop: 12 }}><RefinanceForm targets={targets.filter((t) => v.allowedMarkets.includes(t.id) && t.id !== v.market.id)} busy={tx.busy} onSubmit={(id) => send({ action: "refinance", marketId: id })} /></div>}
+              <h3 style={{ marginTop: 28 }}>Liquidation protection</h3>
+              <div className="card" style={{ marginTop: 10 }}>
+                <p>Fires once LTV is at or above {bps(v.policy.triggerLtvBps)}: repays {bps(v.policy.repayBps)} of the debt, first from idle {v.loan.symbol}, then by closing positions, then by selling collateral through a Morpho flash loan.</p>
+                {can && <div className="row" style={{ marginTop: 12 }}><button className="btn xs danger" disabled={tx.busy || p.ltvBps === null || p.ltvBps < v.policy.triggerLtvBps} onClick={() => send({ action: "protect" })}>Run protection now</button><span className="faint" style={{ fontSize: 12 }}>{p.ltvBps !== null && p.ltvBps < v.policy.triggerLtvBps ? "below the trigger; the vault would refuse" : ""}</span></div>}
+              </div>
+            </div>
+          </div>
+        )}
+      </main>
+    </>
+  );
+}
+
+function sendPlanned(kind: string, plan: Plan, v: Vault, send: (b: unknown) => void) {
+  // The plan carries calldata already; rebuilding through the tx route keeps the wallet flow identical.
+  const a = plan.actions.find((x) => x.kind === kind)!;
+  const desc = a.built.tx.description;
+  if (kind === "protect") return send({ action: "protect" });
+  if (kind === "refinance") { const id = desc.match(/market (0x[0-9a-fA-F]+)/)?.[1]; const full = v.allowedMarkets.find((m) => id && m.startsWith(id)); return send({ action: "refinance", marketId: full ?? id }); }
+  if (kind === "harvest") { const id = desc.match(/#(\d+)/)?.[1]; return send({ action: "harvest", tokenId: id }); }
+  if (kind === "close") { const id = desc.match(/#(\d+)/)?.[1]; return send({ action: "closeLp", tokenId: id, swapToLoan: true }); }
+  if (kind === "open") { const fee = Number(desc.match(/(\d+(?:\.\d+)?)% position/)?.[1] ?? 0.3) * 10_000; const width = Number(String(plan.settings.rangeWidthPct ?? 5)); return send({ action: "openLp", amount: v.balances.loan.toFixed(v.loan.decimals), fee, widthPct: width, slippageBps: v.policy.maxSlippageBps }); }
+}
+
+function AmountForm({ label, hint, busy, onSubmit, allowEmpty }: { label: string; hint?: string; busy: boolean; onSubmit: (a: string) => void; allowEmpty?: boolean }) {
+  const [a, setA] = useState("");
+  return (
+    <form className="row" style={{ marginTop: 12 }} onSubmit={(e) => { e.preventDefault(); onSubmit(a); }}>
+      <div className="field" style={{ flex: 1, marginBottom: 0 }}><label>{label}</label><input placeholder={allowEmpty ? "all" : "0.0"} value={a} onChange={(e) => setA(e.target.value.trim())} />{hint && <span className="hint">{hint}</span>}</div>
+      <button className="btn sm" type="submit" disabled={busy || (!allowEmpty && !/^\d*\.?\d+$/.test(a))}>Sign</button>
+    </form>
+  );
+}
+
+function AddressForm({ label, busy, onSubmit }: { label: string; busy: boolean; onSubmit: (a: string) => void }) {
+  const [a, setA] = useState("");
+  return (
+    <form className="row" style={{ marginTop: 12 }} onSubmit={(e) => { e.preventDefault(); onSubmit(a); }}>
+      <div className="field" style={{ flex: 1, marginBottom: 0 }}><label>{label}</label><input placeholder="0x…" value={a} onChange={(e) => setA(e.target.value.trim())} /></div>
+      <button className="btn sm" type="submit" disabled={busy || !/^0x[0-9a-fA-F]{40}$/.test(a)}>Sign</button>
+    </form>
+  );
+}
+
+function PolicyForm({ policy, lltv, busy, disabled, onSubmit }: { policy: Vault["policy"]; lltv: number; busy: boolean; disabled: boolean; onSubmit: (p: Vault["policy"]) => void }) {
+  const [p, setP] = useState(policy);
+  useEffect(() => setP(policy), [policy]);
+  const ok = p.maxLtvBps <= 9500 && p.triggerLtvBps >= p.maxLtvBps && p.triggerLtvBps < lltv * 10_000 && p.repayBps > 0 && p.repayBps <= 10_000 && p.maxSlippageBps <= 2000;
+  return (
+    <form className="card" style={{ marginTop: 10 }} onSubmit={(e) => { e.preventDefault(); onSubmit(p); }}>
+      <div className="grid g2" style={{ gap: 12 }}>
+        {([["maxLtvBps", "Borrow ceiling"], ["triggerLtvBps", "Protect at"], ["repayBps", "Repay share"], ["maxSlippageBps", "Max slippage"]] as const).map(([k, l]) => (
+          <div className="field" key={k} style={{ marginBottom: 0 }}><label>{l} (%)</label><input type="number" step={0.5} disabled={disabled} value={(p[k] / 100).toString()} onChange={(e) => setP({ ...p, [k]: Math.round(Number(e.target.value) * 100) })} /></div>
+        ))}
+      </div>
+      {!ok && <p className="note bad" style={{ marginTop: 10 }}>Ceiling ≤ 95%, trigger between the ceiling and the market's {(lltv * 100).toFixed(0)}% LLTV, repay 0–100%, slippage ≤ 20%.</p>}
+      {!disabled && <div className="row" style={{ marginTop: 12 }}><button className="btn sm" type="submit" disabled={busy || !ok}>Sign policy</button></div>}
+    </form>
+  );
+}
+
+function OpenLpForm({ vault, busy, onSend }: { vault: Vault; busy: boolean; onSend: (b: unknown) => void }) {
+  const [amt, setAmt] = useState("");
+  const [fee, setFee] = useState(500);
+  const [width, setWidth] = useState(5);
+  const [pools, setPools] = useState<Array<{ fee: number; price: number | null; tvlUsd: number | null; volume: { feeApr: number | null; volumeLoan: number; hours: number } | null }> | null>(null);
+  useEffect(() => { get<{ pools: any[] }>(`/api/pools?collateral=${vault.collateral.address}`).then((d) => { setPools(d.pools); if (d.pools[0]) setFee(d.pools[0].fee); }).catch(() => setPools([])); }, [vault.collateral.address]);
+  return (
+    <form className="card" style={{ marginTop: 14 }} onSubmit={(e) => { e.preventDefault(); onSend({ action: "openLp", amount: amt, fee, widthPct: width, slippageBps: vault.policy.maxSlippageBps }); }}>
+      <h3>Open a position by hand</h3>
+      <p>Half the amount is swapped into {vault.collateral.symbol} so the range holds both sides. The agent does this automatically for idle {vault.loan.symbol}.</p>
+      <div className="grid g3" style={{ gap: 12, marginTop: 10 }}>
+        <div className="field" style={{ marginBottom: 0 }}><label>{vault.loan.symbol} to commit</label><input placeholder={vault.balances.loan.toFixed(2)} value={amt} onChange={(e) => setAmt(e.target.value.trim())} /><span className="hint">idle: {amount(vault.balances.loan, 2)}</span></div>
+        <div className="field" style={{ marginBottom: 0 }}><label>Pool</label><select value={fee} onChange={(e) => setFee(Number(e.target.value))}>{(pools ?? []).map((p) => <option key={p.fee} value={p.fee}>{p.fee / 10_000}% · {p.volume?.feeApr !== null && p.volume ? `≈${(p.volume.feeApr! * 100).toFixed(0)}% APR` : "no volume"} · TVL {usd(p.tvlUsd)}</option>)}{pools === null && <option>reading pools…</option>}</select></div>
+        <div className="field" style={{ marginBottom: 0 }}><label>Range ± %</label><input type="number" min={0} max={200} step={0.5} value={width} onChange={(e) => setWidth(Number(e.target.value))} /><span className="hint">0 = full range</span></div>
+      </div>
+      <div className="row" style={{ marginTop: 12 }}><button className="btn sm" type="submit" disabled={busy || !/^\d*\.?\d+$/.test(amt)}>Sign open</button></div>
+    </form>
+  );
+}
+
+function RefinanceForm({ targets, busy, onSubmit }: { targets: Target[]; busy: boolean; onSubmit: (id: string) => void }) {
+  const [id, setId] = useState(targets[0]?.id ?? "");
+  useEffect(() => { if (!id && targets[0]) setId(targets[0].id); }, [targets, id]);
+  if (targets.length === 0) return <p className="note">Allow at least one other market to refinance by hand.</p>;
+  return (
+    <form className="row" onSubmit={(e) => { e.preventDefault(); onSubmit(id); }}>
+      <select value={id} onChange={(e) => setId(e.target.value)} style={{ padding: "8px 12px", border: "1px solid var(--rule-2)", borderRadius: 10, background: "#fff", flex: 1 }}>
+        {targets.map((t) => <option key={t.id} value={t.id}>{t.id.slice(0, 10)}… · LLTV {(t.lltv * 100).toFixed(0)}% · {pct(t.borrowApy)}</option>)}
+      </select>
+      <button className="btn sm" type="submit" disabled={busy || !id}>Refinance now</button>
+    </form>
+  );
+}

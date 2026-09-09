@@ -1,0 +1,17 @@
+{
+  "//": "Hardhat runs .ts through ts-node in CommonJS. The root tsconfig targets Next.js and uses ESM module resolution, under which `import { ethers } from \"hardhat\"` fails to resolve. Kept separate so neither toolchain has to compromise for the other.",
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "jsx": "preserve",
+    "isolatedModules": false,
+    "noEmit": true,
+    "types": ["node", "mocha", "chai"]
+  },
+  "include": ["hardhat.config.ts", "scripts/**/*.ts", "test/**/*.ts", "typechain-types/**/*.ts"],
+  "//exclude": "Overrides the inherited exclude list, which deliberately hides these same paths from the Next.js config.",
+  "exclude": ["node_modules"]
+}

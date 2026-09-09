@@ -1,0 +1,16 @@
+node_modules/
+.next/
+.env
+.env.local
+.env*
+!.env.example
+artifacts/
+cache/
+typechain-types/
+coverage/
+coverage.json
+*.tsbuildinfo
+*.log
+.vercel
+data/
+.claude/settings.local.json
