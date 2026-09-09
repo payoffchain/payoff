@@ -1,0 +1,14 @@
+.env
+.env.*
+!.env.example
+.env.local
+node_modules
+.next
+artifacts
+cache
+typechain-types
+coverage
+coverage.json
+test
+deployments/fork.json
+*.log
