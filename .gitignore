@@ -14,3 +14,4 @@ coverage.json
 .vercel
 data/
 .claude/settings.local.json
+deployments/fork.json

@@ -75,7 +75,7 @@ export default function VaultPage() {
       <main className="wrap" style={{ padding: "40px 24px 80px" }}>
         <div className="row" style={{ justifyContent: "space-between", alignItems: "flex-end" }}>
           <div>
-            <span className="eyebrow">Vault · <AddrLink address={v.address} /></span>
+            <span className="eyebrow">Vault · <span style={{ textTransform: "none", letterSpacing: 0 }}><AddrLink address={v.address} /></span></span>
             <h2 style={{ display: "flex", alignItems: "center", gap: 14 }}><Tok symbol={v.collateral.symbol} /> {v.collateral.symbol} / {v.loan.symbol}</h2>
             <div className="row faint mono" style={{ fontSize: 12, marginTop: 8 }}>
               <span>owner <AddrLink address={v.owner} /></span><span>operator {v.operator === "0x0000000000000000000000000000000000000000" ? "none" : <AddrLink address={v.operator} />}</span><span>created {ago(v.createdAt)}</span>

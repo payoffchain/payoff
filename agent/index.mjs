@@ -26,6 +26,7 @@
  *   AGENT_TICK_MS        default 60000
  *   AGENT_MAX_ACTIONS    per tick, default 3
  *   AGENT_MIN_ETH        refuse to sign below this ETH balance (gas), default 0.0005
+ *   AGENT_PLAN_QUERY     query string appended to /plan, e.g. minDeployUsd=10&rangeWidthPct=3 (overrides the site defaults)
  *   PORT                 /health and /decisions, default 3001
  *   ANTHROPIC_API_KEY    optional: a Claude review of each plan (advisory only, see brain.mjs)
  */
@@ -44,6 +45,7 @@ const cfg = {
   tickMs: Number(process.env.AGENT_TICK_MS ?? 60_000),
   maxActions: Number(process.env.AGENT_MAX_ACTIONS ?? 3),
   minEth: process.env.AGENT_MIN_ETH ?? "0.0005",
+  planQuery: (process.env.AGENT_PLAN_QUERY ?? "").replace(/^[?]/, ""),
   port: Number(process.env.PORT ?? 3001),
 };
 
@@ -129,7 +131,7 @@ async function tick() {
   for (const vault of vaults) {
     let plan;
     try {
-      plan = await api(`/api/vaults/${vault}/plan`);
+      plan = await api(`/api/vaults/${vault}/plan${cfg.planQuery ? "?" + cfg.planQuery : ""}`);
     } catch (err) {
       record({ vault, error: err.message });
       log(vault, "plan failed:", err.message);

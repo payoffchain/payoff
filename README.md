@@ -45,6 +45,17 @@ Against the real protocols on a fork of Robinhood Chain (borrows NVDA by imperso
 FORK=1 RPC_URL=<rpc> npm run test:fork
 ```
 
+### Try it on a fork (no real money)
+
+```bash
+FORK=1 RPC_URL=<rpc> npx hardhat node --port 8546      # a local copy of Robinhood Chain
+npx hardhat run scripts/seed-fork.ts --network localhost # factory + one funded NVDA/USDG vault
+# then in .env: RPC_URL=http://127.0.0.1:8546 and the PAYOFF_FACTORY_* lines the script prints
+npm run dev
+```
+
+The seeded vault (owner = hardhat account #1, operator = account #2) shows up on /leaderboard and /vault/<address>; the runner can be pointed at it with account #2's key and `AGENT_DRY_RUN=false` to watch it deploy the idle USDG.
+
 ## 2. Web app
 
 ```bash

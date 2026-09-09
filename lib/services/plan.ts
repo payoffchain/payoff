@@ -135,7 +135,7 @@ export async function planFor(vaultAddress: string, overrides: Partial<PlanSetti
       for (const p of candidates) {
         const vol = await poolVolume(p, p.token0.toLowerCase() === v.loan.address.toLowerCase(), v.loan.decimals, 6, p.tvlUsd);
         const apr = vol?.feeApr ?? -1;
-        if (apr > bestApr) { bestApr = apr; pick = p; reason = vol ? `fee yield ≈ ${(apr * 100).toFixed(0)}% APR on $${Math.round(p.tvlUsd ?? 0).toLocaleString()} TVL over 6h` : "deepest pool"; }
+        if (apr > bestApr) { bestApr = apr; pick = p; reason = vol ? `fee yield ≈ ${(apr * 100).toFixed(0)}% APR on $${Math.round(p.tvlUsd ?? 0).toLocaleString("en-US")} TVL over 6h` : "deepest pool"; }
       }
       if (!pick && candidates.length) { pick = candidates.sort((a, b) => (b.tvlUsd ?? 0) - (a.tvlUsd ?? 0))[0]; reason = "deepest pool"; }
     } else reason = `preferred tier ${pick.fee / 10_000}%`;

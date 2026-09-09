@@ -26,7 +26,7 @@ export const amount = (v: string | number | null | undefined, maxDecimals = 4) =
   if (n === 0) return "0";
   const abs = Math.abs(n);
   if (abs >= 0.01) return n.toLocaleString("en-US", { maximumFractionDigits: maxDecimals });
-  if (abs < 1e-9) return n.toExponential(2);
+  if (abs < 1e-9) return "0"; // dust from rounding, not a balance anyone can use
   return n.toLocaleString("en-US", { maximumSignificantDigits: 3, maximumFractionDigits: 20 });
 };
 

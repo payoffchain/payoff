@@ -18,7 +18,10 @@ const config: HardhatUserConfig = {
     settings: { optimizer: { enabled: true, runs: 200 }, viaIR: true },
   },
   networks: {
-    hardhat: forking ? { forking, chainId: CHAIN_ID } : {},
+    // chains: a forked custom chain needs a hardfork history or `hardhat node` refuses calls at the fork block.
+    hardhat: forking ? { forking, chainId: CHAIN_ID, chains: { [CHAIN_ID]: { hardforkHistory: { cancun: 0 } } } } : {},
+    // A local hardhat node (npx hardhat node --port 8546), typically a fork of Robinhood Chain, for seeding the UI.
+    localhost: { url: process.env.LOCAL_RPC_URL || "http://127.0.0.1:8546", chainId: CHAIN_ID },
     robinhood: {
       url: RPC_URL,
       chainId: CHAIN_ID,
