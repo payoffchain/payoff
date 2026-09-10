@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import "./motion.css";
+import "./theme.css";
 import { WalletProvider } from "./components/WalletProvider";
 import { APP, SITE } from "./components/brand";
 
@@ -25,8 +26,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-        <meta name="theme-color" content="#fbf8f3" />
+        <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Syne:wght@700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+        <meta name="theme-color" content="#0c0b0a" />
       </head>
       <body>
         <WalletProvider>{children}</WalletProvider>
