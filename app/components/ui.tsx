@@ -57,6 +57,31 @@ export function LtvBar({ ltv, max, trigger, lltv }: { ltv: number | null; max: n
   );
 }
 
+/** Half-circle LTV gauge: the arc fills to the current LTV, with ticks at the ceiling, trigger and liquidation. */
+export function Gauge({ ltv, max, trigger, lltv }: { ltv: number | null; max: number; trigger: number; lltv: number }) {
+  const R = 80, C = Math.PI * R; // half circumference
+  const v = ltv === null ? 0 : Math.min(ltv, lltv);
+  const frac = lltv > 0 ? v / lltv : 0;
+  const tone = ltv === null ? "var(--red)" : ltv >= trigger ? "var(--red)" : ltv >= max ? "var(--amber)" : "var(--green)";
+  const tick = (f: number, cls: string) => {
+    const a = Math.PI * (1 - f);
+    const x1 = 100 + (R - 12) * Math.cos(a), y1 = 92 - (R - 12) * Math.sin(a);
+    const x2 = 100 + (R + 12) * Math.cos(a), y2 = 92 - (R + 12) * Math.sin(a);
+    return <line key={cls + f} className={cls} x1={x1} y1={y1} x2={x2} y2={y2} />;
+  };
+  return (
+    <div className="gauge">
+      <svg viewBox="0 0 200 100">
+        <defs><linearGradient id="lg-gauge" x1="0" x2="1"><stop offset="0" stopColor="#0c6b46" /><stop offset=".6" stopColor="#d9b071" /><stop offset="1" stopColor="#a33f36" /></linearGradient></defs>
+        <path className="arc" d={`M 20 92 A ${R} ${R} 0 0 1 180 92`} />
+        <path className="val" d={`M 20 92 A ${R} ${R} 0 0 1 180 92`} style={{ stroke: tone, strokeDasharray: `${C * frac} ${C}` }} />
+        <g className="marks">{tick(max / lltv, "max")}{tick(trigger / lltv, "trig")}{tick(1, "liq")}</g>
+      </svg>
+      <div className="num">{ltv === null ? "—" : (ltv * 100).toFixed(1) + "%"}<small>loan to value</small></div>
+    </div>
+  );
+}
+
 export function Empty({ children }: { children: React.ReactNode }) {
   return <div className="card soft" style={{ textAlign: "center", padding: 40 }}><p>{children}</p></div>;
 }

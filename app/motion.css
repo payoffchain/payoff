@@ -1,0 +1,151 @@
+/* ============================================================================
+   PAYOFF — motion and polish. Loaded after globals.css.
+   Every animation respects prefers-reduced-motion (bottom of file).
+   ========================================================================== */
+:root{
+  --coral:#f0654b;
+  --coral-ink:#c94a33;
+  --coral-wash:#fde9e3;
+  --mesh1:rgba(12,107,70,.22);
+  --mesh2:rgba(240,101,75,.20);
+  --mesh3:rgba(138,90,18,.14);
+}
+
+/* --- keyframes --- */
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes wordUp{from{opacity:0;transform:translateY(.6em) rotate(1deg)}to{opacity:1;transform:none}}
+@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes mesh{0%{transform:translate(0,0) scale(1)}33%{transform:translate(4%,-3%) scale(1.06)}66%{transform:translate(-3%,4%) scale(.97)}100%{transform:translate(0,0) scale(1)}}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes dash{to{stroke-dashoffset:-42}}
+@keyframes shrink{0%{width:160px}70%{width:34px}100%{width:34px}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(12,107,70,.45)}60%{box-shadow:0 0 0 8px rgba(12,107,70,0)}}
+@keyframes shine{from{transform:translateX(-120%) skewX(-18deg)}to{transform:translateX(220%) skewX(-18deg)}}
+@keyframes blink{50%{opacity:0}}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* --- reveal on scroll / page entrance --- */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
+main > *{animation:fadeUp .6s cubic-bezier(.2,.7,.2,1) both}
+main > *:nth-child(2){animation-delay:.06s}
+main > *:nth-child(3){animation-delay:.12s}
+main > *:nth-child(4){animation-delay:.18s}
+main > *:nth-child(5){animation-delay:.24s}
+.word{display:inline-block;animation:wordUp .7s cubic-bezier(.2,.7,.2,1) both}
+
+/* --- hero --- */
+.hero{padding:104px 0 64px;position:relative;overflow:hidden;isolation:isolate}
+.hero::before{
+  content:"";position:absolute;inset:-20% -10%;z-index:-2;
+  background:
+    radial-gradient(38% 34% at 78% 22%,var(--mesh1),transparent 70%),
+    radial-gradient(30% 32% at 14% 76%,var(--mesh2),transparent 70%),
+    radial-gradient(26% 26% at 60% 86%,var(--mesh3),transparent 70%);
+  animation:mesh 18s ease-in-out infinite;
+}
+.hero::after{
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background-image:radial-gradient(rgba(20,18,16,.14) 1px,transparent 1px);
+  background-size:22px 22px;
+  -webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,.9),transparent 85%);
+  mask-image:linear-gradient(180deg,rgba(0,0,0,.9),transparent 85%);
+}
+.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
+@media(max-width:960px){.hero-grid{grid-template-columns:1fr}}
+.hero h1{margin-top:20px}
+/* gradient per word: background-clip:text does not reach into transformed inline-block children */
+.hero .hl .word{background:linear-gradient(90deg,var(--green),#3fb37f);-webkit-background-clip:text;background-clip:text;color:transparent}
+.chip.live .dot{animation:pulse 2.2s infinite}
+
+/* --- loop diagram --- */
+.loop{width:100%;max-width:560px;margin:0 auto;filter:drop-shadow(0 20px 40px rgba(20,18,16,.10))}
+.loop .node rect{fill:#fff;stroke:var(--rule-2);stroke-width:1.2}
+.loop .node.float-a{animation:floatY 6s ease-in-out infinite}
+.loop .node.float-b{animation:floatY 7s ease-in-out infinite;animation-delay:-2s}
+.loop .node.float-c{animation:floatY 6.5s ease-in-out infinite;animation-delay:-4s}
+.loop text{font-family:var(--mono);text-anchor:middle;fill:var(--ink)}
+.loop .t-l{font-size:15px;font-weight:600;font-family:var(--sans)}
+.loop .t-s{font-size:11px;fill:var(--mute)}
+.loop .t-xs{font-size:10px;fill:var(--faint);letter-spacing:.06em;text-transform:uppercase}
+.loop .green{fill:var(--green)}
+.loop .coral{fill:var(--coral)}
+.loop .wire{fill:none;stroke:url(#lg-green);stroke-width:2.5;stroke-dasharray:6 8;stroke-linecap:round;animation:dash 1.6s linear infinite}
+.loop .wire.coral{stroke:url(#lg-coral)}
+.loop .dot{fill:var(--green);filter:url(#glow)}
+.loop .dot.coral{fill:var(--coral)}
+.loop .track{fill:var(--paper-3)}
+.loop .debt{fill:url(#lg-coral);animation:shrink 6s cubic-bezier(.4,0,.2,1) infinite alternate}
+
+/* --- marquee ticker --- */
+.ticker{overflow:hidden;white-space:nowrap;padding:0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);background:var(--panel);color:var(--panel-mute)}
+.ticker .track{display:inline-flex;gap:40px;padding:12px 20px;animation:marquee 40s linear infinite;will-change:transform}
+.ticker:hover .track{animation-play-state:paused}
+.ticker b{color:var(--panel-ink);font-weight:500}
+.ticker .up{color:var(--panel-green)}
+
+/* --- cards --- */
+.card{position:relative;transition:transform .25s cubic-bezier(.2,.7,.2,1),box-shadow .25s,border-color .25s}
+.card:hover{transform:translateY(-3px);box-shadow:0 18px 40px -20px rgba(20,18,16,.35);border-color:var(--rule-2)}
+.card.feature{padding:26px;overflow:hidden}
+.card.feature::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(12,107,70,.08),transparent 60%);opacity:0;transition:opacity .3s}
+.card.feature:hover::before{opacity:1}
+.card .num{font-family:var(--mono);font-size:44px;font-weight:500;letter-spacing:-.04em;line-height:1;color:var(--paper-3);position:absolute;right:20px;top:14px;transition:color .3s}
+.card:hover .num{color:var(--green-wash)}
+.card .ico{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:var(--green-wash);color:var(--green);margin-bottom:14px}
+.card.feature > *{position:relative}
+.panel{position:relative;overflow:hidden;background:linear-gradient(160deg,#1a1714,#110f0d)}
+.panel::after{content:"";position:absolute;inset:0;background:radial-gradient(60% 60% at 100% 0%,rgba(127,211,164,.12),transparent 70%);pointer-events:none}
+.panel > *{position:relative;z-index:1}
+.stats .stat{padding:18px 20px;border:1px solid var(--rule);border-radius:var(--r);background:rgba(255,255,255,.7);backdrop-filter:blur(8px);transition:transform .25s,box-shadow .25s}
+.stats .stat:hover{transform:translateY(-2px);box-shadow:0 14px 30px -18px rgba(20,18,16,.35)}
+
+/* --- buttons --- */
+.btn{position:relative;overflow:hidden}
+.btn.primary::after,.btn.coral::after{content:"";position:absolute;top:0;bottom:0;width:40%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);transform:translateX(-120%) skewX(-18deg);pointer-events:none}
+.btn.primary:hover::after,.btn.coral:hover::after{animation:shine .8s ease}
+.btn.coral{background:var(--coral);border-color:var(--coral);color:#fff}
+.btn.coral:hover{background:var(--coral-ink);border-color:var(--coral-ink)}
+.btn.lg{padding:14px 24px;font-size:15px}
+
+/* --- nav --- */
+nav.top{box-shadow:0 1px 0 rgba(20,18,16,.03),0 10px 30px -24px rgba(20,18,16,.4)}
+.brand .mark{background:linear-gradient(135deg,var(--ink),#3a332c);box-shadow:0 6px 14px -8px rgba(20,18,16,.6);transition:transform .25s}
+.brand:hover .mark{transform:rotate(-8deg) scale(1.06)}
+.navlinks a{position:relative;border-bottom:0}
+.navlinks a::after{content:"";position:absolute;left:0;right:100%;bottom:-2px;height:1.5px;background:var(--green);transition:right .25s}
+.navlinks a:hover::after,.navlinks a.on::after{right:0}
+
+/* --- tables --- */
+.tbl tbody tr{transition:background .15s}
+.tbl tbody tr:hover td{background:var(--green-wash)}
+
+/* --- gauge --- */
+.gauge{position:relative;width:200px;height:110px;margin:0 auto}
+.gauge svg{width:100%;height:100%;overflow:visible}
+.gauge .arc{fill:none;stroke:var(--paper-3);stroke-width:14;stroke-linecap:round}
+.gauge .val{fill:none;stroke-width:14;stroke-linecap:round;transition:stroke-dasharray 1.2s cubic-bezier(.2,.7,.2,1)}
+.gauge .marks line{stroke:var(--rule-2);stroke-width:2}
+.gauge .marks line.trig{stroke:var(--amber)}
+.gauge .marks line.liq{stroke:var(--red)}
+.gauge .num{position:absolute;left:0;right:0;bottom:-4px;text-align:center;font-family:var(--mono);font-size:26px;font-weight:500;letter-spacing:-.02em}
+.gauge .num small{display:block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);font-weight:400}
+
+/* --- terminal look for the agent plan --- */
+.term{font-family:var(--mono);font-size:13px;line-height:1.7}
+.term .cur::after{content:"\258C";animation:blink 1s steps(1) infinite;color:var(--panel-green)}
+.term .k{color:var(--panel-green)}
+.term .d{color:var(--panel-mute)}
+.spinner{width:16px;height:16px;border:2px solid var(--rule-2);border-top-color:var(--green);border-radius:50%;animation:spin .8s linear infinite;display:inline-block;vertical-align:middle}
+
+/* --- bars --- */
+.bar i{transition:width 1s cubic-bezier(.2,.7,.2,1)}
+
+/* --- footer --- */
+footer{background:var(--paper-2)}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001s!important;animation-iteration-count:1!important;transition-duration:.001s!important}
+  .reveal{opacity:1;transform:none}
+  .ticker .track{animation:none}
+}

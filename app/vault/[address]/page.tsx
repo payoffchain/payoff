@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import Nav from "../../components/Nav";
 import { useWallet } from "../../components/WalletProvider";
 import { useTx } from "../../components/useTx";
-import { AddrLink, DataBanner, Empty, LtvBar, Stat, Tok, TxLink, bps, pct } from "../../components/ui";
+import { AddrLink, DataBanner, Empty, Gauge, LtvBar, Stat, Tok, TxLink, bps, pct } from "../../components/ui";
 import { usd, ago, amount } from "../../components/format";
 
 type Lp = { tokenId: string; fee: number; tickLower: number; tickUpper: number; inRange: boolean; priceLower: number | null; priceUpper: number | null; currentPrice: number | null; amountCollateral: number; amountLoan: number; valueUsd: number | null; uncollected: { collateral: number; loan: number; usd: number | null } | null; costBasis: number };
@@ -95,12 +95,15 @@ export default function VaultPage() {
           <Stat label="Repaid from fees" value={usd(v.stats.totalRepaidFromFees, 2)} tone="green" sub={`harvested ${usd(v.stats.totalHarvested, 2)} · ${v.stats.refinanceCount} hop${v.stats.refinanceCount === 1 ? "" : "s"}`} />
           <Stat label="Net value" value={usd(v.netValueUsd)} sub={`liquidity ${usd(v.lpValueUsd)} · idle ${amount(v.balances.loan, 2)} ${v.loan.symbol}`} />
         </div>
-        <div style={{ marginTop: 18 }}>
-          <LtvBar ltv={p.ltv} max={v.policy.maxLtvBps / 10_000} trigger={v.policy.triggerLtvBps / 10_000} lltv={v.market.lltv} />
-          <div className="row faint mono" style={{ fontSize: 12, marginTop: 6 }}>
-            <span>health {p.healthFactor === null ? "—" : p.healthFactor.toFixed(2)}</span>
-            <span>liquidation price {p.liquidationPrice === null ? "—" : usd(p.liquidationPrice, 2)}</span>
-            {p.ltvBps !== null && p.ltvBps >= v.policy.triggerLtvBps && <span className="pill r">at trigger — protection due</span>}
+        <div className="card" style={{ marginTop: 18, display: "grid", gridTemplateColumns: "220px 1fr", gap: 24, alignItems: "center" }}>
+          <Gauge ltv={p.ltv} max={v.policy.maxLtvBps / 10_000} trigger={v.policy.triggerLtvBps / 10_000} lltv={v.market.lltv} />
+          <div>
+            <LtvBar ltv={p.ltv} max={v.policy.maxLtvBps / 10_000} trigger={v.policy.triggerLtvBps / 10_000} lltv={v.market.lltv} />
+            <div className="row faint mono" style={{ fontSize: 12, marginTop: 10 }}>
+              <span>health {p.healthFactor === null ? "—" : p.healthFactor.toFixed(2)}</span>
+              <span>liquidation price {p.liquidationPrice === null ? "—" : usd(p.liquidationPrice, 2)}</span>
+              {p.ltvBps !== null && p.ltvBps >= v.policy.triggerLtvBps ? <span className="pill r">at trigger — protection due</span> : <span className="pill g">inside policy</span>}
+            </div>
           </div>
         </div>
 
@@ -159,8 +162,14 @@ export default function VaultPage() {
         {tab === "agent" && (
           <div>
             <p className="lede" style={{ marginTop: 0 }}>The rules the runner follows, evaluated against this vault right now. The runner signs exactly this on its next tick; the owner can sign any of it here first.</p>
-            {!plan ? <p className="skeleton" style={{ marginTop: 16 }}>evaluating</p> : (
+            {!plan ? <p style={{ marginTop: 16 }}><span className="spinner" /> evaluating the rules against this vault…</p> : (
               <>
+                <div className="panel term" style={{ marginTop: 16 }}>
+                  <div><span className="k">$</span> payoff plan --vault {v.address.slice(0, 10)}… <span className="d">{new Date(plan.at).toLocaleTimeString()}</span></div>
+                  {plan.skipped.map((s, i) => <div key={i}><span className="d">· {s.rule}:</span> {s.why}</div>)}
+                  {plan.actions.map((a, i) => <div key={"a" + i}><span className="k">▶ {a.kind}</span> {a.reason}</div>)}
+                  <div className="cur">{plan.actions.length === 0 ? "nothing to sign this tick" : `${plan.actions.length} action${plan.actions.length === 1 ? "" : "s"} ready to sign`}</div>
+                </div>
                 {plan.actions.length === 0 && <p className="note good" style={{ marginTop: 16 }}>Nothing to do right now.</p>}
                 {plan.actions.map((a, i) => (
                   <div className="panel" key={i} style={{ marginTop: 12 }}>
