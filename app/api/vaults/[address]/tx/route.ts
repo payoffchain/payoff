@@ -5,6 +5,8 @@ import * as tx from "@/lib/services/tx";
 import { ethers } from "ethers";
 
 export const runtime = "nodejs";
+// Log scans and multicalls over the public RPC can take longer than the default serverless budget.
+export const maxDuration = 60;
 
 /**
  * POST /api/vaults/0x../tx -> unsigned calldata for one vault action.

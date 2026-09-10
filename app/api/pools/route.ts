@@ -6,6 +6,8 @@ import { poolsForPair, poolVolume } from "@/lib/uniswap";
 import { tokenMeta } from "@/lib/tokenmeta";
 
 export const runtime = "nodejs";
+// Log scans and multicalls over the public RPC can take longer than the default serverless budget.
+export const maxDuration = 60;
 
 /** GET /api/pools?collateral=0x..[&loan=0x..][&hours=6] -> Uniswap V3 pools for the pair with fee yield from recent swaps */
 const q = z.object({ collateral: addressSchema, loan: addressSchema.optional(), hours: z.string().regex(/^\d+$/).optional() });
@@ -16,7 +18,7 @@ export const GET = handler("pools", async (req) => {
   const cm = tokenMeta(p.collateral);
   const lm = tokenMeta(loan);
   if (!cm || !lm) throw new ApiError(400, "unknown token; the pair must be in the market snapshot or the stock registry");
-  const hours = Math.min(48, Math.max(1, Number(p.hours ?? 6)));
+  const hours = Math.min(24, Math.max(1, Number(p.hours ?? 3)));
   const pools = await poolsForPair(p.collateral, loan, cm.decimals, lm.decimals);
   const out = [];
   for (const pool of pools) {

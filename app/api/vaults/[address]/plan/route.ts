@@ -5,6 +5,8 @@ import { planFor } from "@/lib/services/plan";
 import { ethers } from "ethers";
 
 export const runtime = "nodejs";
+// Log scans and multicalls over the public RPC can take longer than the default serverless budget.
+export const maxDuration = 60;
 
 const num = z.string().regex(/^\d+(\.\d+)?$/).optional();
 const q = z.object({ minSavingsBps: num, harvestFloorUsd: num, minDeployUsd: num, rangeWidthPct: num, preferredFee: num, lossLimitPct: num, outOfRangeExit: z.string().optional() });

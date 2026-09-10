@@ -101,23 +101,52 @@ export async function planFor(vaultAddress: string, overrides: Partial<PlanSetti
     }
   } else skipped.push({ rule: "refinance", why: v.position.debt === 0 ? "no debt" : "current rate unknown" });
 
+  // Pools of the pair, read once. The vault refuses any mint, burn or swap while a pool's
+  // spot price sits further from the market oracle than the policy allows — which is the
+  // normal state of a stock pool outside US market hours, when the Chainlink feed pauses
+  // and the pool keeps trading. The plan checks the same thing first, so it never hands
+  // the runner a transaction that will revert, and it says why instead.
+  const pools = (v.lp.length > 0 || (v.balances.loan >= s.minDeployUsd && !v.paused))
+    ? await poolsForPair(v.collateral.address, v.loan.address, v.collateral.decimals, v.loan.decimals)
+    : [];
+  const oracle = v.position.collateralPrice;
+  const offOracleBps = (fee: number): number | null => {
+    const pool = pools.find((p) => p.fee === fee);
+    if (!pool || pool.price === null || !oracle) return null;
+    return Math.abs(pool.price / oracle - 1) * 10_000;
+  };
+  const priceGate = (fee: number): string | null => {
+    const off = offOracleBps(fee);
+    if (off === null || off <= v.policy.maxSlippageBps) return null;
+    return `pool price is ${Math.round(off)} bps off the oracle (policy allows ${v.policy.maxSlippageBps}); likely outside market hours — the vault would refuse the swap`;
+  };
+
   // 3. exit rules per position, 4. harvest
   for (const p of v.lp) {
     const value = (p.valueUsd ?? 0) + (p.uncollected?.usd ?? 0);
     const loss = p.costBasis > 0 ? (p.costBasis - value) / p.costBasis : 0;
+    const gate = priceGate(p.fee);
     if (p.costBasis > 0 && loss * 100 >= s.lossLimitPct) {
+      if (gate) { skipped.push({ rule: `close #${p.tokenId}`, why: `${(loss * 100).toFixed(1)}% below cost, but ${gate}` }); continue; }
       const built = await buildCloseLp(v.address, p.tokenId, { swapToLoan: true });
       actions.push({ kind: "close", reason: `position #${p.tokenId} is ${(loss * 100).toFixed(1)}% below cost (limit ${s.lossLimitPct}%): close to ${v.loan.symbol}`, built, valueUsd: null });
       continue;
     }
     if (s.outOfRangeExit && !p.inRange && p.currentPrice !== null && p.priceUpper !== null && p.priceLower !== null) {
-      // Out of range on the loan side (price fell below the range) means the position is all
-      // collateral and earns nothing; closing into the loan token realises it and repays.
-      const built = await buildCloseLp(v.address, p.tokenId, { swapToLoan: true });
-      actions.push({ kind: "close", reason: `position #${p.tokenId} is out of range (${p.currentPrice.toFixed(2)} outside ${p.priceLower.toFixed(2)}..${p.priceUpper.toFixed(2)}): close and redeploy`, built, valueUsd: null });
-      continue;
+      if (p.currentPrice >= p.priceUpper) {
+        // Above the range the position is entirely loan token and earns nothing: closing
+        // costs no market exposure, and the idle USDG is redeployed by rule 5.
+        if (gate) { skipped.push({ rule: `close #${p.tokenId}`, why: `above range, but ${gate}` }); continue; }
+        const built = await buildCloseLp(v.address, p.tokenId, { swapToLoan: true });
+        actions.push({ kind: "close", reason: `position #${p.tokenId} is above its range (${p.currentPrice.toFixed(2)} > ${p.priceUpper.toFixed(2)}) and holds only ${v.loan.symbol}: close and redeploy`, built, valueUsd: null });
+        continue;
+      }
+      // Below the range the position is entirely collateral. Closing would sell it at the
+      // low; the loss limit above is the only rule that does that. Hold and wait.
+      skipped.push({ rule: `close #${p.tokenId}`, why: `below range (${p.currentPrice.toFixed(2)} < ${p.priceLower.toFixed(2)}): holding the ${v.collateral.symbol} leg rather than selling into weakness` });
     }
     if (p.uncollected && (p.uncollected.usd ?? 0) >= s.harvestFloorUsd) {
+      if (gate && p.uncollected.collateral > 0) { skipped.push({ rule: `harvest #${p.tokenId}`, why: `$${p.uncollected.usd!.toFixed(2)} of fees waiting, but ${gate}` }); continue; }
       const built = await buildHarvest(v.address, p.tokenId);
       actions.push({ kind: "harvest", reason: `position #${p.tokenId} has $${p.uncollected.usd!.toFixed(2)} of fees to collect`, built, valueUsd: p.uncollected.usd });
     } else skipped.push({ rule: `harvest #${p.tokenId}`, why: `fees $${(p.uncollected?.usd ?? 0).toFixed(2)} below floor $${s.harvestFloorUsd}` });
@@ -125,25 +154,24 @@ export async function planFor(vaultAddress: string, overrides: Partial<PlanSetti
 
   // 5. deploy idle loan token
   if (v.balances.loan >= s.minDeployUsd && !v.paused) {
-    const pools = await poolsForPair(v.collateral.address, v.loan.address, v.collateral.decimals, v.loan.decimals);
     const candidates = pools.filter((p) => p.price !== null && (p.tvlUsd ?? 0) > 0);
     let pick = s.preferredFee ? candidates.find((p) => p.fee === s.preferredFee) ?? null : null;
     let reason = "";
     if (!pick) {
-      // busiest pool by fee yield over the last 6h; fall back to deepest
+      // Busiest pool by fee yield over the last hour (a short window keeps the log scan
+      // inside a serverless time budget), falling back to the deepest pool.
       let bestApr = -1;
       for (const p of candidates) {
-        const vol = await poolVolume(p, p.token0.toLowerCase() === v.loan.address.toLowerCase(), v.loan.decimals, 6, p.tvlUsd);
+        const vol = await poolVolume(p, p.token0.toLowerCase() === v.loan.address.toLowerCase(), v.loan.decimals, 1, p.tvlUsd);
         const apr = vol?.feeApr ?? -1;
-        if (apr > bestApr) { bestApr = apr; pick = p; reason = vol ? `fee yield ≈ ${(apr * 100).toFixed(0)}% APR on $${Math.round(p.tvlUsd ?? 0).toLocaleString("en-US")} TVL over 6h` : "deepest pool"; }
+        if (apr > bestApr) { bestApr = apr; pick = p; reason = vol ? `fee yield ≈ ${(apr * 100).toFixed(0)}% APR on $${Math.round(p.tvlUsd ?? 0).toLocaleString("en-US")} TVL over the last hour` : "deepest pool"; }
       }
       if (!pick && candidates.length) { pick = candidates.sort((a, b) => (b.tvlUsd ?? 0) - (a.tvlUsd ?? 0))[0]; reason = "deepest pool"; }
     } else reason = `preferred tier ${pick.fee / 10_000}%`;
     if (pick) {
-      const oracle = v.position.collateralPrice;
-      const off = oracle && pick.price ? Math.abs(pick.price / oracle - 1) * 10_000 : 0;
-      if (oracle && off > v.policy.maxSlippageBps) {
-        skipped.push({ rule: "deploy", why: `pool price ${pick.price!.toFixed(2)} is ${Math.round(off)} bps off the oracle ${oracle.toFixed(2)}; the vault would refuse to mint` });
+      const gate = priceGate(pick.fee);
+      if (gate) {
+        skipped.push({ rule: "deploy", why: `${v.balances.loan.toFixed(2)} ${v.loan.symbol} idle, but ${gate}` });
       } else {
         const built = await buildOpenLp(v.address, { amount: v.balances.loan.toFixed(v.loan.decimals), fee: pick.fee, widthPct: s.rangeWidthPct, slippageBps: v.policy.maxSlippageBps });
         actions.push({ kind: "open", reason: `${v.balances.loan.toFixed(2)} ${v.loan.symbol} idle in the vault → ${pick.fee / 10_000}% pool (${reason}), ±${s.rangeWidthPct}% range`, built, valueUsd: null });

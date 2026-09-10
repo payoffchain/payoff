@@ -4,6 +4,8 @@ import { refinanceTargets } from "@/lib/services/tx";
 import { ethers } from "ethers";
 
 export const runtime = "nodejs";
+// Log scans and multicalls over the public RPC can take longer than the default serverless budget.
+export const maxDuration = 60;
 
 /** GET /api/vaults/0x../targets -> markets of the vault's pair with live rates (for the allow-list settings) */
 export const GET = handler("targets", async (req) => {

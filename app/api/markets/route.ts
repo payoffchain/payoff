@@ -4,6 +4,8 @@ import { handler, readQuery } from "@/lib/http";
 import { rateBoard } from "@/lib/services/rates";
 
 export const runtime = "nodejs";
+// Log scans and multicalls over the public RPC can take longer than the default serverless budget.
+export const maxDuration = 60;
 
 /**
  * GET /api/markets                -> every USDG market on Morpho, grouped by collateral, live rates

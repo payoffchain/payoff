@@ -4,6 +4,8 @@ import { handler, readQuery } from "@/lib/http";
 import { opportunitiesFor } from "@/lib/services/rates";
 
 export const runtime = "nodejs";
+// Log scans and multicalls over the public RPC can take longer than the default serverless budget.
+export const maxDuration = 60;
 
 /** GET /api/markets/opportunities?from=<marketId>&debt=1000&collateral=20 */
 const q = z.object({

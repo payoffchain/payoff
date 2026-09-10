@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { ADDR, cached, decode, factoryContract, factoryIface, getProvider, multicall, vaultIface, type Call } from "../chain";
+import { BLOCKS_PER_DAY, cached, decode, factoryContract, getProvider, multicall, vaultIface, type Call } from "../chain";
 import { marketById, marketsForPair, readMarketStates, type MarketMeta } from "../morpho";
 import { amountsForLiquidity, erc20Iface, poolsForPair, readPositions, uncollectedFees, tickToPriceRaw, sqrtToPriceRaw, type PoolInfo } from "../uniswap";
 import { tokenMeta } from "../tokenmeta";
@@ -311,15 +311,23 @@ export function factoryStartBlock(): number {
   return Number(process.env.PAYOFF_FACTORY_START_BLOCK ?? 0);
 }
 
-/** The block a vault was created in, from the factory's VaultCreated log (cached forever). */
+/**
+ * A block at or before the vault's creation, without scanning the factory's whole log
+ * history (which grows for the life of the protocol and times out on the public RPC):
+ * the vault stores its creation timestamp, and Robinhood Chain makes ~10 blocks a
+ * second, so the block is estimated from the age and padded by a generous margin. The
+ * estimate only decides where an activity scan starts; it never has to be exact.
+ */
 export async function vaultCreationBlock(vault: string): Promise<number | null> {
   const { value } = await cached(`created:${vault.toLowerCase()}`, 24 * 3600_000, async () => {
-    const f = ADDR.factory();
-    const topic = factoryIface.getEvent("VaultCreated")!.topicHash;
-    const latest = await getProvider().getBlockNumber();
-    const { getLogsChunked } = await import("../chain");
-    const logs = await getLogsChunked({ address: f, topics: [topic, ethers.zeroPadValue(vault, 32)] }, factoryStartBlock(), latest);
-    return logs[0]?.blockNumber ?? null;
+    const provider = getProvider();
+    const c = new ethers.Contract(vault, vaultIface, provider);
+    const [createdAt, latestBlock] = await Promise.all([c.createdAt() as Promise<bigint>, provider.getBlock("latest")]);
+    if (!latestBlock || createdAt === 0n) return null;
+    const ageSeconds = Math.max(0, latestBlock.timestamp - Number(createdAt));
+    const blocksPerSecond = BLOCKS_PER_DAY / 86_400;
+    const estimate = latestBlock.number - Math.ceil(ageSeconds * blocksPerSecond * 1.1) - 20_000;
+    return Math.max(factoryStartBlock(), estimate, 0);
   });
   return value;
 }

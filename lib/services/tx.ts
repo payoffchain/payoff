@@ -223,12 +223,19 @@ export async function buildProtect(vault: string, args: { tokenIds?: string[]; m
     sell = ((target * 10n ** 36n) / BigInt(px)) * (10_000n + BigInt(pol[3]) + 50n) / 10_000n;
   }
   const deadline = deadlineFromNow(args.deadlineSeconds);
-  const data = vaultIface.encodeFunctionData("protect", [tokenIds, sell, args.fee ?? 3000, deadline]);
+  // The collateral sale, if it comes to that, goes through the deepest pool of the pair:
+  // a thin tier would slip past the oracle floor and the whole protection would revert.
+  let fee = args.fee ?? 0;
+  if (!fee) {
+    const pools = await poolsForPair(v.collateralToken, v.loanToken, v.collDec, v.loanDec);
+    fee = pools.filter((p) => p.price !== null).sort((a, b) => (b.tvlUsd ?? 0) - (a.tvlUsd ?? 0))[0]?.fee ?? 3000;
+  }
+  const data = vaultIface.encodeFunctionData("protect", [tokenIds, sell, fee, deadline]);
   return {
     tx: { to: v.address, data, value: "0", description: `Liquidation protection: repay ${Number(pol[2]) / 100}% of the debt` },
     approvals: [],
     deadline,
-    notes: [`positions to close: ${tokenIds.join(", ") || "none"}; collateral to sell if needed: ${ethers.formatUnits(sell, v.collDec)} ${v.collSymbol}`],
+    notes: [`positions to close: ${tokenIds.join(", ") || "none"}; collateral to sell if needed: ${ethers.formatUnits(sell, v.collDec)} ${v.collSymbol} through the ${fee / 10_000}% pool`],
   };
 }
 

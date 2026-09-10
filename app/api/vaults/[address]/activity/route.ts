@@ -5,6 +5,8 @@ import { vaultActivity } from "@/lib/services/activity";
 import { ethers } from "ethers";
 
 export const runtime = "nodejs";
+// Log scans and multicalls over the public RPC can take longer than the default serverless budget.
+export const maxDuration = 60;
 
 const q = z.object({ limit: z.string().regex(/^\d+$/).optional() });
 

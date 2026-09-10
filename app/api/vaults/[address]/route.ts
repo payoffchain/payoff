@@ -4,6 +4,8 @@ import { vaultSummary } from "@/lib/services/vaults";
 import { ethers } from "ethers";
 
 export const runtime = "nodejs";
+// Log scans and multicalls over the public RPC can take longer than the default serverless budget.
+export const maxDuration = 60;
 
 /** GET /api/vaults/0x.. -> everything the vault page shows */
 export const GET = handler("vault", async (req) => {
