@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Nav from "./components/Nav";
 import LoopDiagram from "./components/LoopDiagram";
+import DemoPlayer from "./components/DemoPlayer";
 import { CountUp, Reveal, Words } from "./components/motion";
 import { useLive } from "./components/useLive";
 import { APP, CHAIN_NAME, FACTORY } from "./components/brand";
@@ -46,7 +47,7 @@ export default function Landing() {
               </p>
               <div className="row" style={{ marginTop: 28, gap: 12, animation: "fadeUp .8s 1.1s both" }}>
                 <Link className="btn coral lg" href="/deploy">Deploy an agent →</Link>
-                <Link className="btn lg" href="/rates">Live rates</Link>
+                <Link className="btn lg" href="/demo">▶ Watch the demo</Link>
               </div>
               <div className="row faint mono" style={{ marginTop: 26, fontSize: 12, gap: 18, animation: "fadeUp .8s 1.3s both" }}>
                 <span>0% to borrow</span><span>·</span><span>0% to hop</span><span>·</span><span>2.5% of harvested fees</span>
@@ -95,6 +96,13 @@ export default function Landing() {
             <Reveal className="card b-2" delay={0}><span className="lbl">USDG markets on Morpho</span><div className="big-number" style={{ marginTop: 10 }}><CountUp value={marketCount} /></div><p style={{ marginTop: 8 }}>{board.data?.groups.length ?? 0} stock collaterals, several LLTVs each — the spread the agent hops.</p></Reveal>
             <Reveal className="card b-2" delay={90}><span className="lbl">Available to borrow, top 8</span><div className="big-number g" style={{ marginTop: 10 }}><CountUp value={totalAvailable} format={(n) => usd(n)} /></div><p style={{ marginTop: 8 }}>Read on chain from each market's interest-rate model, not from an API.</p></Reveal>
             <Reveal className="card b-2" delay={180}><span className="lbl">{FACTORY ? "Repaid from fees, all vaults" : "Fee on trading fees harvested"}</span><div className="big-number g" style={{ marginTop: 10 }}>{FACTORY ? <CountUp value={lb.data?.totals.repaidFromFeesUsd ?? 0} format={(n) => usd(n, 2)} /> : "2.5%"}</div><p style={{ marginTop: 8 }}>{FACTORY ? `${lb.data?.totals.vaults ?? 0} vaults · ${usd(lb.data?.totals.collateralUsd ?? 0)} collateral` : "10% of realized profit at close. Both caps are in the vault's code."}</p></Reveal>
+          </div>
+        </section>
+
+        <section>
+          <div className="wrap">
+            <Reveal><span className="eyebrow">Demo</span><h2>See it run, start to finish.</h2><p className="lede">Connect, pick a market, set the policy, create the vault, and watch the agent deploy the loan, harvest fees onto the debt and hop markets. Click to pause.</p></Reveal>
+            <Reveal delay={120} style={{ marginTop: 28 }}><DemoPlayer /></Reveal>
           </div>
         </section>
 

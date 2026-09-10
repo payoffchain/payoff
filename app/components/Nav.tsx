@@ -9,6 +9,7 @@ import { APP, CHAIN_NAME, FACTORY, TWITTER } from "./brand";
 const ROUTES = [
   { href: "/app", label: "Dashboard" },
   { href: "/rates", label: "Rates" },
+  { href: "/demo", label: "Demo" },
   { href: "/deploy", label: "Deploy agent" },
   { href: "/leaderboard", label: "Leaderboard" },
   { href: "/docs", label: "Docs" },
