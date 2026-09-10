@@ -37,7 +37,7 @@ export default function LoopDiagram({ symbol = "NVDA" }: { symbol?: string }) {
 
         {/* wire labels, kept clear of every box */}
         <text x="225" y="88" className="t-xs">borrow</text>
-        <text x="412" y="196" className="t-xs" textAnchor="start">deploy</text>
+        <text x="412" y="196" className="t-xs" style={{ textAnchor: "start" }}>deploy</text>
         <text x="250" y="404" className="t-xs coral">harvest → repay, every tick</text>
 
         {/* node: collateral in Morpho */}
@@ -66,11 +66,11 @@ export default function LoopDiagram({ symbol = "NVDA" }: { symbol?: string }) {
         {/* node: debt bar */}
         <g className="node">
           <rect x="20" y="250" width="200" height="94" rx="16" />
-          <text x="40" y="276" className="t-xs" textAnchor="start">debt</text>
-          <text x="200" y="276" className="t-xs coral" textAnchor="end">fees → debt</text>
+          <text x="40" y="276" className="t-xs" style={{ textAnchor: "start" }}>debt</text>
+          <text x="200" y="276" className="t-xs coral" style={{ textAnchor: "end" }}>fees → debt</text>
           <rect x="40" y="290" width="160" height="14" rx="7" className="track" />
           <rect x="40" y="290" width="160" height="14" rx="7" className="debt" />
-          <text x="40" y="326" className="t-xs" textAnchor="start">shrinking on its own</text>
+          <text x="40" y="326" className="t-xs" style={{ textAnchor: "start" }}>shrinking on its own</text>
         </g>
       </svg>
     </div>
