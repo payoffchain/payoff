@@ -85,7 +85,9 @@ export async function rateBoard(opts: { live?: boolean; minLiquidityUsd?: number
       cachedAt = r.cachedAt;
       stale = r.stale;
     } catch (err) {
-      error = (err as Error).message;
+      // Never echo the raw RPC error: it carries the provider URL.
+      console.error("[markets] live read failed:", (err as Error).message);
+      error = "live rates unavailable (RPC unreachable); showing the last snapshot";
     }
   }
   const minLiq = opts.minLiquidityUsd ?? MIN_LIQUIDITY_USD;

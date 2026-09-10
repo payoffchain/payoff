@@ -95,7 +95,7 @@ export default function VaultPage() {
           <Stat label="Repaid from fees" value={usd(v.stats.totalRepaidFromFees, 2)} tone="green" sub={`harvested ${usd(v.stats.totalHarvested, 2)} · ${v.stats.refinanceCount} hop${v.stats.refinanceCount === 1 ? "" : "s"}`} />
           <Stat label="Net value" value={usd(v.netValueUsd)} sub={`liquidity ${usd(v.lpValueUsd)} · idle ${amount(v.balances.loan, 2)} ${v.loan.symbol}`} />
         </div>
-        <div className="card" style={{ marginTop: 18, display: "grid", gridTemplateColumns: "220px 1fr", gap: 24, alignItems: "center" }}>
+        <div className="card ltv-card" style={{ marginTop: 18 }}>
           <Gauge ltv={p.ltv} max={v.policy.maxLtvBps / 10_000} trigger={v.policy.triggerLtvBps / 10_000} lltv={v.market.lltv} />
           <div>
             <LtvBar ltv={p.ltv} max={v.policy.maxLtvBps / 10_000} trigger={v.policy.triggerLtvBps / 10_000} lltv={v.market.lltv} />
