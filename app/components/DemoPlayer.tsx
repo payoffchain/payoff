@@ -9,6 +9,11 @@ import { APP } from "./brand";
  * direct .mp4/.webm) it embeds that video. Otherwise it plays a scripted walkthrough:
  * eight scenes drawn from the real UI, auto-advancing like a video, with play/pause,
  * scrubbing, keyboard arrows and captions.
+ *
+ * EVERY WALLET, KEY AND TRANSACTION HASH BELOW IS ILLUSTRATIVE. The addresses were
+ * generated for this file alone and were never funded or used; the private key row is
+ * masked. Market ids and prices are real, because those are public and make the tour
+ * honest about what the product actually reads.
  */
 
 const VIDEO = (process.env.NEXT_PUBLIC_DEMO_VIDEO_URL ?? "").trim();
@@ -40,7 +45,7 @@ const SCENES: Scene[] = [
     seconds: 5,
     render: (t) => (
       <div className="dm-stage">
-        <div className="dm-nav"><span className="dm-brand"><span className="mark">↓$</span>{APP}</span><span className={"dm-btn " + (t > 0.5 ? "done" : "")}>{t > 0.5 ? "0x7099…79C8" : "Connect wallet"}</span></div>
+        <div className="dm-nav"><span className="dm-brand"><span className="mark">↓$</span>{APP}</span><span className={"dm-btn " + (t > 0.5 ? "done" : "")}>{t > 0.5 ? "0x4581…15f9" : "Connect wallet"}</span></div>
         <div className="dm-body">
           <div className="dm-h">Deploy an agent</div>
           <div className="dm-p">A vault only you can empty. An agent that can only make it shrink.</div>
@@ -107,8 +112,8 @@ const SCENES: Scene[] = [
           <div className="dm-h">The operator key</div>
           <div className={"dm-btn " + (t > 0.25 ? "done" : "")} style={{ display: "inline-block" }}>{t > 0.25 ? "Generated" : "Generate operator key"}</div>
           <div className="dm-panel" style={{ opacity: t > 0.3 ? 1 : 0, transform: `translateY(${t > 0.3 ? 0 : 8}px)` }}>
-            <div className="dm-kv"><span>Operator address</span><b>0x3C44…93BC</b></div>
-            <div className="dm-kv"><span>Private key</span><b>0x5de4…365a</b></div>
+            <div className="dm-kv"><span>Operator address</span><b>0x443D…bDCB</b></div>
+            <div className="dm-kv"><span>Private key</span><b>0x8e4f…•••• <span className="dm-faint">example</span></b></div>
             <div className="dm-faint" style={{ marginTop: 8 }}>Put it in the runner as AGENT_PRIVATE_KEY. Fund it with a little ETH for gas.</div>
             <div className="dm-check" style={{ opacity: t > 0.7 ? 1 : 0.4 }}><span className={"dm-radio sq " + (t > 0.7 ? "on" : "")} /> I have saved the private key somewhere safe.</div>
           </div>
@@ -121,13 +126,13 @@ const SCENES: Scene[] = [
     caption: "Three signatures from the owner wallet: create the vault, deposit 2 NVDA, borrow 60 USDG.",
     seconds: 7,
     render: (t) => {
-      const steps = [["Create vault", 0.15], ["Deposit 2 NVDA", 0.45], ["Borrow 60 USDG", 0.75]] as const;
+      const steps = [["Create vault", 0.15, "0xc88e…0c7c"], ["Deposit 2 NVDA", 0.45, "0x12e7…10d7"], ["Borrow 60 USDG", 0.75, "0x4dc1…70d6"]] as const;
       return (
         <div className="dm-stage">
           <div className="dm-body">
             <div className="dm-h">Create the vault</div>
-            {steps.map(([s, at]) => (
-              <div className="dm-tx" key={s}><span className={"dm-radio " + (t > at ? "on" : "")} /><span>{s}</span><span className="dm-faint mono">{t > at ? "confirmed · 0x" + s.length.toString(16) + "f2a…" : t > at - 0.12 ? "signing…" : ""}</span></div>
+            {steps.map(([s, at, hash]) => (
+              <div className="dm-tx" key={s}><span className={"dm-radio " + (t > at ? "on" : "")} /><span>{s}</span><span className="dm-faint mono">{t > at ? `confirmed · ${hash}` : t > at - 0.12 ? "signing…" : ""}</span></div>
             ))}
             <div className="dm-stats" style={{ opacity: t > 0.8 ? 1 : 0 }}>
               <div><span className="dm-lbl">Collateral</span><b>$449</b><small>2 NVDA @ $224.72</small></div>
@@ -146,12 +151,12 @@ const SCENES: Scene[] = [
     render: (t) => (
       <div className="dm-stage">
         <div className="dm-body dm-term">
-          <div><span className="green">$</span> payoff plan --vault 0x5Ac7…10aC</div>
+          <div><span className="green">$</span> payoff plan --vault 0xBaAb…eD28</div>
           {t > 0.15 && <div className="dm-faint">· protect: LTV 13.4% below trigger 55%</div>}
           {t > 0.3 && <div className="dm-faint">· refinance: no allow-listed market beats 0.03% by 30 bps</div>}
           {t > 0.45 && <div><span className="green">▶ open</span> 60.00 USDG idle → 0.05% pool (fee yield ≈ 69% APR on $7.7M TVL), ±3% range</div>}
-          {t > 0.65 && <div className="dm-faint">simulate ok · signing with operator 0x3C44…93BC</div>}
-          {t > 0.85 && <div><span className="green">✓ confirmed</span> 0xb927…ca10 · position #1098779 in range $218.10 – $231.60</div>}
+          {t > 0.65 && <div className="dm-faint">simulate ok · signing with operator 0x443D…bDCB</div>}
+          {t > 0.85 && <div><span className="green">✓ confirmed</span> 0x4dc1…70d6 · position #1098779 in range $218.10 – $231.60</div>}
           <div className="dm-cur" />
         </div>
       </div>
@@ -237,12 +242,17 @@ export default function DemoPlayer({ compact = false }: { compact?: boolean }) {
     return () => cancelAnimationFrame(raf.current);
   }, [playing, i, embed]);
 
+  /**
+   * Step by a delta, not to an absolute index: two arrow presses in the same frame both
+   * read the same `i` from their closure, so an absolute jump loses the second press.
+   */
+  const step = useCallback((d: number) => { setI((cur) => ((cur + d) % SCENES.length + SCENES.length) % SCENES.length); setT(0); }, []);
   const go = useCallback((n: number) => { setI(((n % SCENES.length) + SCENES.length) % SCENES.length); setT(0); }, []);
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => { if (e.key === "ArrowRight") go(i + 1); if (e.key === "ArrowLeft") go(i - 1); if (e.key === " ") { e.preventDefault(); setPlaying((p) => !p); } };
+    const onKey = (e: KeyboardEvent) => { if (e.key === "ArrowRight") step(1); if (e.key === "ArrowLeft") step(-1); if (e.key === " ") { e.preventDefault(); setPlaying((p) => !p); } };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [i, go]);
+  }, [step]);
 
   if (embed) {
     return (
@@ -265,11 +275,11 @@ export default function DemoPlayer({ compact = false }: { compact?: boolean }) {
       </div>
       <div className="demo-bar" onClick={(e) => e.stopPropagation()}>
         <button className="demo-ctl" onClick={() => setPlaying((p) => !p)} aria-label={playing ? "Pause" : "Play"}>{playing ? "❚❚" : "▶"}</button>
-        <button className="demo-ctl" onClick={() => go(i - 1)} aria-label="Previous">‹</button>
+        <button className="demo-ctl" onClick={() => step(-1)} aria-label="Previous">‹</button>
         <div className="demo-track" onClick={(e) => { const r = (e.currentTarget as HTMLDivElement).getBoundingClientRect(); const f = (e.clientX - r.left) / r.width; let acc = 0; for (let k = 0; k < SCENES.length; k++) { if (f * total < acc + SCENES[k].seconds) { setI(k); setT((f * total - acc) / SCENES[k].seconds); return; } acc += SCENES[k].seconds; } }}>
           {SCENES.map((s, k) => <span key={k} className={"demo-seg " + (k < i ? "done" : k === i ? "cur" : "")} style={{ flex: s.seconds }}><i style={{ width: k < i ? "100%" : k === i ? `${t * 100}%` : 0 }} /></span>)}
         </div>
-        <button className="demo-ctl" onClick={() => go(i + 1)} aria-label="Next">›</button>
+        <button className="demo-ctl" onClick={() => step(1)} aria-label="Next">›</button>
         <span className="demo-time mono">{Math.floor(elapsed / 60)}:{String(Math.floor(elapsed % 60)).padStart(2, "0")} / {Math.floor(total / 60)}:{String(total % 60).padStart(2, "0")}</span>
       </div>
     </div>
