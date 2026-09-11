@@ -5,6 +5,7 @@ import Link from "next/link";
 import Nav from "./components/Nav";
 import LoopDiagram from "./components/LoopDiagram";
 import DemoPlayer from "./components/DemoPlayer";
+import BuiltOn from "./components/BuiltOn";
 import { CountUp, Reveal, Words } from "./components/motion";
 import { useLive } from "./components/useLive";
 import { APP, CHAIN_NAME, FACTORY } from "./components/brand";
@@ -213,8 +214,8 @@ export default function Landing() {
       </main>
       <footer>
         <div className="wrap">
-          <span>{APP} · self-repaying loans on {CHAIN_NAME} · Morpho Blue + Uniswap V3</span>
-          <span className="row"><Link href="/docs">Docs</Link><Link href="/leaderboard">Leaderboard</Link><a href="/api/health">Status</a></span>
+          <BuiltOn />
+          <span className="links"><Link href="/docs">Docs</Link><Link href="/leaderboard">Leaderboard</Link><Link href="/demo">Demo</Link><a href="/api/health">Status</a></span>
         </div>
       </footer>
     </>
