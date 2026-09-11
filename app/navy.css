@@ -592,3 +592,7 @@ main > section:nth-of-type(4){clip-path:polygon(0 3%,100% 0,100% 97%,0 100%);pad
 .band .huge small{white-space:normal;margin-top:16px}
 .band h2{font-size:clamp(24px,2.4vw,34px)}
 @media(max-width:900px){.band{grid-template-columns:1fr;gap:28px}.band .huge{font-size:clamp(44px,11vw,72px)}}
+/* ticket step strip: curved tabs kept, text sits centred inside each tab */
+.tk-steps{gap:6px}
+.tk-steps span{border-radius:12px 12px 0 0;border-top:2px solid rgba(170,196,255,.18);border-left:1px solid rgba(170,196,255,.14);border-right:1px solid rgba(170,196,255,.14);padding:9px 6px 6px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:rgba(185,205,255,.03)}
+.tk-steps span.done,.tk-steps span.cur{border-color:var(--ice);border-left-color:rgba(185,205,255,.35);border-right-color:rgba(185,205,255,.35);background:rgba(185,205,255,.07)}
