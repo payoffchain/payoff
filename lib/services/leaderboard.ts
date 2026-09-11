@@ -8,14 +8,19 @@ import { listVaults, vaultRows, type VaultRow } from "./vaults";
 /** Owners listed in SHOWCASE_OWNERS (comma-separated) are the team's own vaults, run so
  *  visitors can watch the mechanics on real positions. They are labelled as such
  *  everywhere they appear; they are never passed off as independent users. */
+/** Owners listed in HIDDEN_OWNERS (comma-separated) are test vaults the team opened
+ *  while trying the product. They stay on chain and on their own vault page, but they
+ *  are left out of the leaderboard and its totals so the board only shows real use. */
+const HIDDEN = new Set((process.env.HIDDEN_OWNERS ?? "").split(",").map((a) => a.trim().toLowerCase()).filter(Boolean));
 const SHOWCASE = new Set((process.env.SHOWCASE_OWNERS ?? "").split(",").map((a) => a.trim().toLowerCase()).filter(Boolean));
 
 export type LeaderboardEntry = VaultRow & { rank: number; repaidPct: number | null; showcase: boolean };
 
 export async function leaderboard(opts: { limit?: number } = {}) {
   const { value, cachedAt, stale } = await cached("leaderboard", 30_000, async () => {
-    const { vaults, count } = await listVaults();
-    const rows = await vaultRows(vaults);
+    const { vaults } = await listVaults();
+    const rows = (await vaultRows(vaults)).filter((r) => !HIDDEN.has(r.owner.toLowerCase()));
+    const count = rows.length;
     rows.sort((a, b) => b.totalRepaidFromFees - a.totalRepaidFromFees || b.totalHarvested - a.totalHarvested);
     const entries: LeaderboardEntry[] = rows.map((r, i) => ({
       ...r,

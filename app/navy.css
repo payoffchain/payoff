@@ -607,3 +607,5 @@ main > section:nth-of-type(4){clip-path:polygon(0 3%,100% 0,100% 97%,0 100%);pad
 .loop .node rect{fill:rgba(10,22,54,.9);stroke:rgba(210,222,245,.35);stroke-width:1;rx:10;ry:10}
 .loop .node rect.track{fill:rgba(185,205,255,.08);stroke:rgba(210,222,245,.25);rx:7;ry:7}
 .loop .node rect.debt{fill:var(--ice);stroke:none;rx:7;ry:7}
+/* hero mark sits still inside its ring: a small bob only, and the ring turns around the same centre */
+@keyframes logoFloat{0%,100%{transform:translateY(0) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg))}50%{transform:translateY(-4px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg))}}
