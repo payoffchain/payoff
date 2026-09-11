@@ -603,3 +603,7 @@ main > section:nth-of-type(4){clip-path:polygon(0 3%,100% 0,100% 97%,0 100%);pad
 .hero-logo::before{inset:12%;border-radius:50%;background:radial-gradient(50% 50% at 50% 50%,rgba(47,91,214,.5),transparent 72%);filter:blur(14px)}
 .hero-logo::after{inset:0;border:1px dashed rgba(170,196,255,.4)}
 @media(max-width:600px){.hero-logo{width:120px;height:120px}.hero-logo img{width:94px;height:94px}}
+/* loop diagram boxes: thin light outline with soft corners, like the desk's pills, not thick blue frames */
+.loop .node rect{fill:rgba(10,22,54,.9);stroke:rgba(210,222,245,.35);stroke-width:1;rx:10;ry:10}
+.loop .node rect.track{fill:rgba(185,205,255,.08);stroke:rgba(210,222,245,.25);rx:7;ry:7}
+.loop .node rect.debt{fill:var(--ice);stroke:none;rx:7;ry:7}
