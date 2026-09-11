@@ -34,7 +34,7 @@ export default function Nav() {
         </Link>
         <div className="navlinks">
           {ROUTES.map((r) => (
-            <Link key={r.href} href={r.href} className={isOn(r.href) ? "on" : ""}><span>{r.label}</span></Link>
+            <Link key={r.href} href={r.href} className={isOn(r.href) ? "on" : ""}><span>{r.label}</span><i className="ul" aria-hidden /></Link>
           ))}
         </div>
         <div className="navright">
