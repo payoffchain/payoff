@@ -6,6 +6,7 @@ import Nav from "./components/Nav";
 import LoopDiagram from "./components/LoopDiagram";
 import DemoPlayer from "./components/DemoPlayer";
 import BuiltOn from "./components/BuiltOn";
+import LoanTicket from "./components/LoanTicket";
 import { CountUp, Reveal, Words } from "./components/motion";
 import { useLive } from "./components/useLive";
 import { APP, CHAIN_NAME, FACTORY } from "./components/brand";
@@ -17,7 +18,7 @@ import { usd } from "./components/format";
  * grid people actually came for. The story (demo, how it works, security) follows.
  */
 
-type Row = { id: string; lltv: number; borrowApy: number | null; liquidityUsd: number; totalSupplyUsd: number };
+type Row = { id: string; lltv: number; borrowApy: number | null; liquidityUsd: number; totalSupplyUsd: number; collateralPrice?: number | null };
 type Group = { collateral: { address: string; symbol: string; isStock: boolean; name: string | null }; best: Row | null; rows: Row[] };
 type Board = { live: boolean; groups: Group[] };
 type Pools = { collateral: { symbol: string }; hours: number; pools: Array<{ fee: number; tvlUsd: number | null; volume: { volumeLoan: number } | null }> };
@@ -73,6 +74,7 @@ export default function Landing() {
       .slice(0, needle ? 48 : 12);
   }, [withRate, q, stocksOnly]);
   const ticker = withRate.filter((g) => g.collateral.isStock).slice(0, 10);
+  const nvda = withRate.find((g) => g.collateral.address.toLowerCase() === NVDA.toLowerCase()) ?? null;
   const totalAvailable = withRate.reduce((a, g) => a + (g.best?.liquidityUsd ?? 0), 0);
   const marketCount = groups.reduce((a, g) => a + g.rows.length, 0);
 
@@ -84,9 +86,7 @@ export default function Landing() {
           <div className="wrap hero-grid">
             <div>
               <div className="hero-logo" style={{ animation: "fadeUp 1s .2s both" }} onMouseMove={tilt} onMouseLeave={untilt}>{/* eslint-disable-next-line @next/next/no-img-element */}<img src="/logo.png" alt={APP} width={900} height={900} /></div>
-              <div className="wordmark-sub">self-repaying loans · {CHAIN_NAME}</div>
-            </div>
-            <div>
+              <span className="chip"><span className="dot" />loan desk open</span>
               <h1>
                 <Words text="Borrow against your stocks." base={80} />
                 <br />
@@ -102,6 +102,9 @@ export default function Landing() {
               <div className="row faint mono" style={{ marginTop: 22, fontSize: 12, gap: 18, animation: "fadeUp .8s 1.3s both" }}>
                 <span>0% to borrow</span><span>·</span><span>0% to hop</span><span>·</span><span>2.5% of harvested fees</span>
               </div>
+            </div>
+            <div>
+              <LoanTicket symbol={nvda?.collateral.symbol ?? "NVDA"} price={nvda?.best?.collateralPrice ?? 224.72} apy={nvda?.best?.borrowApy ?? 0.0003} />
             </div>
           </div>
         </section>
@@ -195,7 +198,16 @@ export default function Landing() {
           <div className="wrap">
             <Reveal><span className="eyebrow">How it works</span><h2>Three moves, then the loan takes care of itself.</h2></Reveal>
             <Reveal delay={100} style={{ marginTop: 28, maxWidth: 640 }}><LoopDiagram symbol={ticker[1]?.collateral.symbol ?? "NVDA"} /></Reveal>
-            <div className="timeline">
+            <div className="desk3">
+              {[
+                { t: "deposit", n: "01", href: "/borrow", cta: "Open a loan ↗", p: "Put NVDA, TSLA, SPY or WETH into a vault contract only you own. It sits in a Morpho market under your vault's name and can leave only to your wallet." },
+                { t: "borrow", n: "02", href: "/rates", cta: "See the rates ↗", p: "Borrow USDG against it, up to a ceiling you set. The USDG goes straight into the Uniswap pool for that stock, in a range around today's price." },
+                { t: "earn", n: "03", href: "/docs", cta: "Read the docs ↗", p: "Every swap in the pool pays your range a fee. Each collection lands on the loan. A cheaper market appears? The debt moves. Price nears your line? It repays first." },
+              ].map((s, i) => (
+                <Reveal key={s.t} delay={i * 120} className="dcard"><span className="no">{s.n}</span><h3>{s.t}</h3><p>{s.p}</p><Link href={s.href}>{s.cta}</Link></Reveal>
+              ))}
+            </div>
+            <div className="timeline" hidden>
               {[
                 { t: "Collateral in, USDG out", p: `Your NVDA, TSLA, SPY or WETH goes into a Morpho Blue market under a vault contract only you own. You borrow USDG up to a ceiling you set; Morpho's liquidation line is further out.` },
                 { t: "The loan goes to work", p: `Your USDG goes into the Uniswap V3 pool for that stock, in a range around today's price. Stock-token pools on ${CHAIN_NAME} turn over millions a day, and every swap pays the range a fee.` },

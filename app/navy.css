@@ -422,3 +422,56 @@ footer{border-top-width:1px}
   .btn.green.lg,.btn.green.lg .arr,.btn:active::before,.btn:focus-visible{animation:none!important}
   .btn,.btn .arr{transition:none}
 }
+
+/* ============================================================================
+   DESK LAYER (blend with raildesk): tickets, numbered cards, dense mono labels.
+   Structure from the desk, colours and type from the logo.
+   ========================================================================== */
+.pixel{font-family:'Pixelify Sans',var(--mono);letter-spacing:.02em}
+
+/* hero: logo + words left, the ticket right */
+.hero{padding:44px 0 40px}
+@media(min-width:961px){.hero-grid{grid-template-columns:1fr 1fr;gap:40px}}
+.hero-logo{max-width:150px;margin:0 0 18px}
+.hero-logo::before{inset:-10%}
+.wordmark-sub{display:none}
+.hero .chip{margin-bottom:12px}
+.hero h1{font-size:clamp(34px,4vw,56px)}
+
+/* the ticket */
+.ticket{background:linear-gradient(180deg,#0a1636,#071130);border:1px solid var(--rule-2);box-shadow:var(--hs-lg);padding:18px 20px 14px;font-family:var(--mono);font-size:12px;color:var(--ink);position:relative;animation:fadeUp .9s .3s both}
+.ticket::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(185,205,255,.025) 3px 4px);pointer-events:none}
+.tk-head{display:flex;justify-content:space-between;font-size:11px;letter-spacing:.14em;color:var(--faint);padding-bottom:10px;border-bottom:1px solid var(--rule)}
+.tk-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:12px 0 14px}
+.tk-steps span{font-size:10px;letter-spacing:.12em;color:var(--faint);padding-top:8px;border-top:2px solid rgba(170,196,255,.18)}
+.tk-steps span.done{color:var(--ice);border-top-color:var(--ice)}
+.tk-steps span.cur{color:var(--ice);border-top-color:var(--ice);animation:dotBlink 1.6s ease-in-out infinite}
+.tk-rows > div{display:flex;justify-content:space-between;align-items:baseline;padding:7px 0;border-bottom:1px solid rgba(170,196,255,.12)}
+.tk-rows span{font-size:10px;letter-spacing:.14em;color:var(--faint)}
+.tk-rows b{font-weight:500;font-size:13px}
+.tk-rows small{font-size:10px;color:var(--faint);letter-spacing:.08em}
+.tk-debt{color:var(--red);transition:color .3s}
+.tk-sub{display:flex;justify-content:space-between;font-size:10px;letter-spacing:.14em;color:var(--faint);margin:14px 0 6px}
+.tk-log > div{display:grid;grid-template-columns:52px 1fr auto;gap:10px;padding:6px 8px;margin:0 -8px;opacity:0;transform:translateX(-6px);transition:opacity .35s,transform .35s,background .35s}
+.tk-log > div.on{opacity:1;transform:none}
+.tk-log > div span:first-child,.tk-log > div span:nth-child(2){color:var(--faint)}
+.tk-log b{font-weight:500;color:var(--ice)}
+.tk-foot{margin-top:12px;padding-top:10px;border-top:1px solid var(--rule);font-size:9.5px;letter-spacing:.14em;color:var(--faint);text-align:center}
+
+/* numbered cards (01 / 02 / 03), the desk's three-step row */
+.desk3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:28px}
+@media(max-width:900px){.desk3{grid-template-columns:1fr}}
+.dcard{position:relative;display:flex;flex-direction:column;gap:10px;padding:20px;background:linear-gradient(180deg,#0a1636,#071130);border:1px solid var(--rule);box-shadow:var(--hs);min-height:200px;transition:transform .12s,box-shadow .12s}
+.dcard .no{position:absolute;top:14px;right:16px;font-family:'Pixelify Sans',var(--mono);font-size:14px;color:var(--faint);letter-spacing:.1em}
+.dcard h3{font-family:'Pixelify Sans',var(--display);font-size:26px;font-weight:400;letter-spacing:.01em;color:var(--ink)}
+.dcard p{color:var(--mute);font-size:14.5px;line-height:1.6;flex:1}
+.dcard a{font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--ice);text-decoration:none;padding:8px 0 0;border-top:1px solid var(--rule)}
+.dcard a:hover{color:#fff}
+.dcard:hover{box-shadow:var(--hs-lg);transform:translate(-2px,-2px)}
+
+/* section labels in the desk's numbered style */
+.eyebrow{font-family:'Pixelify Sans',var(--mono);font-size:12px;letter-spacing:.14em}
+.eyebrow::before{width:14px;height:2px}
+.timeline{display:none}
+.tk-log{min-height:150px}
+.tk-log > div:not(.on){display:none}
