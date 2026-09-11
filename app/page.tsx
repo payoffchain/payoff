@@ -35,6 +35,19 @@ const I = {
   search: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" /></svg>,
 };
 
+/** Tilt the hero logo a few degrees toward the cursor; reset on leave. */
+function tilt(e: React.MouseEvent<HTMLDivElement>) {
+  const r = e.currentTarget.getBoundingClientRect();
+  const x = (e.clientX - r.left) / r.width - 0.5;
+  const y = (e.clientY - r.top) / r.height - 0.5;
+  const img = e.currentTarget.querySelector("img");
+  if (img) { img.style.setProperty("--ry", `${x * 14}deg`); img.style.setProperty("--rx", `${-y * 14}deg`); }
+}
+function untilt(e: React.MouseEvent<HTMLDivElement>) {
+  const img = e.currentTarget.querySelector("img");
+  if (img) { img.style.setProperty("--ry", "0deg"); img.style.setProperty("--rx", "0deg"); }
+}
+
 export default function Landing() {
   const board = useLive<Board>("/api/markets", { live: false, groups: [] });
   const lb = useLive<Leader>("/api/leaderboard", { totals: { vaults: 0, debtUsd: 0, collateralUsd: 0, repaidFromFeesUsd: 0, harvestedUsd: 0, refinances: 0 } }, !!FACTORY);
@@ -70,7 +83,7 @@ export default function Landing() {
         <section className="hero">
           <div className="wrap hero-grid">
             <div>
-              <div className="hero-logo" style={{ animation: "fadeUp 1s .2s both" }}>{/* eslint-disable-next-line @next/next/no-img-element */}<img src="/logo.png" alt={APP} width={900} height={900} /></div>
+              <div className="hero-logo" style={{ animation: "fadeUp 1s .2s both" }} onMouseMove={tilt} onMouseLeave={untilt}>{/* eslint-disable-next-line @next/next/no-img-element */}<img src="/logo.png" alt={APP} width={900} height={900} /></div>
               <div className="wordmark-sub">self-repaying loans · {CHAIN_NAME}</div>
             </div>
             <div>

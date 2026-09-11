@@ -210,3 +210,172 @@ footer .builton-item{background:var(--paper-2)}
 .big-number.g{color:var(--ice)}
 .mk .rate{color:var(--ice)}
 .gauge .val{stroke:var(--ice)}
+
+/* ============================================================================
+   MOTION for the navy theme. Everything here is decorative and switched off
+   under prefers-reduced-motion.
+   ========================================================================== */
+@keyframes navyDrift{0%{background-position:50% 0%,0 0}50%{background-position:55% 6%,0 0}100%{background-position:50% 0%,0 0}}
+@keyframes logoFloat{0%,100%{transform:translateY(0) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg))}50%{transform:translateY(-10px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg))}}
+@keyframes glowPulse{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:.9;transform:scale(1.08)}}
+@keyframes sweep{from{transform:translateX(-130%) skewX(-20deg)}to{transform:translateX(230%) skewX(-20deg)}}
+@keyframes wipeIn{from{clip-path:inset(0 100% 0 0);opacity:0}to{clip-path:inset(0 0 0 0);opacity:1}}
+@keyframes orbit{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes borderPulse{0%,100%{box-shadow:5px 5px 0 0 var(--blue)}50%{box-shadow:7px 7px 0 0 var(--blue),0 0 40px rgba(59,111,255,.35)}}
+@keyframes tickerGlow{0%,100%{text-shadow:0 0 0 rgba(159,192,255,0)}50%{text-shadow:0 0 12px rgba(159,192,255,.7)}}
+@keyframes underline{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes dotBlink{0%,100%{opacity:1}50%{opacity:.25}}
+
+/* background glow drifts */
+body{background-size:100% 100%,auto;animation:navyDrift 18s ease-in-out infinite}
+
+/* hero logo: floats, tilts toward the cursor, glow breathes */
+.hero-logo{perspective:900px}
+.hero-logo img{animation:logoFloat 7s ease-in-out infinite;transform-style:preserve-3d;transition:transform .15s ease-out;will-change:transform}
+.hero-logo::before{animation:glowPulse 5s ease-in-out infinite}
+
+/* primary buttons get a light sweep on hover; every button keeps the press */
+.btn{position:relative;overflow:hidden}
+.btn::after{content:"";position:absolute;top:0;bottom:0;left:0;width:45%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);transform:translateX(-130%) skewX(-20deg);pointer-events:none}
+.btn:hover::after{animation:sweep .7s ease}
+.btn.green::after,.btn.blue::after,.btn.primary::after{display:block}
+
+/* the statement number wipes in from the left, then a line draws under it */
+.band .huge{animation:wipeIn .9s cubic-bezier(.2,.7,.2,1) both;position:relative;display:inline-block}
+.band .huge::after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:6px;background:var(--ice);transform-origin:left;animation:underline .8s .6s cubic-bezier(.2,.7,.2,1) both}
+.band .huge small{animation:fadeUp .6s 1s both}
+
+/* headings rise in with their section */
+.reveal h2,.reveal .eyebrow{animation:fadeUp .7s both}
+.reveal .lede{animation:fadeUp .7s .1s both}
+
+/* market cards: staggered lift on hover with a glow */
+.mk{transition:transform .12s,box-shadow .12s,background .12s}
+.mk:hover{box-shadow:5px 5px 0 0 var(--blue),0 0 32px rgba(59,111,255,.25)}
+.mk .rate{transition:transform .2s}
+.mk:hover .rate{transform:translateX(4px)}
+.mk .go{transition:transform .12s,box-shadow .12s}
+.mk:hover .go{transform:translate(-1px,-1px);box-shadow:4px 4px 0 0 var(--blue)}
+
+/* loop diagram breathes again, dots pulse */
+.loop .node.float-a{animation:floatY 6s ease-in-out infinite}
+.loop .node.float-b{animation:floatY 7s ease-in-out infinite;animation-delay:-2s}
+.loop .node.float-c{animation:floatY 6.5s ease-in-out infinite;animation-delay:-4s}
+.loop .dot{filter:drop-shadow(0 0 6px rgba(159,192,255,.9))}
+
+/* closing box: a glow orbits inside, the frame pulses */
+.cta{position:relative;overflow:hidden;animation:borderPulse 4s ease-in-out infinite}
+.cta::before{content:"";display:block;position:absolute;inset:-60%;background:conic-gradient(from 0deg,transparent 0 60%,rgba(59,111,255,.45) 75%,transparent 90%);animation:orbit 12s linear infinite;pointer-events:none}
+.cta > *{position:relative}
+
+/* ticker numbers glow softly */
+.ticker .up{animation:tickerGlow 3s ease-in-out infinite}
+
+/* stats tick up (CountUp) and their labels blink once when they land */
+.stats .stat .big{animation:fadeUp .5s both}
+
+/* timeline dots pulse in turn */
+.tstep .dot{animation:dotBlink 3s ease-in-out infinite}
+.tstep:nth-child(2) .dot{animation-delay:1s}
+.tstep:nth-child(3) .dot{animation-delay:2s}
+
+/* nav active pill slides its shadow */
+.navlinks a{transition:background .15s,box-shadow .15s,transform .1s}
+.navlinks a:active{transform:translate(2px,2px);box-shadow:none}
+
+@media(prefers-reduced-motion:reduce){
+  body,.hero-logo img,.hero-logo::before,.band .huge,.band .huge::after,.band .huge small,.reveal h2,.reveal .eyebrow,.reveal .lede,.loop .node,.cta,.cta::before,.ticker .up,.stats .stat .big,.tstep .dot{animation:none!important}
+  .btn:hover::after{animation:none}
+}
+
+/* ============================================================================
+   HARMONY PASS. The logo is soft: navy into ice with almost no saturated colour.
+   The first navy pass kept tumble's loud contrasts (white 2.4px rules, electric
+   blue shadows) and they fought the mark. This block settles everything down:
+   ice lines at low opacity, deep-blue shadows, primary buttons in the logo's own
+   face colour, one muted blue for accents, salmon only where money is at risk.
+   ========================================================================== */
+:root{
+  --rule:rgba(170,196,255,.34);
+  --rule-2:rgba(170,196,255,.5);
+  --blue:#2f5bd6;
+  --blue-deep:#13275e;
+  --blue-wash:#0d1d4a;
+  --ice:#b9cdff;
+  --green:#b9cdff;
+  --green-ink:#9fbaff;
+  --green-wash:#0d1d4a;
+  --red:#ff8a70;
+  --coral:#ff8a70;
+  --red-wash:#3a1a14;
+  --coral-wash:#3a1a14;
+  --hs:4px 4px 0 0 var(--blue-deep);
+  --hs-lg:6px 6px 0 0 var(--blue-deep);
+  --bw:2px;
+}
+section{border-top-width:1px}
+.hero{border-bottom-width:1px}
+.ticker{border-top-width:1px;border-bottom-width:1px}
+nav.top{border-bottom-width:1px}
+.card,.stats .stat,.hero-card,.tblwrap.card,.wz-step,.mk,.builton-item,.demo-frame,.dm-panel,.dm-card,.cta,.note,.wz-done,.wz-stock,.wz-preset,.mk-search,.mk-empty,.mk-more,.chip,.pill,.seg,.wz-bar li,.tstep .dot,.demo-ctl,.tok img,.tok .mono-logo,.modal{border-color:var(--rule)}
+.card,.stats .stat,.hero-card,.tblwrap.card,.wz-step,.mk,.builton-item,.demo-frame,.dm-panel,.dm-card{background:linear-gradient(180deg,#0a1636,#071130)}
+.card:hover,.stats .stat:hover,.mk:hover,.builton-item:hover{background:linear-gradient(180deg,#0d1c44,#0a1636);border-color:var(--rule-2)}
+.mk:hover{box-shadow:6px 6px 0 0 var(--blue-deep),0 0 36px rgba(47,91,214,.25)}
+
+/* buttons: the logo's face for primary, quiet navy for the rest */
+.btn{border-color:var(--rule-2);box-shadow:var(--hs)}
+.btn:hover{box-shadow:5px 5px 0 0 var(--blue-deep);background:var(--paper-3)}
+.btn:active{box-shadow:0 0 0 0 var(--blue-deep)}
+.btn.green,.btn.blue,.btn.primary,.btn.green:hover,.btn.blue:hover,.btn.primary:hover{background:linear-gradient(160deg,#f2f6ff,#c9d8fb);color:#0a1636;border-color:#e6eeff}
+.btn.green:hover,.btn.blue:hover,.btn.primary:hover{background:linear-gradient(160deg,#ffffff,#dbe6fb)}
+.btn.lg{box-shadow:var(--hs-lg)}
+.btn.lg:hover{box-shadow:7px 7px 0 0 var(--blue-deep)}
+.btn.xs,.btn.sm{box-shadow:2px 2px 0 0 var(--blue-deep)}
+.btn.coral,.btn.danger{background:var(--red);color:#2a0d06;border-color:var(--red)}
+.mk .go{border-color:#e6eeff}
+.mk:hover .go{box-shadow:4px 4px 0 0 var(--blue-deep)}
+.cta .btn.green{background:linear-gradient(160deg,#f2f6ff,#c9d8fb);color:#0a1636}
+.cta .btn{border-color:var(--rule-2)}
+
+/* nav: no loud pill, just a lit item */
+.navlinks a.on{background:var(--blue-wash);color:var(--ice);border-color:var(--rule-2);box-shadow:none}
+.navlinks a:hover{border-color:var(--rule);background:var(--paper-2)}
+.chip{border-color:var(--rule)}
+
+/* pills, segments, tags */
+.pill.g{background:var(--blue-wash);color:var(--ice);border-color:var(--rule)}
+.pill.r{color:var(--red);background:var(--red-wash);border-color:rgba(255,138,112,.4)}
+.seg{border-color:var(--rule)} .seg button{border-right-color:var(--rule)}
+.seg button.on{background:var(--ice);color:#0a1636}
+.mk .tag{border-color:var(--rule)} .mk .tag.stock{background:var(--blue-wash);color:var(--ice)}
+.mk .meta{border-top-color:var(--rule)}
+.mk .logo,.wz-stock .logo,.builton-logo{border-color:var(--rule)}
+input,select,textarea,.field input,.field select{border-color:var(--rule-2)!important}
+.tbl th{border-bottom-color:var(--rule-2)}
+
+/* text accents */
+.hero .hl,.hero .hl .word{color:var(--ice)}
+.eyebrow{color:var(--ice)} .eyebrow::before{background:var(--ice)}
+.band .huge{color:var(--ice)}
+.band .huge::after{background:var(--blue)}
+
+/* wizard */
+.wz-bar li{border-color:var(--rule)}
+.wz-bar li.cur{box-shadow:var(--hs)}
+.wz-bar li.cur span{background:var(--ice);color:#0a1636}
+.wz-num{background:var(--ice);color:#0a1636;border-color:var(--rule-2);box-shadow:2px 2px 0 0 var(--blue-deep)}
+.wz-stock.on,.wz-preset.on{background:var(--blue-wash);border-color:var(--ice)}
+.tstep .dot{background:var(--ice);color:#0a1636;box-shadow:2px 2px 0 0 var(--blue-deep)}
+
+/* diagram, demo, cta glow */
+.loop .wire{stroke:var(--ice)} .loop .wire.coral{stroke:var(--red)}
+.loop .node rect{stroke:var(--rule-2)}
+.demo-frame,.demo-scene{box-shadow:var(--hs-lg)}
+.demo-ctl{box-shadow:2px 2px 0 0 var(--blue-deep);border-color:var(--rule-2)}
+.demo-seg i{background:var(--ice)}
+.cta{background:radial-gradient(60% 80% at 85% 20%,rgba(47,91,214,.28),transparent 70%),linear-gradient(180deg,#0a1636,#071130);border-color:var(--rule)}
+.cta::before{background:conic-gradient(from 0deg,transparent 0 60%,rgba(185,205,255,.22) 75%,transparent 90%)}
+@keyframes borderPulse{0%,100%{box-shadow:6px 6px 0 0 var(--blue-deep)}50%{box-shadow:8px 8px 0 0 var(--blue-deep),0 0 40px rgba(47,91,214,.28)}}
+.hero-logo::before{background:radial-gradient(50% 50% at 50% 45%,rgba(47,91,214,.4),transparent 70%)}
+footer{border-top-width:1px}
+.builton-item{box-shadow:var(--hs)}
