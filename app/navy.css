@@ -575,3 +575,11 @@ main > section:nth-of-type(2){clip-path:polygon(0 0,100% 4%,100% 100%,0 96%);pad
 main > section:nth-of-type(4){clip-path:polygon(0 3%,100% 0,100% 97%,0 100%);padding-top:80px;padding-bottom:80px;margin:-16px 0}
 .band .huge{margin-top:-24px;padding-bottom:18px}
 .band .huge small{margin-top:22px}
+/* featured market card: two rows, so the name never fights the rate for width */
+.mk.featured{display:grid;grid-template-columns:1fr auto auto;grid-template-areas:"top top top" "rate meta cta";align-items:center;column-gap:22px;row-gap:14px;padding:22px}
+.mk.featured .top{grid-area:top;flex:initial;min-width:0}
+.mk.featured .rate{grid-area:rate;font-size:44px}
+.mk.featured .meta{grid-area:meta;border-left:1px solid var(--rule);border-top:0;padding:0 0 0 22px;grid-template-columns:auto auto;gap:18px}
+.mk.featured .cta{grid-area:cta;margin:0}
+.mk.featured .go{width:auto;padding:12px 18px}
+@media(max-width:820px){.mk.featured{grid-column:span 1;grid-template-columns:1fr;grid-template-areas:"top" "rate" "meta" "cta"}.mk.featured .meta{border-left:0;border-top:2px solid var(--rule);padding:12px 0 0}.mk.featured .rate{font-size:34px}}
