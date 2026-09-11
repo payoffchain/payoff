@@ -29,7 +29,7 @@ export default function Nav() {
     <nav className={"top" + (open ? " open" : "")}>
       <div className="wrap">
         <Link className="brand" href="/" aria-label={`${APP} home`}>
-          <span className="mark">↓$</span>
+          <span className="mark">{/* eslint-disable-next-line @next/next/no-img-element */}<img src="/mark.png" alt="" width={30} height={30} /></span>
           {APP}
         </Link>
         <div className="navlinks">

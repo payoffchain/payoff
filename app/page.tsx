@@ -70,7 +70,7 @@ export default function Landing() {
         <section className="hero">
           <div className="wrap hero-grid">
             <div>
-              <div className="wordmark" aria-label={APP}>{APP.split("").map((c, i) => <span key={i}>{c}</span>)}</div>
+              <div className="hero-logo" style={{ animation: "fadeUp 1s .2s both" }}>{/* eslint-disable-next-line @next/next/no-img-element */}<img src="/logo.png" alt={APP} width={900} height={900} /></div>
               <div className="wordmark-sub">self-repaying loans · {CHAIN_NAME}</div>
             </div>
             <div>
