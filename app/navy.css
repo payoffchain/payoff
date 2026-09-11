@@ -130,9 +130,11 @@ input:focus,select:focus{box-shadow:var(--hs)!important}
 .timeline::before{background:var(--rule)}
 .tstep .dot{background:var(--blue);color:#fff;box-shadow:2px 2px 0 0 var(--rule)}
 .tstep p{color:var(--mute)}
-.cta{background:var(--blue);color:#fff;box-shadow:5px 5px 0 0 var(--rule)}
-.cta .btn{background:var(--paper);color:var(--ink);border-color:var(--rule)}
-.cta .btn.green{background:var(--ink);color:var(--paper)}
+/* the closing box: a shade above the page, with the logo's glow, not a flat blue slab */
+.cta{background:radial-gradient(60% 80% at 85% 20%,rgba(59,111,255,.35),transparent 70%),var(--paper-2);color:var(--ink);box-shadow:5px 5px 0 0 var(--blue)}
+.cta .eyebrow,.cta h2{color:var(--ink)} .cta .lede{color:var(--mute)} .cta .eyebrow::before{background:var(--ice)}
+.cta .btn{background:var(--paper-2);color:var(--ink);border-color:var(--rule)}
+.cta .btn.green{background:var(--blue);color:#fff}
 .partners{color:var(--faint)} .partners i{background:var(--ink)}
 .hero-card .hd .live{color:var(--ice)} .hero-card .hd .live::before{background:var(--ice)}
 .mini td{border-top-color:rgba(219,230,251,.15)}
