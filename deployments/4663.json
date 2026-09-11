@@ -1,0 +1,18 @@
+{
+  "chainId": 4663,
+  "network": "robinhood",
+  "deployedAt": "2026-09-11T04:57:34.176Z",
+  "deployer": "0x197A6aCC1b2Ff1262fd05A52c3ef3a600Ee8f3eb",
+  "block": 59990910,
+  "addresses": {
+    "PAYOFF_FACTORY_ADDRESS": "0xB560cB7440Dd61d51758e731f3D85ac00A571f58",
+    "PAYOFF_VAULT_IMPLEMENTATION": "0x542CCfCce6204DcE023f4534d64F0C8973fd8e88",
+    "morpho": "0x9D53d5E3bd5E8d4Cbfa6DB1ca238AEA02E651010",
+    "positionManager": "0x73991a25C818Bf1f1128dEAaB1492D45638DE0D3",
+    "swapRouter": "0xcaf681a66d020601342297493863e78c959e5cb2",
+    "uniswapFactory": "0x1f7d7550b1b028f7571e69a784071f0205fd2efa",
+    "treasury": "0x7751d6826b01e45eBC6f28ABF788cEFf1f779365",
+    "harvestFeeBps": 250,
+    "performanceFeeBps": 1000
+  }
+}
