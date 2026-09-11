@@ -38,9 +38,7 @@ export default function Nav() {
           ))}
         </div>
         <div className="navright">
-          <span className={"chip" + (FACTORY ? "" : " warn")} title={FACTORY ? `Factory ${FACTORY}` : "Contracts not deployed yet"}>
-            <span className="dot" />{FACTORY ? `live on ${CHAIN_NAME}` : "contracts pending"}
-          </span>
+          {!FACTORY && <span className="chip warn" title="Contracts not deployed yet"><span className="dot" />contracts pending</span>}
           {TWITTER && <a className="btn sm" href={TWITTER} target="_blank" rel="noopener noreferrer">X</a>}
           <button className={"btn sm " + (w.wrongChain ? "danger" : w.address ? "" : "green")} onClick={action} disabled={w.connecting} title={w.address ?? undefined}>{label}</button>
         </div>

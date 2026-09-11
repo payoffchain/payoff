@@ -74,7 +74,6 @@ export default function Landing() {
               <div className="wordmark-sub">self-repaying loans · {CHAIN_NAME}</div>
             </div>
             <div>
-              <span className={"chip" + (FACTORY ? " live" : "")}><span className="dot" />{FACTORY ? `live on ${CHAIN_NAME}` : `built for ${CHAIN_NAME}`}</span>
               <h1>
                 <Words text="Borrow against your stocks." base={80} />
                 <br />
