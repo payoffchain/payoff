@@ -29,7 +29,7 @@ export default function Leaderboard() {
         </div>
         <div className="tblwrap" style={{ marginTop: 28 }}>
           {r.data!.entries.length === 0 ? (
-            <Empty>{FACTORY ? (r.loading ? "Reading vaults…" : <span>No vaults yet. The contracts are live; <Link href="/deploy" style={{ textDecoration: "underline" }}>deploy the first agent</Link>.</span>) : "The factory is not deployed on this site yet."}</Empty>
+            <Empty>{FACTORY ? (r.loading ? "Reading vaults…" : <span>No vaults yet. The contracts are live; <Link href="/borrow" style={{ textDecoration: "underline" }}>open the first loan</Link>.</span>) : "The factory is not deployed on this site yet."}</Empty>
           ) : (
             <table className="tbl">
               <thead><tr><th>#</th><th>Vault</th><th>Pair</th><th className="r">Repaid from fees</th><th className="r">of debt</th><th className="r">Harvested</th><th className="r">Debt</th><th className="r">LTV</th><th className="r">Hops</th><th className="r">Positions</th></tr></thead>

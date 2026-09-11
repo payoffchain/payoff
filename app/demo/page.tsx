@@ -12,14 +12,14 @@ export default function Demo() {
       <main className="wrap" style={{ padding: "48px 24px 80px" }}>
         <span className="eyebrow">Demo</span>
         <h2>From an idle stock token to a loan that pays itself, in under a minute.</h2>
-        <p className="lede">Eight steps: connect, pick a market, set the policy, make the operator key, create and fund the vault, then watch the agent deploy, harvest and hop. Space pauses, arrow keys step.</p>
+        <p className="lede">Eight steps: connect, pick a stock, choose how careful to be, open the loan, deposit and borrow, then watch it put the USDG to work, collect fees onto the debt and move to a cheaper market. Space pauses, arrow keys step.</p>
         <div style={{ marginTop: 32 }}><DemoPlayer /></div>
         <div className="grid g3" style={{ marginTop: 40 }}>
           <div className="card"><h3>What you sign</h3><p>Create vault, deposit collateral, borrow. Everything after that is the operator key's job, inside the policy you set.</p></div>
-          <div className="card"><h3>What the agent does</h3><p>Deploys idle USDG into the pair's pool, harvests fees onto the debt, refinances into cheaper allow-listed markets, and repays early at your trigger.</p></div>
-          <div className="card"><h3>What nobody can do</h3><p>Send a token out of the vault to any address but yours. Not the agent, not {APP}, not a leaked key.</p></div>
+          <div className="card"><h3>What auto-repay does</h3><p>Puts idle USDG into the stock's pool, collects fees onto the debt, moves the debt to a cheaper market when there is one, and repays early at your safety line.</p></div>
+          <div className="card"><h3>What nobody can do</h3><p>Send a token out of the vault to any address but yours. Not auto-repay, not {APP}, not a leaked key.</p></div>
         </div>
-        <p className="row" style={{ marginTop: 32 }}><Link className="btn coral lg" href="/deploy">Deploy an agent →</Link><Link className="btn lg" href="/docs">Read the docs</Link></p>
+        <p className="row" style={{ marginTop: 32 }}><Link className="btn green lg" href="/borrow">Open a loan →</Link><Link className="btn lg" href="/docs">Read the docs</Link></p>
       </main>
     </>
   );

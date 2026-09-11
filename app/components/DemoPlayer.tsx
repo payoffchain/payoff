@@ -40,15 +40,15 @@ type Scene = { title: string; caption: string; seconds: number; render: (t: numb
 
 const SCENES: Scene[] = [
   {
-    title: "Connect the owner wallet",
+    title: "Connect your wallet",
     caption: "The wallet you connect will own the vault. It is the only address the vault ever pays out to.",
     seconds: 5,
     render: (t) => (
       <div className="dm-stage">
         <div className="dm-nav"><span className="dm-brand"><span className="mark">↓$</span>{APP}</span><span className={"dm-btn " + (t > 0.5 ? "done" : "")}>{t > 0.5 ? "0x4581…15f9" : "Connect wallet"}</span></div>
         <div className="dm-body">
-          <div className="dm-h">Deploy an agent</div>
-          <div className="dm-p">A vault only you can empty. An agent that can only make it shrink.</div>
+          <div className="dm-h">Open a loan</div>
+          <div className="dm-p">Borrow against your stock. Let the loan pay itself down.</div>
           <div className={"dm-cursor " + (t > 0.3 && t < 0.55 ? "click" : "")} style={{ left: `${88 - Math.max(0, 0.5 - t) * 60}%`, top: `${8 + Math.max(0, 0.5 - t) * 60}%` }} />
           {t > 0.6 && <div className="dm-toast">Connected to Robinhood Chain</div>}
         </div>
@@ -56,13 +56,13 @@ const SCENES: Scene[] = [
     ),
   },
   {
-    title: "Pick the collateral and the Morpho market",
-    caption: "One vault is one pair. NVDA against USDG here, in the market with the best rate and real liquidity.",
+    title: "Choose a stock",
+    caption: "NVDA here. The cheapest Morpho market with real liquidity is picked for you.",
     seconds: 6,
     render: (t) => (
       <div className="dm-stage">
         <div className="dm-body">
-          <div className="dm-h">Pick the collateral and the market</div>
+          <div className="dm-h">Choose the stock to borrow against</div>
           <table className="dm-tbl">
             <thead><tr><th></th><th>Market</th><th>LLTV</th><th>Borrow APY</th><th>Available</th></tr></thead>
             <tbody>
@@ -80,8 +80,8 @@ const SCENES: Scene[] = [
     ),
   },
   {
-    title: "Set the policy",
-    caption: "Borrow ceiling, protection trigger, repay share, slippage. Enforced by the vault contract, not by trust.",
+    title: "Choose how careful to be",
+    caption: "How much to borrow, and the price line where the loan starts repaying itself. Enforced by the contract, not by trust.",
     seconds: 6,
     render: (t) => {
       const k = Math.min(1, t * 1.6);
@@ -89,32 +89,32 @@ const SCENES: Scene[] = [
       return (
         <div className="dm-stage">
           <div className="dm-body">
-            <div className="dm-h">Set the policy</div>
+            <div className="dm-h">How careful should the loan be?</div>
             <div className="dm-seg"><span>Careful</span><span className="on">Balanced</span><span>Bold</span></div>
             <div className="dm-grid">
               {rows.map(([l, v, u]) => (
                 <div className="dm-field" key={l}><span className="dm-lbl">{l}</span><span className="dm-val">{(v * k).toFixed(l === "Max slippage" ? 1 : 0)}{u}</span><div className="dm-bar"><i style={{ width: `${Math.min(100, v * k * (l === "Max slippage" ? 20 : 1.4))}%` }} /></div></div>
               ))}
             </div>
-            <div className="dm-note" style={{ opacity: t > 0.7 ? 1 : 0 }}>At $224.72 per NVDA, 10 tokens let the agent borrow up to $1,011 USDG. Protection starts if NVDA falls to $183.86. Morpho liquidates at $161.80.</div>
+            <div className="dm-note" style={{ opacity: t > 0.7 ? 1 : 0 }}>At $224.72 per NVDA, 10 tokens let you borrow up to $1,011 USDG. The loan starts repaying itself if NVDA falls to $183.86. Morpho liquidates at $161.80.</div>
           </div>
         </div>
       );
     },
   },
   {
-    title: "Make the operator key",
-    caption: "Generated in your browser, shown once, never sent anywhere. It can act inside the policy; it cannot withdraw.",
+    title: "Set up auto-repay",
+    caption: "A key made in your browser, shown once, never sent anywhere. It can work inside your limits; it cannot withdraw.",
     seconds: 5,
     render: (t) => (
       <div className="dm-stage">
         <div className="dm-body">
-          <div className="dm-h">The operator key</div>
-          <div className={"dm-btn " + (t > 0.25 ? "done" : "")} style={{ display: "inline-block" }}>{t > 0.25 ? "Generated" : "Generate operator key"}</div>
+          <div className="dm-h">Set up auto-repay</div>
+          <div className={"dm-btn " + (t > 0.25 ? "done" : "")} style={{ display: "inline-block" }}>{t > 0.25 ? "Generated" : "Create the auto-repay key"}</div>
           <div className="dm-panel" style={{ opacity: t > 0.3 ? 1 : 0, transform: `translateY(${t > 0.3 ? 0 : 8}px)` }}>
-            <div className="dm-kv"><span>Operator address</span><b>0x443D…bDCB</b></div>
+            <div className="dm-kv"><span>Auto-repay address</span><b>0x443D…bDCB</b></div>
             <div className="dm-kv"><span>Private key</span><b>0x8e4f…•••• <span className="dm-faint">example</span></b></div>
-            <div className="dm-faint" style={{ marginTop: 8 }}>Put it in the runner as AGENT_PRIVATE_KEY. Fund it with a little ETH for gas.</div>
+            <div className="dm-faint" style={{ marginTop: 8 }}>Give it to the auto-repay program as AGENT_PRIVATE_KEY. Fund it with a little ETH for gas.</div>
             <div className="dm-check" style={{ opacity: t > 0.7 ? 1 : 0.4 }}><span className={"dm-radio sq " + (t > 0.7 ? "on" : "")} /> I have saved the private key somewhere safe.</div>
           </div>
         </div>
@@ -122,22 +122,22 @@ const SCENES: Scene[] = [
     ),
   },
   {
-    title: "Create the vault, deposit, borrow",
-    caption: "Three signatures from the owner wallet: create the vault, deposit 2 NVDA, borrow 60 USDG.",
+    title: "Open the loan, deposit, borrow",
+    caption: "Three signatures from your wallet: open the loan, deposit 2 NVDA, borrow 60 USDG.",
     seconds: 7,
     render: (t) => {
-      const steps = [["Create vault", 0.15, "0xc88e…0c7c"], ["Deposit 2 NVDA", 0.45, "0x12e7…10d7"], ["Borrow 60 USDG", 0.75, "0x4dc1…70d6"]] as const;
+      const steps = [["Open loan", 0.15, "0xc88e…0c7c"], ["Deposit 2 NVDA", 0.45, "0x12e7…10d7"], ["Borrow 60 USDG", 0.75, "0x4dc1…70d6"]] as const;
       return (
         <div className="dm-stage">
           <div className="dm-body">
-            <div className="dm-h">Create the vault</div>
+            <div className="dm-h">Open the loan</div>
             {steps.map(([s, at, hash]) => (
               <div className="dm-tx" key={s}><span className={"dm-radio " + (t > at ? "on" : "")} /><span>{s}</span><span className="dm-faint mono">{t > at ? `confirmed · ${hash}` : t > at - 0.12 ? "signing…" : ""}</span></div>
             ))}
             <div className="dm-stats" style={{ opacity: t > 0.8 ? 1 : 0 }}>
               <div><span className="dm-lbl">Collateral</span><b>$449</b><small>2 NVDA @ $224.72</small></div>
               <div><span className="dm-lbl">Debt</span><b>$60.00</b><small>LTV 13.4% · LLTV 63%</small></div>
-              <div><span className="dm-lbl">Idle</span><b>60 USDG</b><small>the agent deploys it</small></div>
+              <div><span className="dm-lbl">Idle</span><b>60 USDG</b><small>about to go to work</small></div>
             </div>
           </div>
         </div>
@@ -145,8 +145,8 @@ const SCENES: Scene[] = [
     },
   },
   {
-    title: "The agent deploys the loan",
-    caption: "Next tick the runner reads the plan: 60 USDG idle → NVDA/USDG 0.05% pool, ±3% around spot. It simulates, then signs.",
+    title: "The loan goes to work",
+    caption: "Auto-repay sees 60 USDG idle and puts it into the NVDA/USDG 0.05% pool, ±3% around today's price. It checks first, then signs.",
     seconds: 7,
     render: (t) => (
       <div className="dm-stage">
@@ -164,7 +164,7 @@ const SCENES: Scene[] = [
   },
   {
     title: "Fees pay the debt",
-    caption: "Every swap in the pool pays the range a fee. Each harvest lands on the loan. The debt shrinks without you.",
+    caption: "Every swap in the pool pays your range a fee. Each collection lands on the loan. The debt shrinks without you.",
     seconds: 8,
     render: (t) => {
       const debt = 60 - 60 * Math.min(1, t) * 0.62;
@@ -191,13 +191,13 @@ const SCENES: Scene[] = [
     },
   },
   {
-    title: "Hop to a cheaper market, stay safe",
-    caption: "A cheaper Morpho market of the same pair? The debt moves in one flash-loan transaction. LTV at your trigger? The agent repays first.",
+    title: "Move to a cheaper market, stay safe",
+    caption: "A cheaper Morpho market for the same stock? The debt moves there in one transaction. Price at your safety line? The loan repays part of itself first.",
     seconds: 7,
     render: (t) => (
       <div className="dm-stage">
         <div className="dm-body">
-          <div className="dm-h">What the agent would do</div>
+          <div className="dm-h">What happens next</div>
           <div className="dm-card" style={{ opacity: t > 0.1 ? 1 : 0 }}>
             <div className="dm-row"><b>REFINANCE</b><span className="green mono">$0.42/yr</span></div>
             <div className="dm-faint">market 0xbe3a5355 borrows at 0.31% vs 0.75% here (saves 44 bps) · atomic via Morpho flash loan</div>
@@ -206,7 +206,7 @@ const SCENES: Scene[] = [
           </div>
           <div className="dm-card" style={{ opacity: t > 0.55 ? 1 : 0.35 }}>
             <div className="dm-row"><b>PROTECT</b><span className="dm-faint mono">standing by</span></div>
-            <div className="dm-faint">fires at LTV 55%: repays 25% of the debt from idle USDG, then positions, then collateral — before Morpho can liquidate at 63%.</div>
+            <div className="dm-faint">at the 55% safety line: repays 25% of the debt from idle USDG, then the pool position, then a slice of collateral, before Morpho could liquidate at 63%.</div>
           </div>
         </div>
       </div>

@@ -11,12 +11,12 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE),
   title: { default: `${APP} — self-repaying loans on Robinhood Chain`, template: `%s — ${APP}` },
   description:
-    "Borrow USDG against tokenized stocks on Morpho. An agent you scope puts the loan to work in Uniswap V3, pays the debt down with the fees, hops to cheaper markets, and steps in before liquidation. Non-custodial: the vault is yours, the operator key cannot withdraw.",
+    "Borrow USDG against tokenized stocks on Morpho, and let the loan pay itself: the USDG earns Uniswap V3 trading fees that go straight onto your debt. Non-custodial: only you can take money out.",
   openGraph: {
     type: "website",
     siteName: APP,
     title: `${APP} — Your loan pays itself down`,
-    description: "Self-repaying loans on Robinhood Chain: Morpho debt, Uniswap V3 fees, an agent that cannot withdraw.",
+    description: "Self-repaying loans on Robinhood Chain: borrow USDG against tokenized stocks; trading fees pay the debt down.",
     url: SITE,
   },
   twitter: { card: "summary_large_image", title: `${APP} — Your loan pays itself down`, description: "Self-repaying loans on Robinhood Chain." },

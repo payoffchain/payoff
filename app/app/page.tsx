@@ -26,7 +26,7 @@ export default function Dashboard() {
         <h2>Your vaults.</h2>
         {!w.address ? (
           <div style={{ marginTop: 28 }}>
-            <Empty>Connect the wallet that owns your vaults — or deploy your first agent. <span className="row" style={{ justifyContent: "center", marginTop: 16 }}><button className="btn primary" onClick={w.connect}>Connect wallet</button><Link className="btn" href="/deploy">Deploy an agent</Link></span></Empty>
+            <Empty>Connect the wallet that owns your loans, or open your first one. <span className="row" style={{ justifyContent: "center", marginTop: 16 }}><button className="btn primary" onClick={w.connect}>Connect wallet</button><Link className="btn" href="/borrow">Open a loan</Link></span></Empty>
           </div>
         ) : !FACTORY ? (
           <div style={{ marginTop: 28 }}><Empty>The vault factory is not deployed on this site yet. Set NEXT_PUBLIC_PAYOFF_FACTORY_ADDRESS after running the deploy script.</Empty></div>
@@ -43,7 +43,7 @@ export default function Dashboard() {
                 <Link key={v.address} href={`/vault/${v.address}`} className="card vault-card">
                   <div className="row" style={{ justifyContent: "space-between" }}>
                     <span className="hd"><span className="logo"><TokenLogo symbol={v.collateral.symbol} size={40} /></span><span><span className="sym" style={{ display: "block", fontFamily: "var(--display)", fontWeight: 800, fontSize: 18 }}>{v.collateral.symbol} <span className="faint" style={{ fontWeight: 500, fontSize: 13 }}>/ {v.loan.symbol}</span></span><span className="faint mono" style={{ fontSize: 11 }}>{short(v.address)}</span></span></span>
-                    <span className="row">{v.paused ? <span className="pill a">agent off</span> : <span className="pill g">agent on</span>}</span>
+                    <span className="row">{v.paused ? <span className="pill a">auto-repay off</span> : <span className="pill g">auto-repay on</span>}</span>
                   </div>
                   <div className="grid g3" style={{ marginTop: 16, gap: 12 }}>
                     <div className="card soft" style={{ padding: 12 }}><span className="lbl">Collateral</span><span className="med">{usd(v.collateralUsd)}</span><span className="faint" style={{ fontSize: 11 }}>{v.collateral_.toLocaleString("en-US", { maximumFractionDigits: 4 })} {v.collateral.symbol}</span></div>
@@ -55,7 +55,7 @@ export default function Dashboard() {
                 </Link>
               ))}
               {vaults.length === 0 && !r.loading && (
-                <div style={{ gridColumn: "1 / -1" }}><Empty>No vaults for {short(w.address)} yet. <span className="row" style={{ justifyContent: "center", marginTop: 16 }}><Link className="btn green" href="/deploy">Deploy an agent</Link></span></Empty></div>
+                <div style={{ gridColumn: "1 / -1" }}><Empty>No vaults for {short(w.address)} yet. <span className="row" style={{ justifyContent: "center", marginTop: 16 }}><Link className="btn green" href="/borrow">Deploy an agent</Link></span></Empty></div>
               )}
             </div>
           </>

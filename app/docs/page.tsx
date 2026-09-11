@@ -11,7 +11,7 @@ export default function Docs() {
       <main className="wrap" style={{ padding: "48px 24px 80px", maxWidth: 820 }}>
         <span className="eyebrow">Docs</span>
         <h2>How {APP} works.</h2>
-        <p className="lede">{APP} is a non-custodial agent protocol for self-repaying loans on {CHAIN_NAME}. You borrow USDG against tokenized stocks (or WETH, USDe…) on Morpho Blue; an agent you scope earns Uniswap V3 trading fees with the loan and pays them onto the debt.</p>
+        <p className="lede">{APP} is a non-custodial protocol for self-repaying loans on {CHAIN_NAME}. You borrow USDG against tokenized stocks (or WETH, USDe…) on Morpho Blue; the borrowed USDG earns Uniswap V3 trading fees and every fee is paid onto the debt. The part that does the work is a small program we call the agent; this page explains it in full.</p>
 
         <h3 style={{ marginTop: 40 }}>The vault</h3>
         <p className="mute">Every position lives in its own <code className="inline">PayoffVault</code>, a small contract the factory clones for you. It holds one pair — collateral token and loan token — for its whole life. The collateral sits in a Morpho market under the vault's name; borrowed USDG stays in the vault until it is deployed into the pair's Uniswap V3 pool as an NFT position the vault owns.</p>
@@ -79,7 +79,7 @@ GET  /api/vaults/<vault>/targets             markets of the pair, for the allow-
 POST /api/vaults/<vault>/tx  {action, ...}   unsigned calldata for any vault action
 POST /api/tx/create {marketId, operator, policy}
 GET  /api/leaderboard`}</pre>
-        <p className="row" style={{ marginTop: 28 }}><Link className="btn primary" href="/deploy">Deploy an agent</Link><Link className="btn" href="/rates">Rates</Link></p>
+        <p className="row" style={{ marginTop: 28 }}><Link className="btn green" href="/borrow">Open a loan</Link><Link className="btn" href="/rates">Rates</Link></p>
       </main>
     </>
   );

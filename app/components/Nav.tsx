@@ -10,7 +10,7 @@ const ROUTES = [
   { href: "/app", label: "Dashboard" },
   { href: "/rates", label: "Rates" },
   { href: "/demo", label: "Demo" },
-  { href: "/deploy", label: "Deploy agent" },
+  { href: "/borrow", label: "Borrow" },
   { href: "/leaderboard", label: "Leaderboard" },
   { href: "/docs", label: "Docs" },
 ];

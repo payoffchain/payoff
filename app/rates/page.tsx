@@ -72,7 +72,7 @@ export default function Rates() {
                                 <td className="r">{usd(r.liquidityUsd)}</td>
                                 <td className="r">{usd(r.totalSupplyUsd)}</td>
                                 <td className="r">{usd(r.totalBorrowUsd)}</td>
-                                <td className="r"><Link className="btn xs" href={`/deploy?market=${r.id}`}>Borrow here</Link></td>
+                                <td className="r"><Link className="btn xs" href={`/borrow?market=${r.id}`}>Borrow here</Link></td>
                               </tr>
                             ))}
                           </tbody>

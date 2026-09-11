@@ -91,13 +91,13 @@ export default function VaultPage() {
             <span className="eyebrow">Vault · <span style={{ textTransform: "none", letterSpacing: 0 }}><AddrLink address={v.address} /></span></span>
             <h2 style={{ display: "flex", alignItems: "center", gap: 14 }}><Tok symbol={v.collateral.symbol} /> {v.collateral.symbol} / {v.loan.symbol}</h2>
             <div className="row faint mono" style={{ fontSize: 12, marginTop: 8 }}>
-              <span>owner <AddrLink address={v.owner} /></span><span>operator {v.operator === "0x0000000000000000000000000000000000000000" ? "none" : <AddrLink address={v.operator} />}</span><span>created {ago(v.createdAt)}</span>
-              {v.paused ? <span className="pill a">agent off</span> : <span className="pill g">agent on</span>}
-              {isOwner && <span className="pill g">you own this</span>}{isOperator && <span className="pill">you operate this</span>}
+              <span>owner <AddrLink address={v.owner} /></span><span>auto-repay key {v.operator === "0x0000000000000000000000000000000000000000" ? "none" : <AddrLink address={v.operator} />}</span><span>created {ago(v.createdAt)}</span>
+              {v.paused ? <span className="pill a">auto-repay off</span> : <span className="pill g">auto-repay on</span>}
+              {isOwner && <span className="pill g">you own this</span>}{isOperator && <span className="pill">you run auto-repay here</span>}
             </div>
           </div>
           <div className="row">
-            {isOwner && <button className="btn sm" onClick={() => send({ action: "setPaused", paused: !v.paused })} disabled={tx.busy}>{v.paused ? "Turn the agent on" : "Turn the agent off"}</button>}
+            {isOwner && <button className="btn sm" onClick={() => send({ action: "setPaused", paused: !v.paused })} disabled={tx.busy}>{v.paused ? "Turn auto-repay on" : "Turn auto-repay off"}</button>}
             <button className="btn sm" onClick={refresh}>Refresh</button>
           </div>
         </div>
@@ -121,20 +121,20 @@ export default function VaultPage() {
         </div>
 
         <div className="tabs" style={{ marginTop: 32 }}>
-          {(["position", "agent", "activity", "settings"] as const).map((t) => <button key={t} className={tab === t ? "on" : ""} onClick={() => setTab(t)}>{t === "agent" ? "What the agent would do" : t[0].toUpperCase() + t.slice(1)}</button>)}
+          {(["position", "agent", "activity", "settings"] as const).map((t) => <button key={t} className={tab === t ? "on" : ""} onClick={() => setTab(t)}>{t === "agent" ? "What happens next" : t === "position" ? "Your loan" : t[0].toUpperCase() + t.slice(1)}</button>)}
         </div>
 
         {tx.error && <p className="note bad" style={{ marginBottom: 14 }}>{tx.error}</p>}
         {tx.busy && <p className="note" style={{ marginBottom: 14 }}>{tx.step}</p>}
         {tx.hash && !tx.busy && tx.outcome === "confirmed" && <p className="note good" style={{ marginBottom: 14 }}>Confirmed: <TxLink hash={tx.hash} /></p>}
         {tx.hash && !tx.busy && tx.outcome === null && <p className="note" style={{ marginBottom: 14 }}>Sent, still pending: <TxLink hash={tx.hash} /> · <button className="btn xs" onClick={refresh}>refresh</button></p>}
-        {isOperator && v.paused && <p className="note warn" style={{ marginBottom: 14 }}>The agent is turned off for this vault. Only the owner can turn it back on.</p>}
+        {isOperator && v.paused && <p className="note warn" style={{ marginBottom: 14 }}>Auto-repay is turned off for this loan. Only the owner can turn it back on.</p>}
 
         {tab === "position" && (
           <div className="grid g2">
             <div>
               <h3>Liquidity positions</h3>
-              {v.lp.length === 0 ? <p className="note" style={{ marginTop: 10 }}>No open positions. {v.balances.loan > 0 ? `${amount(v.balances.loan, 2)} ${v.loan.symbol} sits idle in the vault; the agent deploys it on its next tick, or open a position below.` : "Borrow first; the agent deploys what it borrows."}</p> : v.lp.map((l) => (
+              {v.lp.length === 0 ? <p className="note" style={{ marginTop: 10 }}>No open positions. {v.balances.loan > 0 ? `${amount(v.balances.loan, 2)} ${v.loan.symbol} sits idle in the vault; auto-repay puts it to work on its next pass, or open a position below.` : "Borrow first; what you borrow is put to work automatically."}</p> : v.lp.map((l) => (
                 <div className="panel" key={l.tokenId} style={{ marginTop: 10 }}>
                   <div className="row" style={{ justifyContent: "space-between" }}><span className="med">#{l.tokenId} · {l.fee / 10_000}% pool</span>{l.inRange ? <span className="pill g">in range</span> : <span className="pill a">out of range</span>}</div>
                   <div className="kv"><span>Range</span><b>{l.priceLower === null ? "—" : usd(l.priceLower, 2)} – {l.priceUpper === null ? "—" : usd(l.priceUpper, 2)} <span className="lbl">now {l.currentPrice === null ? "—" : usd(l.currentPrice, 2)}</span></b></div>
@@ -176,7 +176,7 @@ export default function VaultPage() {
 
         {tab === "agent" && (
           <div>
-            <p className="lede" style={{ marginTop: 0 }}>The rules the runner follows, evaluated against this vault right now. The runner signs exactly this on its next tick; the owner can sign any of it here first.</p>
+            <p className="lede" style={{ marginTop: 0 }}>What auto-repay will do on its next pass, worked out from this loan's state right now, with the reason for each step. You can do any of it yourself first.</p>
             {panelErr.plan ? <p className="note bad" style={{ marginTop: 16 }}>The plan could not be evaluated: {panelErr.plan} <button className="btn xs" onClick={refresh}>retry</button></p> : !plan ? <p style={{ marginTop: 16 }}><span className="spinner" /> evaluating the rules against this vault…</p> : (
               <>
                 <div className="panel term" style={{ marginTop: 16 }}>
@@ -236,8 +236,8 @@ export default function VaultPage() {
               </div>
             </div>
             <div>
-              <h3>Markets the agent may refinance into</h3>
-              <p className="faint" style={{ fontSize: 13, marginTop: 6 }}>Same pair only. The agent moves the debt when an allowed market is cheaper by at least the savings threshold, has the liquidity, and keeps LTV inside the ceiling.</p>
+              <h3>Markets the loan may move to</h3>
+              <p className="faint" style={{ fontSize: 13, marginTop: 6 }}>Same stock only. The debt moves when an allowed market is cheaper by at least the savings threshold, has the liquidity, and keeps LTV inside the ceiling.</p>
               <div className="tblwrap" style={{ marginTop: 10 }}>
                 <table className="tbl" style={{ fontSize: 12 }}>
                   <thead><tr><th>Market</th><th className="r">LLTV</th><th className="r">Borrow APY</th><th className="r">Available</th><th className="r">Allowed</th></tr></thead>
@@ -330,7 +330,7 @@ function OpenLpForm({ vault, busy, onSend }: { vault: Vault; busy: boolean; onSe
   return (
     <form className="card" style={{ marginTop: 14 }} onSubmit={(e) => { e.preventDefault(); onSend({ action: "openLp", amount: amt, fee, widthPct: width, slippageBps: vault.policy.maxSlippageBps }); }}>
       <h3>Open a position by hand</h3>
-      <p>Half the amount is swapped into {vault.collateral.symbol} so the range holds both sides. The agent does this automatically for idle {vault.loan.symbol}.</p>
+      <p>Half the amount is swapped into {vault.collateral.symbol} so the range holds both sides. Auto-repay does this on its own for idle {vault.loan.symbol}.</p>
       <div className="grid g3" style={{ gap: 12, marginTop: 10 }}>
         <div className="field" style={{ marginBottom: 0 }}><label>{vault.loan.symbol} to commit</label><input placeholder={vault.balances.loan.toFixed(2)} value={amt} onChange={(e) => setAmt(e.target.value.trim())} /><span className="hint">idle: {amount(vault.balances.loan, 2)}</span></div>
         <div className="field" style={{ marginBottom: 0 }}><label>Pool</label><select value={fee} onChange={(e) => setFee(Number(e.target.value))}>{(pools ?? []).map((p) => <option key={p.fee} value={p.fee}>{p.fee / 10_000}% · {p.volume?.feeApr !== null && p.volume ? `≈${(p.volume.feeApr! * 100).toFixed(0)}% APR` : "no volume"} · TVL {usd(p.tvlUsd)}</option>)}{pools === null && <option>reading pools…</option>}</select></div>

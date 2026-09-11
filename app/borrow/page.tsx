@@ -37,7 +37,7 @@ const PRESETS = {
 };
 type PresetKey = keyof typeof PRESETS;
 
-const STEPS = ["Connect", "Choose a stock", "Choose safety", "Agent key", "Create"];
+const STEPS = ["Connect", "Choose a stock", "Choose safety", "Auto-repay", "Open"];
 
 function DeployInner() {
   const params = useSearchParams();
@@ -153,9 +153,9 @@ function DeployInner() {
 
   return (
     <main className="wrap" style={{ padding: "40px 24px 80px", maxWidth: 820 }}>
-      <span className="eyebrow">Deploy an agent</span>
+      <span className="eyebrow">Open a loan</span>
       <h2>Five short steps. One signature at the end.</h2>
-      <p className="lede">You keep the only key that can take money out. The agent gets a key that can only work inside the limits you set here.</p>
+      <p className="lede">Borrow USDG against a stock you hold, and let the loan pay itself down. Only your wallet can take money out; auto-repay can only work inside the limits you set here.</p>
       {!FACTORY && <p className="note warn" style={{ marginTop: 18 }}>The vault factory is not deployed on this site yet. You can walk through the steps; the final signature is disabled.</p>}
 
       <ol className="wz-bar" aria-label="Progress">
@@ -239,8 +239,8 @@ function DeployInner() {
           <div className="wz-step">
             <span className="wz-num">3</span>
             <div>
-              <h3>How careful should the agent be?</h3>
-              <p>Two numbers matter: how much the agent may borrow against your collateral, and the point where it starts repaying to keep you away from liquidation. The vault enforces both; the agent cannot cross them.</p>
+              <h3>How careful should the loan be?</h3>
+              <p>Two numbers matter: how much can be borrowed against your collateral, and the price line where the loan starts repaying itself to stay away from liquidation. The vault enforces both.</p>
               <div className="wz-presets">
                 {(Object.keys(PRESETS) as PresetKey[]).map((k) => {
                   const p = PRESETS[k];
@@ -256,7 +256,7 @@ function DeployInner() {
               </div>
               {example && (
                 <div className="note good" style={{ marginTop: 14 }}>
-                  With <b>10 {sym}</b> at today's price of {usd(px!, 2)}: the agent can borrow up to <b>{usd(example.borrow)} USDG</b>. If {sym} falls to <b>{usd(example.protectAt, 2)}</b> it starts repaying on its own. Morpho would only liquidate at <b>{usd(example.liqAt, 2)}</b>.
+                  With <b>10 {sym}</b> at today's price of {usd(px!, 2)}: you can borrow up to <b>{usd(example.borrow)} USDG</b>. If {sym} falls to <b>{usd(example.protectAt, 2)}</b> the loan starts repaying itself. Morpho would only liquidate at <b>{usd(example.liqAt, 2)}</b>.
                 </div>
               )}
               <div style={{ marginTop: 12 }}><button className="btn xs" onClick={() => setFineTune((f) => !f)}>{fineTune ? "Hide fine-tuning" : "Fine-tune the numbers"}</button></div>
@@ -283,17 +283,17 @@ function DeployInner() {
           <div className="wz-step">
             <span className="wz-num">4</span>
             <div>
-              <h3>Create the agent's key</h3>
-              <p>The agent signs its work with this key. It can borrow within your limit, manage liquidity, and repay. It cannot send anything out of the vault. It is made in this tab and never sent anywhere.</p>
+              <h3>Set up auto-repay</h3>
+              <p>Auto-repay needs its own key to do its work: put USDG in the pool, collect fees, repay. It cannot send anything out of the vault. The key is made in this tab and never sent anywhere.</p>
               {opMode === "generate" ? (
                 !generated ? (
                   <div className="row" style={{ marginTop: 14 }}>
-                    <button className="btn green" onClick={generate}>Create agent key</button>
-                    <button className="btn xs" onClick={() => setOpMode("paste")}>I already have an agent address</button>
+                    <button className="btn green" onClick={generate}>Create the auto-repay key</button>
+                    <button className="btn xs" onClick={() => setOpMode("paste")}>I already have an auto-repay address</button>
                   </div>
                 ) : (
                   <div className="panel" style={{ marginTop: 14 }}>
-                    <div className="kv"><span>Agent address</span><b style={{ wordBreak: "break-all" }}>{generated.address} <button className="btn xs" onClick={() => copy("address", generated.address)}>{copied === "address" ? "copied" : "copy"}</button></b></div>
+                    <div className="kv"><span>Auto-repay address</span><b style={{ wordBreak: "break-all" }}>{generated.address} <button className="btn xs" onClick={() => copy("address", generated.address)}>{copied === "address" ? "copied" : "copy"}</button></b></div>
                     <div className="kv"><span>Private key</span>
                       <b style={{ wordBreak: "break-all" }}>
                         {!generated.privateKey ? <span className="faint">cleared: the vault is created, the key lives only where you saved it</span>
@@ -303,14 +303,14 @@ function DeployInner() {
                     </div>
                     <ol className="wz-list">
                       <li>Copy the private key and keep it somewhere safe. It is shown only now.</li>
-                      <li>Later, put it in the runner as <code className="inline">AGENT_PRIVATE_KEY</code> and send the address a little ETH for gas (0.005 is months).</li>
+                      <li>Later, give it to the auto-repay program as <code className="inline">AGENT_PRIVATE_KEY</code> and send the address a little ETH for gas (0.005 is months).</li>
                     </ol>
                     <label className="row" style={{ marginTop: 12, fontSize: 13, cursor: "pointer" }}><input type="checkbox" checked={saved} onChange={(e) => setSaved(e.target.checked)} disabled={!generated.privateKey} /> I saved the private key.</label>
                   </div>
                 )
               ) : (
                 <div style={{ marginTop: 14 }}>
-                  <div className="field"><label>Agent address</label><input placeholder="0x…" value={pasted} onChange={(e) => setPasted(e.target.value.trim())} />{pasted && !ethers.isAddress(pasted) && <span className="hint red">not an address</span>}</div>
+                  <div className="field"><label>Auto-repay address</label><input placeholder="0x…" value={pasted} onChange={(e) => setPasted(e.target.value.trim())} />{pasted && !ethers.isAddress(pasted) && <span className="hint red">not an address</span>}</div>
                   <button className="btn xs" onClick={() => setOpMode("generate")}>Create a new key instead</button>
                 </div>
               )}
@@ -324,19 +324,19 @@ function DeployInner() {
           <div className="wz-step">
             <span className={"wz-num" + (vault ? " done" : "")}>{vault ? "✓" : 5}</span>
             <div>
-              <h3>{vault ? "Your vault is live" : "Create the vault"}</h3>
-              {!vault && <p>One signature from your wallet. The vault is a contract only you own; the agent's key is registered on it with the limits above.</p>}
+              <h3>{vault ? "Your loan is open" : "Open the loan"}</h3>
+              {!vault && <p>One signature from your wallet. Your loan lives in a small contract only you own, with the limits above written into it.</p>}
               {!vault && market && group && operator && (
                 <div className="card soft" style={{ marginTop: 12 }}>
                   <div className="kv"><span>Collateral</span><b className="row" style={{ gap: 8 }}><TokenLogo symbol={sym} size={18} /> {sym} → borrow USDG at {pct(market.borrowApy)}</b></div>
                   <div className="kv"><span>Safety</span><b>borrow up to {policy.maxLtvBps / 100}% · protect at {policy.triggerLtvBps / 100}% · liquidation line {(market.lltv * 100).toFixed(0)}%</b></div>
-                  <div className="kv"><span>Agent</span><b className="mono">{operator}</b></div>
+                  <div className="kv"><span>Auto-repay key</span><b className="mono">{operator}</b></div>
                   <div className="kv"><span>Fees</span><b>0% to borrow · 2.5% of harvested fees · 10% of realised profit</b></div>
                 </div>
               )}
               {!vault && (
                 <div className="row" style={{ marginTop: 16 }}>
-                  <button className="btn green lg" disabled={!ready || tx.busy} onClick={create}>{tx.busy ? tx.step : "Create vault"}</button>
+                  <button className="btn green lg" disabled={!ready || tx.busy} onClick={create}>{tx.busy ? tx.step : "Open the loan"}</button>
                   <button className="btn" onClick={() => setStep(3)} disabled={tx.busy}>Back</button>
                   {tx.hash && <TxLink hash={tx.hash}>transaction ↗</TxLink>}
                 </div>
@@ -348,8 +348,8 @@ function DeployInner() {
                   <p className="note good">Vault <Link href={`/vault/${vault}`} className="mono" style={{ textDecoration: "underline" }}>{vault}</Link> is yours. Three things left, in this order:</p>
                   <ol className="wz-next">
                     <li><b>Deposit {sym}</b> on the vault page. It goes into Morpho under your vault's name.</li>
-                    <li><b>Borrow USDG</b> there, up to your {policy.maxLtvBps / 100}% ceiling. It waits in the vault for the agent.</li>
-                    <li><b>Start the agent</b> on any machine that stays on. It deploys the USDG, harvests fees onto your debt, and protects you.
+                    <li><b>Borrow USDG</b> there, up to your {policy.maxLtvBps / 100}% ceiling. It waits in the vault to be put to work.</li>
+                    <li><b>Start auto-repay</b> on any machine that stays on. It puts the USDG to work, collects fees onto your debt, and protects you.
                       <pre className="code" style={{ marginTop: 8 }}>{`PAYOFF_API_URL=${typeof window !== "undefined" ? window.location.origin : "https://payoff-pi.vercel.app"}
 PAYOFF_FACTORY_ADDRESS=${FACTORY}
 AGENT_VAULTS=${vault}
@@ -358,7 +358,7 @@ AGENT_DRY_RUN=true   # watch /decisions first, then set false
 npm run agent`}</pre>
                     </li>
                   </ol>
-                  <div className="row" style={{ marginTop: 14 }}><Link className="btn green" href={`/vault/${vault}`}>Open the vault →</Link><Link className="btn" href="/docs#runner">Runner setup guide</Link></div>
+                  <div className="row" style={{ marginTop: 14 }}><Link className="btn green" href={`/vault/${vault}`}>Open the vault →</Link><Link className="btn" href="/docs#runner">Auto-repay setup guide</Link></div>
                 </div>
               )}
             </div>
