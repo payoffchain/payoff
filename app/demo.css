@@ -72,8 +72,14 @@
 .dm-card{padding:12px 14px;border-radius:12px;background:var(--glass);border:1px solid var(--rule);margin-top:10px;transition:opacity .4s;font-size:12px}
 .dm-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
 .dm-row b{font-family:var(--mono);font-weight:500;letter-spacing:.08em}
+.demo:focus-visible{outline:2px solid var(--green);outline-offset:4px;border-radius:20px}
 @media(max-width:700px){
-  .dm-stage{padding:14px 16px 78px;font-size:12px}
+  /* The scene sits in flow with the caption below it, instead of the caption floating over a 176px-tall 16:9 frame. */
+  .demo-frame{aspect-ratio:auto;height:auto;display:flex;flex-direction:column;overflow:visible}
+  .demo-scene{position:relative;height:400px;flex:none;border-radius:18px 18px 0 0;overflow:hidden;background:linear-gradient(160deg,#171310,#0f0d0b)}
+  .demo-caption{position:static;background:var(--paper-2);border:1px solid var(--rule);border-top:0;border-radius:0 0 18px 18px}
+  .demo-paused{border-radius:18px}
+  .dm-stage{padding:14px 16px 16px;font-size:12px}
   .dm-h{font-size:16px}
   .dm-grid,.dm-stats{grid-template-columns:1fr 1fr}
   .dm-note,.dm-log{display:none}

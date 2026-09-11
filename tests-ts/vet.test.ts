@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { ethers } from "ethers";
 import VaultAbi from "../lib/abis/PayoffVault.json";
-// @ts-expect-error plain ESM module without types
+// @ts-ignore plain ESM module without types
 import { vetTx } from "../agent/vet.mjs";
 
 /**

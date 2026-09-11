@@ -8,7 +8,7 @@ import { DataBanner, Empty, LtvBar, Tok, bps } from "../components/ui";
 import { usd, short, ago } from "../components/format";
 import { FACTORY } from "../components/brand";
 
-type Row = { address: string; owner: string; operator: string; paused: boolean; createdAt: number; collateral: { symbol: string; address: string }; loan: { symbol: string }; debt: number; collateral_: number; collateralUsd: number | null; ltvBps: number | null; lltv: number; totalRepaidFromFees: number; totalHarvested: number; refinanceCount: number; openPositions: number };
+type Row = { address: string; owner: string; operator: string; paused: boolean; createdAt: number; collateral: { symbol: string; address: string }; loan: { symbol: string }; debt: number; collateral_: number; collateralUsd: number | null; ltvBps: number | null; lltv: number; totalRepaidFromFees: number; totalHarvested: number; refinanceCount: number; openPositions: number; policy: { maxLtvBps: number; triggerLtvBps: number; repayBps: number; maxSlippageBps: number } };
 type Resp = { count: number; vaults: Row[] };
 
 export default function Dashboard() {
@@ -50,7 +50,7 @@ export default function Dashboard() {
                     <div className="stat"><span className="lbl">Debt</span><span className="med">{usd(v.debt, 2)}</span><span className="faint" style={{ fontSize: 11 }}>LTV {bps(v.ltvBps)}</span></div>
                     <div className="stat"><span className="lbl">Repaid from fees</span><span className="med green">{usd(v.totalRepaidFromFees, 2)}</span><span className="faint" style={{ fontSize: 11 }}>{v.openPositions} position{v.openPositions === 1 ? "" : "s"} · {v.refinanceCount} hop{v.refinanceCount === 1 ? "" : "s"}</span></div>
                   </div>
-                  <div style={{ marginTop: 14 }}><LtvBar ltv={v.ltvBps === null ? null : v.ltvBps / 10_000} max={0} trigger={v.lltv} lltv={v.lltv} /></div>
+                  <div style={{ marginTop: 14 }}><LtvBar ltv={v.ltvBps === null ? null : v.ltvBps / 10_000} max={v.policy.maxLtvBps / 10_000} trigger={v.policy.triggerLtvBps / 10_000} lltv={v.lltv} /></div>
                   <div className="faint mono" style={{ fontSize: 11, marginTop: 10 }}>created {ago(v.createdAt)} · operator {short(v.operator)}</div>
                 </Link>
               ))}

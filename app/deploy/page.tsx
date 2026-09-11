@@ -46,6 +46,8 @@ function DeployInner() {
   const [generated, setGenerated] = useState<{ address: string; privateKey: string } | null>(null);
   const [pasted, setPasted] = useState("");
   const [saved, setSaved] = useState(false);
+  const [revealed, setRevealed] = useState(false);
+  const [copied, setCopied] = useState<string | null>(null);
   const [vault, setVault] = useState<string | null>(null);
 
   const groups = useMemo(() => (board.data?.groups ?? []).filter((g) => !stocksOnly || g.collateral.isStock), [board.data, stocksOnly]);
@@ -58,16 +60,38 @@ function DeployInner() {
       if (g) setCollateral(g.collateral.address);
     }
   }, [marketId, collateral, board.data]);
-  useEffect(() => { setPolicy({ ...PRESETS[preset] }); }, [preset]);
+  const [custom, setCustom] = useState(false);
+  useEffect(() => { if (!custom) setPolicy({ ...PRESETS[preset] }); }, [preset, custom]);
+  function editPolicy(k: keyof typeof policy, v: number) { setCustom(true); setPolicy({ ...policy, [k]: v }); }
 
   const operator = opMode === "generate" ? generated?.address ?? "" : ethers.isAddress(pasted) ? ethers.getAddress(pasted) : "";
   const lltvOk = market ? policy.triggerLtvBps < market.lltv * 10_000 : true;
-  const ready = !!w.address && !w.wrongChain && !!market && !!operator && lltvOk && (opMode !== "generate" || saved) && !!FACTORY;
+  // The same rules the contract enforces, so a bad policy fails here with a sentence
+  // instead of at the last step with a wallet error.
+  const policyProblem = (() => {
+    const p = policy;
+    for (const k of ["maxLtvBps", "triggerLtvBps", "repayBps", "maxSlippageBps"] as const) if (!Number.isFinite(p[k]) || p[k] < 0) return "every field needs a number";
+    if (p.maxLtvBps > 9500) return "the borrow ceiling cannot exceed 95%";
+    if (p.triggerLtvBps < p.maxLtvBps) return "the protection trigger must be at or above the borrow ceiling";
+    if (p.triggerLtvBps > 10_000) return "the trigger cannot exceed 100%";
+    if (!lltvOk) return `the trigger must sit below the market's liquidation threshold (${((market?.lltv ?? 0) * 100).toFixed(0)}%); otherwise Morpho liquidates before the agent can act`;
+    if (p.repayBps <= 0 || p.repayBps > 10_000) return "the repay share must be between 0.01% and 100%";
+    if (p.maxSlippageBps < 10) return "slippage must be at least 0.1%, or no swap could ever clear the pool fee";
+    if (p.maxSlippageBps > 2000) return "slippage cannot exceed 20%";
+    return null;
+  })();
+  const ready = !!w.address && !w.wrongChain && !!market && !!operator && !policyProblem && (opMode !== "generate" || saved) && !!FACTORY && !vault;
 
   function generate() {
     const k = ethers.Wallet.createRandom();
     setGenerated({ address: k.address, privateKey: k.privateKey });
     setSaved(false);
+    setRevealed(false);
+    setCopied(null);
+  }
+
+  async function copy(label: string, text: string) {
+    try { await navigator.clipboard.writeText(text); setCopied(label); setTimeout(() => setCopied(null), 1500); } catch { /* clipboard blocked; the text is selectable */ }
   }
 
   async function create() {
@@ -81,6 +105,9 @@ function DeployInner() {
         try { const ev = iface.parseLog(l as any); if (ev?.name === "VaultCreated") { setVault(ev.args.vault); break; } } catch { /* other log */ }
       }
     } catch { /* the dashboard lists it anyway */ }
+    // The private key has done its job once the vault exists; keep only the address.
+    setGenerated((g) => (g ? { address: g.address, privateKey: "" } : g));
+    setRevealed(false);
   }
 
   return (
@@ -119,7 +146,7 @@ function DeployInner() {
                   <tbody>
                     {group.rows.map((r) => (
                       <tr key={r.id} onClick={() => setMarketId(r.id)} style={{ cursor: "pointer" }}>
-                        <td><input type="radio" checked={marketId === r.id} readOnly /></td>
+                        <td><input type="radio" name="market" checked={marketId === r.id} onChange={() => setMarketId(r.id)} aria-label={`market ${r.id.slice(0, 10)}`} /></td>
                         <td className="mono">{r.id.slice(0, 10)}… {group.best?.id === r.id && <span className="pill g">best</span>} {r.oracleSuspect && <span className="pill r">oracle?</span>}</td>
                         <td className="r">{(r.lltv * 100).toFixed(1)}%</td>
                         <td className="r">{pct(r.borrowApy)}</td>
@@ -147,12 +174,13 @@ function DeployInner() {
               {([["maxLtvBps", "Borrow ceiling (LTV)"], ["triggerLtvBps", "Protect at (LTV)"], ["repayBps", "Repay share"], ["maxSlippageBps", "Max slippage"]] as const).map(([k, label]) => (
                 <div className="field" key={k} style={{ marginBottom: 0 }}>
                   <label>{label}</label>
-                  <input type="number" value={(policy[k] / 100).toString()} min={0} max={100} step={0.5} onChange={(e) => setPolicy({ ...policy, [k]: Math.round(Number(e.target.value) * 100) })} />
+                  <input type="number" value={Number.isFinite(policy[k]) ? (policy[k] / 100).toString() : ""} min={0} max={100} step={k === "maxSlippageBps" ? 0.1 : 0.5} onChange={(e) => editPolicy(k, e.target.value === "" ? NaN : Math.round(Number(e.target.value) * 100))} />
                   <span className="hint">{k === "maxLtvBps" ? "operator may borrow up to here" : k === "triggerLtvBps" ? `must be below the market's ${market ? (market.lltv * 100).toFixed(0) + "%" : "LLTV"}` : k === "repayBps" ? "of the debt, per protection" : "vs the Morpho oracle"}</span>
                 </div>
               ))}
             </div>
-            {!lltvOk && <p className="note bad" style={{ marginTop: 10 }}>The trigger must sit below the market's liquidation threshold ({(market!.lltv * 100).toFixed(0)}%); otherwise Morpho liquidates before the agent can act.</p>}
+            {policyProblem && <p className="note bad" style={{ marginTop: 10 }}>{policyProblem[0].toUpperCase() + policyProblem.slice(1)}.</p>}
+            {custom && <p className="faint" style={{ marginTop: 8, fontSize: 12 }}>Custom policy. <button className="btn xs" onClick={() => { setCustom(false); setPolicy({ ...PRESETS[preset] }); }}>Back to {PRESETS[preset].label}</button></p>}
             {market && market.collateralPrice && <p className="note" style={{ marginTop: 10 }}>At today's oracle price of {usd(market.collateralPrice, 2)} per {group?.collateral.symbol}, 10 tokens let the agent borrow up to {usd(10 * market.collateralPrice * policy.maxLtvBps / 10_000)} USDG; protection starts if the price falls to {usd(10 * market.collateralPrice * policy.maxLtvBps / policy.triggerLtvBps / 10, 2)} (from a full borrow); Morpho liquidates at {usd(10 * market.collateralPrice * policy.maxLtvBps / (market.lltv * 10_000) / 10, 2)}.</p>}
           </div>
         </div>
@@ -168,10 +196,16 @@ function DeployInner() {
               <div style={{ marginTop: 12 }}>
                 {!generated ? <button className="btn sm" onClick={generate}>Generate operator key</button> : (
                   <div className="panel">
-                    <div className="kv"><span>Operator address</span><b style={{ wordBreak: "break-all" }}>{generated.address}</b></div>
-                    <div className="kv"><span>Private key</span><b style={{ wordBreak: "break-all" }}>{generated.privateKey}</b></div>
-                    <p className="lbl" style={{ marginTop: 12 }}>Put it in the runner as AGENT_PRIVATE_KEY. Fund the address with a little ETH for gas. This page will not show it again.</p>
-                    <label className="row" style={{ marginTop: 12, fontSize: 13, cursor: "pointer" }}><input type="checkbox" checked={saved} onChange={(e) => setSaved(e.target.checked)} /> I have saved the private key somewhere safe.</label>
+                    <div className="kv"><span>Operator address</span><b style={{ wordBreak: "break-all" }}>{generated.address} <button className="btn xs" onClick={() => copy("address", generated.address)}>{copied === "address" ? "copied" : "copy"}</button></b></div>
+                    <div className="kv"><span>Private key</span>
+                      <b style={{ wordBreak: "break-all" }}>
+                        {!generated.privateKey ? <span className="faint">cleared: the vault is created, the key lives only where you saved it</span>
+                          : revealed ? <>{generated.privateKey} <button className="btn xs" onClick={() => copy("key", generated.privateKey)}>{copied === "key" ? "copied" : "copy"}</button> <button className="btn xs" onClick={() => setRevealed(false)}>hide</button></>
+                          : <><span className="faint">••••••••••••••••••••••••••••••••</span> <button className="btn xs" onClick={() => setRevealed(true)}>reveal</button> <button className="btn xs" onClick={() => copy("key", generated.privateKey)}>{copied === "key" ? "copied" : "copy without showing"}</button></>}
+                      </b>
+                    </div>
+                    <p className="lbl" style={{ marginTop: 12 }}>Put it in the runner as AGENT_PRIVATE_KEY. Fund the address with a little ETH for gas. It is generated in this tab and never sent anywhere; it is erased from the page once the vault is created.</p>
+                    <label className="row" style={{ marginTop: 12, fontSize: 13, cursor: "pointer" }}><input type="checkbox" checked={saved} onChange={(e) => setSaved(e.target.checked)} disabled={!generated.privateKey} /> I have saved the private key somewhere safe.</label>
                   </div>
                 )}
               </div>
@@ -194,7 +228,7 @@ function DeployInner() {
               </div>
             )}
             <div className="row" style={{ marginTop: 14 }}>
-              <button className="btn primary" disabled={!ready || tx.busy} onClick={create}>{tx.busy ? tx.step : "Create vault"}</button>
+              <button className="btn primary" disabled={!ready || tx.busy} onClick={create}>{tx.busy ? tx.step : vault ? "Vault created" : "Create vault"}</button>
               {tx.hash && <TxLink hash={tx.hash}>transaction ↗</TxLink>}
             </div>
             {tx.error && <p className="note bad" style={{ marginTop: 10 }}>{tx.error}</p>}

@@ -46,7 +46,7 @@ body::after{content:"";position:fixed;inset:-30% -20% auto -20%;height:80vh;z-in
 
 h1,h2,.display{font-family:var(--display)}
 h1{font-weight:800;letter-spacing:-.035em;line-height:1.05;font-size:clamp(32px,3.5vw,48px);max-width:none}
-.hero-grid{grid-template-columns:1.1fr .9fr}
+@media(min-width:961px){.hero-grid{grid-template-columns:1.1fr .9fr}}
 .hero-grid > *{min-width:0}
 .word{white-space:normal}
 .card.feature h3{padding-right:56px}

@@ -146,6 +146,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
           setError(`This deployment has no RPC configured for the wallet; add Robinhood Chain (${CHAIN_ID}) to your wallet manually, then switch to it.`);
           return;
         }
+        try {
         await e.request({
           method: "wallet_addEthereumChain",
           params: [{
@@ -155,7 +156,10 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
             nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
           }],
         });
-      } else {
+        } catch (err2: any) {
+          if (err2?.code !== 4001) setError(err2?.message ?? "could not add the network");
+        }
+      } else if (err?.code !== 4001) {
         setError(err?.message ?? "could not switch network");
       }
     }

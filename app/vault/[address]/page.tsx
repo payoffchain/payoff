@@ -6,7 +6,7 @@ import Nav from "../../components/Nav";
 import { useWallet } from "../../components/WalletProvider";
 import { useTx } from "../../components/useTx";
 import { AddrLink, DataBanner, Empty, Gauge, LtvBar, Stat, Tok, TxLink, bps, pct } from "../../components/ui";
-import { usd, ago, amount } from "../../components/format";
+import { usd, ago, amount, EXPLORER } from "../../components/format";
 
 type Lp = { tokenId: string; fee: number; tickLower: number; tickUpper: number; inRange: boolean; priceLower: number | null; priceUpper: number | null; currentPrice: number | null; amountCollateral: number; amountLoan: number; valueUsd: number | null; uncollected: { collateral: number; loan: number; usd: number | null } | null; costBasis: number };
 type Vault = {
@@ -19,8 +19,9 @@ type Vault = {
   stats: { totalBorrowed: number; totalRepaid: number; totalRepaidFromFees: number; totalHarvested: number; totalProtocolFees: number; refinanceCount: number };
   lp: Lp[]; lpValueUsd: number | null; netValueUsd: number | null; allowedMarkets: string[];
 };
-type Plan = { at: string; actions: Array<{ kind: string; reason: string; valueUsd: number | null; built: { tx: { description: string }; notes?: string[] } }>; skipped: Array<{ rule: string; why: string }>; settings: Record<string, unknown> };
-type Activity = { entries: Array<{ block: number; time: number | null; tx: string; type: string; title: string; detail: string }> };
+type PlanAction = { kind: string; reason: string; valueUsd: number | null; args: { tokenId?: string; marketId?: string; fee?: number }; built: { tx: { description: string }; notes?: string[] } };
+type Plan = { at: string; actions: PlanAction[]; skipped: Array<{ rule: string; why: string }>; settings: Record<string, unknown> };
+type Activity = { entries: Array<{ block: number; time: number | null; tx: string; type: string; title: string; detail: string }>; partial?: boolean; fromBlock?: number };
 type Target = { id: string; lltv: number; borrowApy: number | null; liquidity: string; listed: boolean };
 
 async function get<T>(url: string): Promise<T> {
@@ -40,26 +41,38 @@ export default function VaultPage() {
   const [act, setAct] = useState<Activity | null>(null);
   const [targets, setTargets] = useState<Target[] | null>(null);
   const [tab, setTab] = useState<"position" | "agent" | "activity" | "settings">("position");
+  const [panelErr, setPanelErr] = useState<{ plan?: string; activity?: string; targets?: string }>({});
   const [tick, setTick] = useState(0);
   const refresh = useCallback(() => setTick((t) => t + 1), []);
 
   useEffect(() => {
     let dead = false;
     setErr(null);
+    setPanelErr({});
     get<Vault>(`/api/vaults/${address}`).then((d) => { if (!dead) setV(d); }).catch((e) => { if (!dead) setErr(e.message); });
-    get<Plan>(`/api/vaults/${address}/plan`).then((d) => { if (!dead) setPlan(d); }).catch(() => {});
-    get<Activity>(`/api/vaults/${address}/activity?limit=100`).then((d) => { if (!dead) setAct(d); }).catch(() => {});
-    get<{ targets: Target[] }>(`/api/vaults/${address}/targets`).then((d) => { if (!dead) setTargets(d.targets); }).catch(() => {});
+    get<Plan>(`/api/vaults/${address}/plan`).then((d) => { if (!dead) setPlan(d); }).catch((e) => { if (!dead) setPanelErr((x) => ({ ...x, plan: e.message })); });
+    get<Activity>(`/api/vaults/${address}/activity?limit=100`).then((d) => { if (!dead) setAct(d); }).catch((e) => { if (!dead) setPanelErr((x) => ({ ...x, activity: e.message })); });
+    get<{ targets: Target[] }>(`/api/vaults/${address}/targets`).then((d) => { if (!dead) setTargets(d.targets); }).catch((e) => { if (!dead) setPanelErr((x) => ({ ...x, targets: e.message })); });
     return () => { dead = true; };
   }, [address, tick]);
 
+  // Refresh while the page is open: LTV and "agent on" go stale otherwise. Paused when
+  // the tab is hidden, and never while a transaction is being signed.
+  useEffect(() => {
+    const id = setInterval(() => { if (!document.hidden && !tx.busy) refresh(); }, 45_000);
+    return () => clearInterval(id);
+  }, [refresh, tx.busy]);
+
   const isOwner = !!w.address && !!v && w.address.toLowerCase() === v.owner.toLowerCase();
   const isOperator = !!w.address && !!v && w.address.toLowerCase() === v.operator.toLowerCase();
-  const can = isOwner || isOperator;
+  // The contract refuses the operator while paused; do not offer buttons that revert.
+  const can = isOwner || (isOperator && !!v && !v.paused);
 
   async function send(body: unknown) {
+    // run() resolves once the receipt is in (or null on rejection / revert), so a refresh
+    // here shows the new state, not the old one under a green "sent".
     const hash = await tx.run(`/api/vaults/${address}/tx`, body);
-    if (hash) setTimeout(refresh, 4000);
+    if (hash) refresh();
   }
 
   if (err) return (<><Nav /><main className="wrap" style={{ padding: 48 }}><Empty>{err}</Empty></main></>);
@@ -113,7 +126,9 @@ export default function VaultPage() {
 
         {tx.error && <p className="note bad" style={{ marginBottom: 14 }}>{tx.error}</p>}
         {tx.busy && <p className="note" style={{ marginBottom: 14 }}>{tx.step}</p>}
-        {tx.hash && !tx.busy && <p className="note good" style={{ marginBottom: 14 }}>Sent: <TxLink hash={tx.hash} /> — the page refreshes in a moment.</p>}
+        {tx.hash && !tx.busy && tx.outcome === "confirmed" && <p className="note good" style={{ marginBottom: 14 }}>Confirmed: <TxLink hash={tx.hash} /></p>}
+        {tx.hash && !tx.busy && tx.outcome === null && <p className="note" style={{ marginBottom: 14 }}>Sent, still pending: <TxLink hash={tx.hash} /> · <button className="btn xs" onClick={refresh}>refresh</button></p>}
+        {isOperator && v.paused && <p className="note warn" style={{ marginBottom: 14 }}>This vault is paused: the operator cannot act until the owner resumes it.</p>}
 
         {tab === "position" && (
           <div className="grid g2">
@@ -125,7 +140,7 @@ export default function VaultPage() {
                   <div className="kv"><span>Range</span><b>{l.priceLower === null ? "—" : usd(l.priceLower, 2)} – {l.priceUpper === null ? "—" : usd(l.priceUpper, 2)} <span className="lbl">now {l.currentPrice === null ? "—" : usd(l.currentPrice, 2)}</span></b></div>
                   <div className="kv"><span>Holds</span><b>{amount(l.amountCollateral)} {v.collateral.symbol} + {amount(l.amountLoan, 2)} {v.loan.symbol} = {usd(l.valueUsd, 2)}</b></div>
                   <div className="kv"><span>Uncollected fees</span><b className="green">{l.uncollected ? `${usd(l.uncollected.usd, 2)} (${amount(l.uncollected.collateral)} ${v.collateral.symbol} + ${amount(l.uncollected.loan, 2)} ${v.loan.symbol})` : "—"}</b></div>
-                  <div className="kv"><span>Cost basis</span><b>{usd(l.costBasis, 2)} → {l.valueUsd === null ? "—" : `${((l.valueUsd + (l.uncollected?.usd ?? 0)) / l.costBasis * 100 - 100).toFixed(2)}%`}</b></div>
+                  <div className="kv"><span>Cost basis</span><b>{usd(l.costBasis, 2)} → {l.valueUsd === null || !(l.costBasis > 0) ? "—" : `${((l.valueUsd + (l.uncollected?.usd ?? 0)) / l.costBasis * 100 - 100).toFixed(2)}%`}</b></div>
                   {can && <div className="row" style={{ marginTop: 12 }}>
                     <button className="btn xs" style={{ borderColor: "var(--panel-mute)", color: "var(--panel-ink)" }} disabled={tx.busy} onClick={() => send({ action: "harvest", tokenId: l.tokenId })}>Harvest → debt</button>
                     <button className="btn xs" style={{ borderColor: "var(--panel-mute)", color: "var(--panel-ink)" }} disabled={tx.busy} onClick={() => send({ action: "closeLp", tokenId: l.tokenId, swapToLoan: true })}>Close → repay</button>
@@ -162,7 +177,7 @@ export default function VaultPage() {
         {tab === "agent" && (
           <div>
             <p className="lede" style={{ marginTop: 0 }}>The rules the runner follows, evaluated against this vault right now. The runner signs exactly this on its next tick; the owner can sign any of it here first.</p>
-            {!plan ? <p style={{ marginTop: 16 }}><span className="spinner" /> evaluating the rules against this vault…</p> : (
+            {panelErr.plan ? <p className="note bad" style={{ marginTop: 16 }}>The plan could not be evaluated: {panelErr.plan} <button className="btn xs" onClick={refresh}>retry</button></p> : !plan ? <p style={{ marginTop: 16 }}><span className="spinner" /> evaluating the rules against this vault…</p> : (
               <>
                 <div className="panel term" style={{ marginTop: 16 }}>
                   <div><span className="k">$</span> payoff plan --vault {v.address.slice(0, 10)}… <span className="d">{new Date(plan.at).toLocaleTimeString()}</span></div>
@@ -177,7 +192,7 @@ export default function VaultPage() {
                     <p style={{ marginTop: 8 }}>{a.reason}</p>
                     <p className="lbl" style={{ marginTop: 8 }}>{a.built.tx.description}</p>
                     {a.built.notes?.map((n, j) => <p key={j} className="lbl" style={{ marginTop: 4, textTransform: "none", letterSpacing: 0 }}>{n}</p>)}
-                    {can && <div className="row" style={{ marginTop: 12 }}><button className="btn xs" style={{ borderColor: "var(--panel-mute)", color: "var(--panel-ink)" }} disabled={tx.busy} onClick={() => sendPlanned(a.kind, plan, v, send)}>Sign this now</button></div>}
+                    {can && <div className="row" style={{ marginTop: 12 }}><button className="btn xs" style={{ borderColor: "var(--panel-mute)", color: "var(--panel-ink)" }} disabled={tx.busy} onClick={() => sendPlanned(a, plan, v, send)}>Sign this now</button></div>}
                   </div>
                 ))}
                 <h3 style={{ marginTop: 28 }}>Rules that did not fire</h3>
@@ -190,7 +205,9 @@ export default function VaultPage() {
 
         {tab === "activity" && (
           <div className="log">
-            {!act ? <p className="skeleton">reading events</p> : act.entries.length === 0 ? <Empty>No activity yet.</Empty> : act.entries.map((e, i) => (
+            {panelErr.activity && <p className="note bad">Activity could not be read: {panelErr.activity}</p>}
+            {act?.partial && <p className="note" style={{ marginBottom: 10 }}>Showing recent activity only (the RPC could not scan further back in time). Older events are on the <a href={`${EXPLORER}/address/${v.address}`} target="_blank" rel="noreferrer" style={{ textDecoration: "underline" }}>explorer ↗</a>.</p>}
+            {!act && !panelErr.activity ? <p className="skeleton">reading events</p> : !act ? null : act.entries.length === 0 ? <Empty>No activity yet.</Empty> : act.entries.map((e, i) => (
               <div className="e" key={i}>
                 <span className="t">{e.time ? new Date(e.time * 1000).toLocaleString() : `block ${e.block}`}</span>
                 <span className="ty">{e.title}</span>
@@ -238,7 +255,7 @@ export default function VaultPage() {
                         </tr>
                       );
                     })}
-                    {!targets && <tr><td colSpan={5} className="faint">reading…</td></tr>}
+                    {!targets && <tr><td colSpan={5} className="faint">{panelErr.targets ? `could not read the pair's markets: ${panelErr.targets}` : "reading…"}</td></tr>}
                   </tbody>
                 </table>
               </div>
@@ -256,15 +273,15 @@ export default function VaultPage() {
   );
 }
 
-function sendPlanned(kind: string, plan: Plan, v: Vault, send: (b: unknown) => void) {
-  // The plan carries calldata already; rebuilding through the tx route keeps the wallet flow identical.
-  const a = plan.actions.find((x) => x.kind === kind)!;
-  const desc = a.built.tx.description;
-  if (kind === "protect") return send({ action: "protect" });
-  if (kind === "refinance") { const id = desc.match(/market (0x[0-9a-fA-F]+)/)?.[1]; const full = v.allowedMarkets.find((m) => id && m.startsWith(id)); return send({ action: "refinance", marketId: full ?? id }); }
-  if (kind === "harvest") { const id = desc.match(/#(\d+)/)?.[1]; return send({ action: "harvest", tokenId: id }); }
-  if (kind === "close") { const id = desc.match(/#(\d+)/)?.[1]; return send({ action: "closeLp", tokenId: id, swapToLoan: true }); }
-  if (kind === "open") { const fee = Number(desc.match(/(\d+(?:\.\d+)?)% position/)?.[1] ?? 0.3) * 10_000; const width = Number(String(plan.settings.rangeWidthPct ?? 5)); return send({ action: "openLp", amount: v.balances.loan.toFixed(v.loan.decimals), fee, widthPct: width, slippageBps: v.policy.maxSlippageBps }); }
+function sendPlanned(a: PlanAction, plan: Plan, v: Vault, send: (b: unknown) => void) {
+  // The plan carries calldata already; rebuilding through the tx route keeps the wallet
+  // flow (approvals, receipt) identical. The plan's structured args say which position
+  // or market each action targets, so two harvests never collapse into one.
+  if (a.kind === "protect") return send({ action: "protect" });
+  if (a.kind === "refinance") return send({ action: "refinance", marketId: a.args.marketId });
+  if (a.kind === "harvest") return send({ action: "harvest", tokenId: a.args.tokenId });
+  if (a.kind === "close") return send({ action: "closeLp", tokenId: a.args.tokenId, swapToLoan: true });
+  if (a.kind === "open") { const width = Number(String(plan.settings.rangeWidthPct ?? 5)); return send({ action: "openLp", amount: v.balances.loan.toFixed(v.loan.decimals), fee: a.args.fee ?? 500, widthPct: width, slippageBps: v.policy.maxSlippageBps }); }
 }
 
 function AmountForm({ label, hint, busy, onSubmit, allowEmpty }: { label: string; hint?: string; busy: boolean; onSubmit: (a: string) => void; allowEmpty?: boolean }) {

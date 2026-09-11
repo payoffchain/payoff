@@ -264,11 +264,12 @@ export type VaultRow = {
   collateral: { address: string; symbol: string; isStock: boolean }; loan: { address: string; symbol: string };
   debt: number; collateral_: number; collateralUsd: number | null; ltvBps: number | null; lltv: number;
   totalRepaidFromFees: number; totalHarvested: number; refinanceCount: number; openPositions: number;
+  policy: { maxLtvBps: number; triggerLtvBps: number; repayBps: number; maxSlippageBps: number };
 };
 
 export async function vaultRows(addresses: string[]): Promise<VaultRow[]> {
   if (addresses.length === 0) return [];
-  const fns = ["owner", "operator", "paused", "createdAt", "collateralToken", "loanToken", "currentMarket", "debtAssets", "collateralAssets", "ltvBps", "oraclePrice", "totalRepaidFromFees", "totalHarvested", "refinanceCount", "openPositions"];
+  const fns = ["owner", "operator", "paused", "createdAt", "collateralToken", "loanToken", "currentMarket", "debtAssets", "collateralAssets", "ltvBps", "oraclePrice", "totalRepaidFromFees", "totalHarvested", "refinanceCount", "openPositions", "policy"];
   const calls: Call[] = [];
   for (const a of addresses) for (const f of fns) calls.push({ target: a, callData: vaultIface.encodeFunctionData(f) });
   const res = await multicall(calls);
@@ -301,6 +302,7 @@ export async function vaultRows(addresses: string[]): Promise<VaultRow[]> {
       totalHarvested: n(BigInt(vals[12]![0]), loanDec),
       refinanceCount: Number(vals[13]![0]),
       openPositions: (vals[14]![0] as unknown[]).length,
+      policy: { maxLtvBps: Number(vals[15]![0]), triggerLtvBps: Number(vals[15]![1]), repayBps: Number(vals[15]![2]), maxSlippageBps: Number(vals[15]![3]) },
     });
   });
   return out;

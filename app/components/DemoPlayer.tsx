@@ -219,8 +219,11 @@ export default function DemoPlayer({ compact = false }: { compact?: boolean }) {
   const embed = VIDEO ? embedUrl(VIDEO) : null;
   const [i, setI] = useState(0);
   const [t, setT] = useState(0);
-  const [playing, setPlaying] = useState(!reduced);
+  const [playing, setPlaying] = useState(true);
   const raf = useRef(0);
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  // The preference resolves after the first render; honour it as soon as it does.
+  useEffect(() => { if (reduced) setPlaying(false); }, [reduced]);
   const last = useRef(0);
   const total = SCENES.reduce((a, s) => a + s.seconds, 0);
 
@@ -248,10 +251,11 @@ export default function DemoPlayer({ compact = false }: { compact?: boolean }) {
    */
   const step = useCallback((d: number) => { setI((cur) => ((cur + d) % SCENES.length + SCENES.length) % SCENES.length); setT(0); }, []);
   const go = useCallback((n: number) => { setI(((n % SCENES.length) + SCENES.length) % SCENES.length); setT(0); }, []);
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => { if (e.key === "ArrowRight") step(1); if (e.key === "ArrowLeft") step(-1); if (e.key === " ") { e.preventDefault(); setPlaying((p) => !p); } };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+  const onKey = useCallback((e: React.KeyboardEvent) => {
+    // Scoped to the player: Space must keep scrolling the page and activating buttons elsewhere.
+    if (e.key === "ArrowRight") { e.preventDefault(); step(1); }
+    else if (e.key === "ArrowLeft") { e.preventDefault(); step(-1); }
+    else if (e.key === " " || e.key === "Enter") { e.preventDefault(); setPlaying((p) => !p); }
   }, [step]);
 
   if (embed) {
@@ -267,7 +271,7 @@ export default function DemoPlayer({ compact = false }: { compact?: boolean }) {
   const elapsed = SCENES.slice(0, i).reduce((a, s) => a + s.seconds, 0) + t * SCENES[i].seconds;
   const scene = SCENES[i];
   return (
-    <div className={"demo " + (compact ? "compact" : "")} onClick={() => setPlaying((p) => !p)} role="group" aria-label="Product tour">
+    <div ref={rootRef} className={"demo " + (compact ? "compact" : "")} onClick={() => setPlaying((p) => !p)} onKeyDown={onKey} tabIndex={0} role="group" aria-label="Product tour: Space plays or pauses, arrow keys step">
       <div className="demo-frame">
         <div className="demo-scene" key={i}>{scene.render(t)}</div>
         <div className="demo-caption"><span className="demo-step">{i + 1} / {SCENES.length}</span><b>{scene.title}</b><span>{scene.caption}</span></div>

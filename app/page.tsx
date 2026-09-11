@@ -170,7 +170,7 @@ export default function Landing() {
                 </tbody>
               </table>
             </Reveal>
-            <div className="row" style={{ marginTop: 18 }}><Link className="btn sm" href="/rates">All 190+ markets →</Link></div>
+            <div className="row" style={{ marginTop: 18 }}><Link className="btn sm" href="/rates">All markets →</Link></div>
           </div>
         </section>
 
