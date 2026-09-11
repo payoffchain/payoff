@@ -85,7 +85,7 @@ export default function Landing() {
         <section className="hero">
           <div className="wrap hero-grid">
             <div>
-              <div className="hero-logo" style={{ animation: "fadeUp 1s .2s both" }} onMouseMove={tilt} onMouseLeave={untilt}>{/* eslint-disable-next-line @next/next/no-img-element */}<img src="/logo.png" alt={APP} width={900} height={900} /></div>
+              <div className="hero-logo" style={{ animation: "fadeUp 1s .2s both" }} onMouseMove={tilt} onMouseLeave={untilt}>{/* eslint-disable-next-line @next/next/no-img-element */}<img src="/mark-t.png" alt={APP} width={512} height={512} /></div>
               <span className="chip"><span className="dot" />loan desk open</span>
               <h1>
                 <Words text="Borrow against your stocks." base={80} />

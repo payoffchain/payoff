@@ -596,3 +596,10 @@ main > section:nth-of-type(4){clip-path:polygon(0 3%,100% 0,100% 97%,0 100%);pad
 .tk-steps{gap:6px}
 .tk-steps span{border-radius:12px 12px 0 0;border-top:2px solid rgba(170,196,255,.18);border-left:1px solid rgba(170,196,255,.14);border-right:1px solid rgba(170,196,255,.14);padding:9px 6px 6px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:rgba(185,205,255,.03)}
 .tk-steps span.done,.tk-steps span.cur{border-color:var(--ice);border-left-color:rgba(185,205,255,.35);border-right-color:rgba(185,205,255,.35);background:rgba(185,205,255,.07)}
+/* hero mark: a real cutout on the page background, so there is no dark disc behind it.
+   One soft glow and one dashed ring, both centred on the mark. */
+.hero-logo{width:150px;height:150px;max-width:none;margin:0 0 22px;display:grid;place-items:center;perspective:900px}
+.hero-logo img{width:118px;height:118px;-webkit-mask-image:none;mask-image:none;filter:drop-shadow(0 10px 24px rgba(47,91,214,.45))}
+.hero-logo::before{inset:12%;border-radius:50%;background:radial-gradient(50% 50% at 50% 50%,rgba(47,91,214,.5),transparent 72%);filter:blur(14px)}
+.hero-logo::after{inset:0;border:1px dashed rgba(170,196,255,.4)}
+@media(max-width:600px){.hero-logo{width:120px;height:120px}.hero-logo img{width:94px;height:94px}}
