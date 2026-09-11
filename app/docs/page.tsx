@@ -21,6 +21,21 @@ export default function Docs() {
           <div className="kv"><span>Neither</span><b>send a token to any address but Morpho, the position manager, the swap router, or the treasury's capped fee</b></div>
         </div>
 
+        <h3 id="your-money" style={{ marginTop: 40 }}>Your money in the vault</h3>
+        <p className="mute">Short version: everything in the vault is yours, only you can take it out, and you can take it out at any time. Here is where each thing sits and how it comes back.</p>
+        <div className="card soft" style={{ marginTop: 14 }}>
+          <div className="kv"><span>Your collateral (the stock)</span><b>Held by Morpho under your vault's name. Comes back with <em>Withdraw collateral</em> on the vault page, straight to your wallet.</b></div>
+          <div className="kv"><span>The USDG you borrowed</span><b>Sits in the vault until it is put into the Uniswap pool. Idle USDG comes back with <em>Withdraw token</em>; USDG in a pool comes back when the position is closed.</b></div>
+          <div className="kv"><span>Fees the pool earned</span><b>Collected by <em>Harvest</em> and used to repay your debt. Nothing is kept aside; the protocol's 2.5% is taken from the fee at that moment.</b></div>
+        </div>
+        <div className="steps" style={{ marginTop: 14 }}>
+          <div className="step"><div><h3>Who can move it</h3><p>The vault contract only ever sends tokens to four places: Morpho, the Uniswap position manager, the Uniswap router, and your own wallet. Your wallet is the only destination for a withdrawal. The agent's key cannot change that, and neither can {APP}. This is in the code, not in a promise.</p></div></div>
+          <div className="step"><div><h3>How to get everything out</h3><p>Two or three clicks on the vault page, in this order: <em>Close</em> any open position into USDG (the agent may have done this already), <em>Repay</em> the debt, then <em>Withdraw collateral</em>. If USDG is left over after repaying, <em>Withdraw token</em> sends it to you. Morpho will not let collateral leave while it still backs debt, which is why repay comes before withdraw.</p></div></div>
+          <div className="step"><div><h3>What can make it smaller</h3><p>Three things, all visible on the vault page: interest on the USDG you borrowed (the rate shown on the market), the market moving against a liquidity position (a position that holds more of the stock after the price fell is worth less in USDG), and, if the price falls far enough with nobody repaying, liquidation by Morpho. The policy's protection trigger exists to repay before that last one happens; it only works while an agent is running.</p></div></div>
+          <div className="step"><div><h3>What cannot happen</h3><p>Your collateral cannot be sent to someone else. The agent cannot borrow past the ceiling you set. No swap can fill below the oracle price less your slippage setting. If the price oracle stops answering, the vault refuses to trade at all rather than trade blind. Turning the agent off stops every automatic action immediately; your own buttons keep working.</p></div></div>
+          <div className="step"><div><h3>If {APP} disappears</h3><p>The vault is a contract on {CHAIN_NAME}; it does not need this website. You can call <code className="inline">repay</code>, <code className="inline">withdrawCollateral</code> and <code className="inline">withdrawToken</code> from the block explorer with your owner wallet, and the collateral comes back the same way.</p></div></div>
+        </div>
+
         <h3 style={{ marginTop: 40 }}>The policy</h3>
         <div className="steps" style={{ marginTop: 10 }}>
           <div className="step"><div><h3>Borrow ceiling (max LTV)</h3><p>No borrow or refinance may leave loan-to-value above this. Set it well under the market's LLTV so a price move does not become a liquidation.</p></div></div>
