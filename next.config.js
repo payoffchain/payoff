@@ -34,6 +34,9 @@ const nextConfig = {
   outputFileTracingRoot: __dirname,
   reactStrictMode: true,
   poweredByHeader: false,
+  async redirects() {
+    return [{ source: "/deploy", destination: "/borrow", permanent: true }];
+  },
   async headers() {
     return [{ source: "/(.*)", headers: securityHeaders }];
   },

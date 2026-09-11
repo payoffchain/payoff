@@ -20,7 +20,10 @@ import { usd } from "./components/format";
 type Row = { id: string; lltv: number; borrowApy: number | null; liquidityUsd: number; totalSupplyUsd: number };
 type Group = { collateral: { address: string; symbol: string; isStock: boolean; name: string | null }; best: Row | null; rows: Row[] };
 type Board = { live: boolean; groups: Group[] };
+type Pools = { collateral: { symbol: string }; hours: number; pools: Array<{ fee: number; tvlUsd: number | null; volume: { volumeLoan: number } | null }> };
 type Leader = { totals: { vaults: number; debtUsd: number; collateralUsd: number; repaidFromFeesUsd: number; harvestedUsd: number; refinances: number } };
+
+const NVDA = "0xd0601CE157Db5bdC3162BbaC2a2C8aF5320D9EEC";
 
 const I = {
   key: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="8" cy="14" r="4" /><path d="M11 11l9-9M16 6l2 2M18 4l2 2" /></svg>,
@@ -35,10 +38,19 @@ const I = {
 export default function Landing() {
   const board = useLive<Board>("/api/markets", { live: false, groups: [] });
   const lb = useLive<Leader>("/api/leaderboard", { totals: { vaults: 0, debtUsd: 0, collateralUsd: 0, repaidFromFeesUsd: 0, harvestedUsd: 0, refinances: 0 } }, !!FACTORY);
+  // The busiest stock pool on the chain, for the statement band. NVDA/USDG today; the
+  // symbol shown comes from the API so a change of token needs only this address.
+  const pools = useLive<Pools | null>(`/api/pools?collateral=${NVDA}&hours=6`, null);
   const [q, setQ] = useState("");
   const [stocksOnly, setStocksOnly] = useState(true);
 
   const groups = board.data?.groups ?? [];
+  const vol = (() => {
+    const d = pools.data;
+    if (!d) return null;
+    const busiest = d.pools.filter((p) => p.volume).sort((a, b) => (b.volume!.volumeLoan) - (a.volume!.volumeLoan))[0];
+    return busiest && busiest.volume!.volumeLoan > 0 ? { symbol: d.collateral.symbol, hours: d.hours, volumeLoan: busiest.volume!.volumeLoan, fee: busiest.fee } : null;
+  })();
   const withRate = groups.filter((g) => g.best);
   const shown = useMemo(() => {
     const needle = q.trim().toLowerCase();
@@ -58,6 +70,10 @@ export default function Landing() {
         <section className="hero">
           <div className="wrap hero-grid">
             <div>
+              <div className="wordmark" aria-label={APP}>{APP.split("").map((c, i) => <span key={i}>{c}</span>)}</div>
+              <div className="wordmark-sub">self-repaying loans · {CHAIN_NAME}</div>
+            </div>
+            <div>
               <span className={"chip" + (FACTORY ? " live" : "")}><span className="dot" />{FACTORY ? `live on ${CHAIN_NAME}` : `built for ${CHAIN_NAME}`}</span>
               <h1>
                 <Words text="Borrow against your stocks." base={80} />
@@ -75,9 +91,6 @@ export default function Landing() {
                 <span>0% to borrow</span><span>·</span><span>0% to hop</span><span>·</span><span>2.5% of harvested fees</span>
               </div>
             </div>
-            <div style={{ animation: "fadeUp 1s .5s both" }}>
-              <LoopDiagram symbol={ticker[1]?.collateral.symbol ?? "NVDA"} />
-            </div>
           </div>
         </section>
 
@@ -93,7 +106,23 @@ export default function Landing() {
           </div>
         </div>
 
-        <section style={{ padding: "48px 0 72px", borderTop: 0 }}>
+        <section>
+          <div className="wrap band">
+            <Reveal>
+              <div className="huge">{vol ? usd(vol.volumeLoan) : "0%"}<small>{vol ? `traded in the ${vol.symbol}/USDG pool in the last ${vol.hours}h` : "to borrow. 0% to move markets. 0% to be protected."}</small></div>
+            </Reveal>
+            <Reveal delay={120}>
+              <h2>{vol ? "Every one of those swaps paid a fee. That fee is what repays your loan." : "You pay nothing until the loan earns."}</h2>
+              <p style={{ marginTop: 14 }}>
+                {vol
+                  ? <>Stock tokens on {CHAIN_NAME} trade around the clock, and the Uniswap pool takes <b>{(vol.fee / 10_000).toFixed(2)}%</b> of every swap for the people who put liquidity in. Your borrowed USDG becomes that liquidity. Its fees go straight onto your debt, every time they are collected, without you doing anything.</>
+                  : <>Borrowing is free. Moving your debt to a cheaper market is free. Protection from liquidation is free. {APP} takes 2.5% of the trading fees the loan earns, and 10% of profit when a position closes in the green. Never on a loss.</>}
+              </p>
+            </Reveal>
+          </div>
+        </section>
+
+        <section style={{ padding: "48px 0 72px" }}>
           <div className="wrap">
             <div className="row" style={{ justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 16 }}>
               <div>
@@ -153,6 +182,7 @@ export default function Landing() {
         <section>
           <div className="wrap">
             <Reveal><span className="eyebrow">How it works</span><h2>Three moves, then the loan takes care of itself.</h2></Reveal>
+            <Reveal delay={100} style={{ marginTop: 28, maxWidth: 640 }}><LoopDiagram symbol={ticker[1]?.collateral.symbol ?? "NVDA"} /></Reveal>
             <div className="timeline">
               {[
                 { t: "Collateral in, USDG out", p: `Your NVDA, TSLA, SPY or WETH goes into a Morpho Blue market under a vault contract only you own. You borrow USDG up to a ceiling you set; Morpho's liquidation line is further out.` },
