@@ -29,9 +29,8 @@ export default function Nav() {
     <nav className={"top" + (open ? " open" : "")}>
       <div className="wrap">
         <Link className="brand" href="/" aria-label={`${APP} home`}>
-          {/* the mark is the P; the word continues from it */}
-          <span className="mark">{/* eslint-disable-next-line @next/next/no-img-element */}<img src="/mark-t.png" alt="P" width={30} height={30} /></span>
-          <span className="rest">{APP.replace(/^P/, "")}</span>
+          <span className="mark">{/* eslint-disable-next-line @next/next/no-img-element */}<img src="/mark.png" alt="" width={30} height={30} /></span>
+          {APP}
         </Link>
         <div className="navlinks">
           {ROUTES.map((r) => (

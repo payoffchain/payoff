@@ -607,8 +607,3 @@ main > section:nth-of-type(4){clip-path:polygon(0 3%,100% 0,100% 97%,0 100%);pad
 .loop .node rect{fill:rgba(10,22,54,.9);stroke:rgba(210,222,245,.35);stroke-width:1;rx:10;ry:10}
 .loop .node rect.track{fill:rgba(185,205,255,.08);stroke:rgba(210,222,245,.25);rx:7;ry:7}
 .loop .node rect.debt{fill:var(--ice);stroke:none;rx:7;ry:7}
-/* nav wordmark: the mark is the P, "AYOFF" runs on from it */
-.brand{gap:0;align-items:center}
-.brand .mark{width:34px;height:34px;border-radius:0;overflow:visible;margin-right:-3px}
-.brand .mark img{object-fit:contain;filter:drop-shadow(0 2px 6px rgba(47,91,214,.5))}
-.brand .rest{font-family:var(--display);font-weight:800;font-size:21px;letter-spacing:.01em;line-height:1;transform:translateY(1px)}
