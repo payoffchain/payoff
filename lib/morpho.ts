@@ -93,8 +93,50 @@ export function allMarkets(opts: { loanToken?: string } = {}): MarketMeta[] {
 }
 
 export function marketById(id: string): MarketMeta | null {
-  const m = (snapshot.markets as SnapshotMarket[]).find((x) => x.id.toLowerCase() === id.toLowerCase());
+  // A market without an oracle cannot price collateral; the snapshot keeps it for the
+  // record but nothing here may build calldata against it.
+  const m = (snapshot.markets as SnapshotMarket[]).find((x) => x.id.toLowerCase() === id.toLowerCase() && x.oracle);
   return m ? fromSnapshot(m) : null;
+}
+
+const ERC20_META_ABI = ["function decimals() view returns (uint8)", "function symbol() view returns (string)"];
+const erc20MetaIface = new ethers.Interface(ERC20_META_ABI);
+
+/**
+ * The snapshot first; then the chain. A market created after the last sync-markets run
+ * is still a real market, and a vault on it must not be a dead end. The on-chain read
+ * is cached for the life of the instance because market params never change.
+ */
+export async function resolveMarket(id: string): Promise<MarketMeta | null> {
+  const local = marketById(id);
+  if (local) return local;
+  if (!/^0x[0-9a-fA-F]{64}$/.test(id)) return null;
+  const { value } = await cached(`market:${id.toLowerCase()}`, 24 * 3600_000, async () => {
+    const morpho = ADDR.morpho();
+    const res = await multicall([{ target: morpho, callData: morphoIface.encodeFunctionData("idToMarketParams", [id]) }]);
+    const r = decode(morphoIface, "idToMarketParams", res[0]);
+    if (!r || r[0] === ethers.ZeroAddress || r[2] === ethers.ZeroAddress) return null;
+    const params: MarketParams = { loanToken: r[0], collateralToken: r[1], oracle: r[2], irm: r[3], lltv: BigInt(r[4]).toString() };
+    const meta = await multicall([
+      { target: params.loanToken, callData: erc20MetaIface.encodeFunctionData("decimals") },
+      { target: params.loanToken, callData: erc20MetaIface.encodeFunctionData("symbol") },
+      { target: params.collateralToken, callData: erc20MetaIface.encodeFunctionData("decimals") },
+      { target: params.collateralToken, callData: erc20MetaIface.encodeFunctionData("symbol") },
+    ]);
+    const ld = decode(erc20MetaIface, "decimals", meta[0]);
+    const ls = decode(erc20MetaIface, "symbol", meta[1]);
+    const cd = decode(erc20MetaIface, "decimals", meta[2]);
+    const cs = decode(erc20MetaIface, "symbol", meta[3]);
+    if (!ld || !cd) return null;
+    const out: MarketMeta = {
+      id: id.toLowerCase(), params, listed: false, createdAt: null,
+      loan: { symbol: ls ? String(ls[0]) : "LOAN", decimals: Number(ld[0]), name: null },
+      collateral: { symbol: cs ? String(cs[0]) : "COLL", decimals: Number(cd[0]), name: null },
+      snapshotState: null,
+    };
+    return out;
+  });
+  return value;
 }
 
 /** Markets that share a pair, i.e. the ones a vault of that pair may refinance between. */

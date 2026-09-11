@@ -10,12 +10,12 @@ export const runtime = "nodejs";
 const body = z.object({
   marketId: z.string().regex(/^0x[0-9a-fA-F]{64}$/),
   operator: addressSchema,
-  policy: z.object({ maxLtvBps: z.number().int(), triggerLtvBps: z.number().int(), repayBps: z.number().int(), maxSlippageBps: z.number().int() }).optional(),
+  policy: z.object({ maxLtvBps: z.number().int().min(0).max(10_000), triggerLtvBps: z.number().int().min(0).max(10_000), repayBps: z.number().int().min(0).max(10_000), maxSlippageBps: z.number().int().min(0).max(10_000) }).optional(),
 });
 
 export const POST = handler("create", async (req) => {
   const b = await readJson(req, body);
-  return NextResponse.json({ ...buildCreateVault(b), factory: ADDR.factory(), defaultPolicy: DEFAULT_POLICY });
+  return NextResponse.json({ ...(await buildCreateVault(b)), factory: ADDR.factory(), defaultPolicy: DEFAULT_POLICY });
 });
 
 export const GET = handler("create", async () => NextResponse.json({ factory: ADDR.factoryOrNull(), defaultPolicy: DEFAULT_POLICY }));

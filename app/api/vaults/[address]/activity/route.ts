@@ -8,7 +8,7 @@ export const runtime = "nodejs";
 // Log scans and multicalls over the public RPC can take longer than the default serverless budget.
 export const maxDuration = 60;
 
-const q = z.object({ limit: z.string().regex(/^\d+$/).optional() });
+const q = z.object({ limit: z.string().regex(/^\d+$/).optional(), days: z.string().regex(/^\d+$/).optional() });
 
 /** GET /api/vaults/0x../activity -> decoded event log, newest first */
 export const GET = handler("activity", async (req) => {
@@ -16,5 +16,5 @@ export const GET = handler("activity", async (req) => {
   const address = parts[parts.length - 2] ?? "";
   if (!ethers.isAddress(address)) throw new ApiError(400, "vault is not an address");
   const p = readQuery(req, q);
-  return NextResponse.json(await vaultActivity(address, { limit: p.limit ? Math.min(500, Number(p.limit)) : undefined }));
+  return NextResponse.json(await vaultActivity(address, { limit: p.limit ? Math.min(500, Number(p.limit)) : undefined, days: p.days ? Number(p.days) : undefined }));
 });

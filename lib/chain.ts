@@ -76,8 +76,22 @@ export function getProvider(): ethers.JsonRpcProvider {
   if (cachedProvider) return cachedProvider;
   if (!Number.isInteger(CHAIN_ID) || CHAIN_ID <= 0) throw new ConfigError("CHAIN_ID must be a positive integer");
   const url = process.env.RPC_URL || DEFAULTS.rpcUrl;
-  cachedProvider = new ethers.JsonRpcProvider(url, CHAIN_ID, { staticNetwork: true, batchMaxCount: 10 });
+  // A stalled RPC request must not eat a whole serverless budget: ethers' default fetch
+  // timeout is 300 s, far past any route's maxDuration. 12 s is generous for one call.
+  const req = new ethers.FetchRequest(url);
+  req.timeout = Number(process.env.RPC_TIMEOUT_MS ?? 12_000);
+  cachedProvider = new ethers.JsonRpcProvider(req, CHAIN_ID, { staticNetwork: true, batchMaxCount: 10 });
   return cachedProvider;
+}
+
+/**
+ * The chain id the RPC actually serves. `staticNetwork` skips this on every call for
+ * speed, so /api/health asks once explicitly: a mis-pointed RPC_URL otherwise "works"
+ * and every read on the site is from the wrong chain.
+ */
+export async function rpcChainId(): Promise<number> {
+  const hex: string = await getProvider().send("eth_chainId", []);
+  return parseInt(hex, 16);
 }
 
 export const factoryIface = new ethers.Interface(FactoryAbi);
@@ -160,6 +174,40 @@ export async function getLogsChunked(
   return logs;
 }
 
+/**
+ * Newest-first log scan with a time budget. Returns what it found and how far back
+ * it got; `partial` tells the caller the older history was not reached. This is the
+ * shape a serverless route needs: bounded, and honest about what it skipped.
+ */
+export async function getLogsRecent(
+  filter: { address?: string | string[]; topics?: (string | string[] | null)[] },
+  fromBlock: number,
+  toBlock: number,
+  opts: { budgetMs?: number; chunk?: number; minChunk?: number } = {}
+): Promise<{ logs: ethers.Log[]; scannedFrom: number; partial: boolean }> {
+  const provider = getProvider();
+  const budget = opts.budgetMs ?? 20_000;
+  const minChunk = opts.minChunk ?? 2_000;
+  let size = opts.chunk ?? Number(process.env.LOG_CHUNK_BLOCKS ?? 100_000);
+  const started = Date.now();
+  const logs: ethers.Log[] = [];
+  let to = toBlock;
+  while (to >= fromBlock) {
+    if (Date.now() - started > budget) return { logs, scannedFrom: to + 1, partial: true };
+    const from = Math.max(fromBlock, to - size + 1);
+    try {
+      const part = await provider.getLogs({ ...filter, fromBlock: from, toBlock: to });
+      logs.push(...part);
+      to = from - 1;
+      if (size < (opts.chunk ?? 100_000)) size = Math.min(opts.chunk ?? 100_000, size * 2);
+    } catch (err) {
+      if (size <= minChunk) return { logs, scannedFrom: to + 1, partial: true };
+      size = Math.max(minChunk, Math.floor(size / 2));
+    }
+  }
+  return { logs, scannedFrom: fromBlock, partial: false };
+}
+
 // --- tiny in-process cache -------------------------------------------------------
 
 const cache = new Map<string, { at: number; value: unknown; pending?: Promise<unknown> }>();
@@ -177,7 +225,10 @@ export async function cached<T>(key: string, ttlMs: number, fn: () => Promise<T>
     try {
       const v = (await hit.pending) as T;
       return { value: v, cachedAt: Date.now(), stale: false };
-    } catch {
+    } catch (err) {
+      // A waiter on a cold cache has nothing to fall back to; handing it `undefined`
+      // just moves the failure into the caller as a TypeError.
+      if (hit.at === 0) throw err;
       return { value: hit.value as T, cachedAt: hit.at, stale: true };
     }
   }

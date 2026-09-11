@@ -119,6 +119,27 @@
     "type": "error"
   },
   {
+    "inputs": [],
+    "name": "OracleUnavailable",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "triggerLtvBps",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "lltv",
+        "type": "uint256"
+      }
+    ],
+    "name": "PolicyAboveLltv",
+    "type": "error"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -132,6 +153,22 @@
       }
     ],
     "name": "PoolPriceOffOracle",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "before",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "after_",
+        "type": "uint256"
+      }
+    ],
+    "name": "ProtectWorsenedLtv",
     "type": "error"
   },
   {

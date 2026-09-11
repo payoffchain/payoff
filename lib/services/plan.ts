@@ -23,6 +23,8 @@ import { buildCloseLp, buildHarvest, buildOpenLp, buildProtect, buildRefinance, 
 export type PlanAction = {
   kind: "protect" | "refinance" | "harvest" | "close" | "open";
   reason: string;
+  /** structured target, so a client never has to parse the reason text */
+  args: { tokenId?: string; marketId?: string; fee?: number };
   built: Built;
   /** estimated $ effect per year (savings) or now (fees) */
   valueUsd: number | null;
@@ -64,10 +66,16 @@ export async function planFor(vaultAddress: string, overrides: Partial<PlanSetti
   const skipped: Plan["skipped"] = [];
   const ltvBps = v.position.ltvBps;
 
-  // 1. protect
-  if (v.position.debt > 0 && (ltvBps === null || ltvBps >= v.policy.triggerLtvBps)) {
+  // 1. protect. An unknown LTV means the market oracle could not be read; the vault
+  // fails closed on that (no swap, no sale), so proposing a protect would only hand
+  // the runner a revert. Say so, and stop: nothing else should trade blind either.
+  if (v.position.debt > 0 && ltvBps === null) {
+    skipped.push({ rule: "protect", why: "the market oracle cannot be read; the vault refuses to trade without a price. Only repaying from idle balance works until it returns." });
+    return finish();
+  }
+  if (v.position.debt > 0 && ltvBps! >= v.policy.triggerLtvBps) {
     const built = await buildProtect(v.address, {});
-    actions.push({ kind: "protect", reason: `LTV ${ltvBps === null ? "unknown" : (ltvBps / 100).toFixed(1) + "%"} is at or above the trigger ${(v.policy.triggerLtvBps / 100).toFixed(0)}%`, built, valueUsd: null });
+    actions.push({ kind: "protect", args: {}, reason: `LTV ${(ltvBps! / 100).toFixed(1)}% is at or above the trigger ${(v.policy.triggerLtvBps / 100).toFixed(0)}%`, built, valueUsd: null });
     return finish();
   }
   skipped.push({ rule: "protect", why: v.position.debt === 0 ? "no debt" : `LTV ${(ltvBps! / 100).toFixed(1)}% below trigger ${(v.policy.triggerLtvBps / 100).toFixed(0)}%` });
@@ -96,7 +104,7 @@ export async function planFor(vaultAddress: string, overrides: Partial<PlanSetti
       }
       if (best) {
         const built = await buildRefinance(v.address, best.id);
-        actions.push({ kind: "refinance", reason: `market ${best.id.slice(0, 10)} borrows at ${(best.apy * 100).toFixed(2)}% vs ${(v.market.borrowApy * 100).toFixed(2)}% here (saves ${Math.round(best.saving * 10_000)} bps, $${(v.position.debt * best.saving).toFixed(2)}/yr)`, built, valueUsd: v.position.debt * best.saving });
+        actions.push({ kind: "refinance", args: { marketId: best.id }, reason: `market ${best.id.slice(0, 10)} borrows at ${(best.apy * 100).toFixed(2)}% vs ${(v.market.borrowApy * 100).toFixed(2)}% here (saves ${Math.round(best.saving * 10_000)} bps, $${(v.position.debt * best.saving).toFixed(2)}/yr)`, built, valueUsd: v.position.debt * best.saving });
       } else skipped.push({ rule: "refinance", why: `no allow-listed market beats ${(v.market.borrowApy * 100).toFixed(2)}% by ${s.minSavingsBps} bps with enough liquidity` });
     }
   } else skipped.push({ rule: "refinance", why: v.position.debt === 0 ? "no debt" : "current rate unknown" });
@@ -129,7 +137,7 @@ export async function planFor(vaultAddress: string, overrides: Partial<PlanSetti
     if (p.costBasis > 0 && loss * 100 >= s.lossLimitPct) {
       if (gate) { skipped.push({ rule: `close #${p.tokenId}`, why: `${(loss * 100).toFixed(1)}% below cost, but ${gate}` }); continue; }
       const built = await buildCloseLp(v.address, p.tokenId, { swapToLoan: true });
-      actions.push({ kind: "close", reason: `position #${p.tokenId} is ${(loss * 100).toFixed(1)}% below cost (limit ${s.lossLimitPct}%): close to ${v.loan.symbol}`, built, valueUsd: null });
+      actions.push({ kind: "close", args: { tokenId: p.tokenId }, reason: `position #${p.tokenId} is ${(loss * 100).toFixed(1)}% below cost (limit ${s.lossLimitPct}%): close to ${v.loan.symbol}`, built, valueUsd: null });
       continue;
     }
     if (s.outOfRangeExit && !p.inRange && p.currentPrice !== null && p.priceUpper !== null && p.priceLower !== null) {
@@ -138,7 +146,7 @@ export async function planFor(vaultAddress: string, overrides: Partial<PlanSetti
         // costs no market exposure, and the idle USDG is redeployed by rule 5.
         if (gate) { skipped.push({ rule: `close #${p.tokenId}`, why: `above range, but ${gate}` }); continue; }
         const built = await buildCloseLp(v.address, p.tokenId, { swapToLoan: true });
-        actions.push({ kind: "close", reason: `position #${p.tokenId} is above its range (${p.currentPrice.toFixed(2)} > ${p.priceUpper.toFixed(2)}) and holds only ${v.loan.symbol}: close and redeploy`, built, valueUsd: null });
+        actions.push({ kind: "close", args: { tokenId: p.tokenId }, reason: `position #${p.tokenId} is above its range (${p.currentPrice.toFixed(2)} > ${p.priceUpper.toFixed(2)}) and holds only ${v.loan.symbol}: close and redeploy`, built, valueUsd: null });
         continue;
       }
       // Below the range the position is entirely collateral. Closing would sell it at the
@@ -148,24 +156,27 @@ export async function planFor(vaultAddress: string, overrides: Partial<PlanSetti
     if (p.uncollected && (p.uncollected.usd ?? 0) >= s.harvestFloorUsd) {
       if (gate && p.uncollected.collateral > 0) { skipped.push({ rule: `harvest #${p.tokenId}`, why: `$${p.uncollected.usd!.toFixed(2)} of fees waiting, but ${gate}` }); continue; }
       const built = await buildHarvest(v.address, p.tokenId);
-      actions.push({ kind: "harvest", reason: `position #${p.tokenId} has $${p.uncollected.usd!.toFixed(2)} of fees to collect`, built, valueUsd: p.uncollected.usd });
+      actions.push({ kind: "harvest", args: { tokenId: p.tokenId }, reason: `position #${p.tokenId} has $${p.uncollected.usd!.toFixed(2)} of fees to collect`, built, valueUsd: p.uncollected.usd });
     } else skipped.push({ rule: `harvest #${p.tokenId}`, why: `fees $${(p.uncollected?.usd ?? 0).toFixed(2)} below floor $${s.harvestFloorUsd}` });
   }
 
   // 5. deploy idle loan token
   if (v.balances.loan >= s.minDeployUsd && !v.paused) {
-    const candidates = pools.filter((p) => p.price !== null && (p.tvlUsd ?? 0) > 0);
+    // A tier whose fee is not below the policy's slippage band can never fill above the
+    // vault's oracle floor; the tx builder refuses it, so do not rank it either.
+    const candidates = pools.filter((p) => p.price !== null && (p.tvlUsd ?? 0) > 0 && p.fee / 100 < v.policy.maxSlippageBps);
     let pick = s.preferredFee ? candidates.find((p) => p.fee === s.preferredFee) ?? null : null;
     let reason = "";
     if (!pick) {
       // Busiest pool by fee yield over the last hour (a short window keeps the log scan
       // inside a serverless time budget), falling back to the deepest pool.
       let bestApr = -1;
-      for (const p of candidates) {
-        const vol = await poolVolume(p, p.token0.toLowerCase() === v.loan.address.toLowerCase(), v.loan.decimals, 1, p.tvlUsd);
+      const vols = await Promise.all(candidates.map((p) => poolVolume(p, p.token0.toLowerCase() === v.loan.address.toLowerCase(), v.loan.decimals, 1, p.tvlUsd)));
+      candidates.forEach((p, i) => {
+        const vol = vols[i];
         const apr = vol?.feeApr ?? -1;
-        if (apr > bestApr) { bestApr = apr; pick = p; reason = vol ? `fee yield ≈ ${(apr * 100).toFixed(0)}% APR on $${Math.round(p.tvlUsd ?? 0).toLocaleString("en-US")} TVL over the last hour` : "deepest pool"; }
-      }
+        if (apr > bestApr) { bestApr = apr; pick = p; reason = vol ? `fee yield ≈ ${(apr * 100).toFixed(0)}% APR on ${Math.round(p.tvlUsd ?? 0).toLocaleString("en-US")} TVL over the last hour` : "deepest pool"; }
+      });
       if (!pick && candidates.length) { pick = candidates.sort((a, b) => (b.tvlUsd ?? 0) - (a.tvlUsd ?? 0))[0]; reason = "deepest pool"; }
     } else reason = `preferred tier ${pick.fee / 10_000}%`;
     if (pick) {
@@ -174,7 +185,7 @@ export async function planFor(vaultAddress: string, overrides: Partial<PlanSetti
         skipped.push({ rule: "deploy", why: `${v.balances.loan.toFixed(2)} ${v.loan.symbol} idle, but ${gate}` });
       } else {
         const built = await buildOpenLp(v.address, { amount: v.balances.loan.toFixed(v.loan.decimals), fee: pick.fee, widthPct: s.rangeWidthPct, slippageBps: v.policy.maxSlippageBps });
-        actions.push({ kind: "open", reason: `${v.balances.loan.toFixed(2)} ${v.loan.symbol} idle in the vault → ${pick.fee / 10_000}% pool (${reason}), ±${s.rangeWidthPct}% range`, built, valueUsd: null });
+        actions.push({ kind: "open", args: { fee: pick.fee }, reason: `${v.balances.loan.toFixed(2)} ${v.loan.symbol} idle in the vault → ${pick.fee / 10_000}% pool (${reason}), ±${s.rangeWidthPct}% range`, built, valueUsd: null });
       }
     } else skipped.push({ rule: "deploy", why: "no pool for the pair" });
   } else skipped.push({ rule: "deploy", why: v.paused ? "vault paused" : `idle ${v.loan.symbol} ${v.balances.loan.toFixed(2)} below $${s.minDeployUsd}` });

@@ -94,7 +94,10 @@ const POOL_ABI = ["function slot0() view returns (uint160 sqrtPriceX96,int24 tic
     const ids = await vault.openPositions();
     expect(ids.length).to.eq(1);
     const info = await vault.positionInfo(ids[0]);
-    expect(info.costBasis).to.eq(40_000_000n);
+    // Cost basis is what the position took, not what was offered: the real manager
+    // returns the leg it could not use, so the basis lands a little under the 40 USDG.
+    expect(info.costBasis).to.be.lte(40_000_000n);
+    expect(info.costBasis).to.be.gte(39_000_000n);
 
     // 7. refinance the debt into market B via Morpho's flash loan
     await expect(vault.connect(operator).refinance(mB)).to.emit(vault, "Refinanced");

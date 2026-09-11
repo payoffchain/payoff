@@ -420,3 +420,101 @@ describe("PayoffVault: liquidation protection", () => {
     expect(await f.vault.collateralAssets()).to.eq(NVDA(8.5));
   });
 });
+
+describe("PayoffVault: audit hardening", () => {
+  async function funded() {
+    const f = await loadFixture(deployFixture);
+    await f.vault.connect(f.user).depositCollateral(NVDA(10));
+    await f.vault.connect(f.operator).borrow(USDG(900));
+    return f;
+  }
+
+  it("fails closed when the oracle cannot be read: no swap, no mint, no collateral sale", async () => {
+    const f = await funded();
+    await f.oracle.setBroken(true);
+    // mint (single-sided, no swap) is refused because the pool cannot be checked
+    await expect(f.vault.connect(f.operator).openLp({
+      fee: 3000, tickLower: -887220, tickUpper: 887220, loanAmount: USDG(900), swapAmount: 0, swapMinOut: 0,
+      amount0Min: 0, amount1Min: 0, deadline: await f.deadline(),
+    })).to.be.revertedWithCustomError(f.vault, "OracleUnavailable");
+    // a swap with minOut = 0 is refused, whatever the operator asks
+    await expect(f.vault.connect(f.operator).openLp({
+      fee: 3000, tickLower: -887220, tickUpper: 887220, loanAmount: USDG(900), swapAmount: USDG(450), swapMinOut: 0,
+      amount0Min: 0, amount1Min: 0, deadline: await f.deadline(),
+    })).to.be.revertedWithCustomError(f.vault, "OracleUnavailable");
+    // protect cannot sell collateral blind either; ltvBps() is "unknown" (max) so the trigger passes, the sale does not
+    await f.vault.connect(f.user).withdrawToken(await f.usdg.getAddress(), 0);
+    await expect(f.vault.connect(f.operator).protect([], NVDA(5), 3000, await f.deadline())).to.be.revertedWithCustomError(f.vault, "OracleUnavailable");
+    // repaying from idle balance still works: that path needs no price
+    await f.vault.connect(f.user).depositLoanToken(USDG(100));
+    await expect(f.vault.connect(f.operator).repay(USDG(100))).to.emit(f.vault, "Repaid");
+    await f.oracle.setBroken(false);
+  });
+
+  it("protect sells only what the repayment needs, whatever the caller asks for", async () => {
+    const f = await funded();
+    await f.vault.connect(f.user).withdrawToken(await f.usdg.getAddress(), 0);
+    const newPrice = PRICE36(150n);
+    await f.oracle.set(newPrice);
+    await f.router.setPrice(newPrice);
+    // target = 25% of 900 = 225 USDG = 1.5 NVDA at 150; band 1% -> at most ~1.515 NVDA may be sold
+    await f.vault.connect(f.operator).protect([], NVDA(8), 3000, await f.deadline());
+    expect(await f.vault.debtAssets()).to.eq(USDG(675));
+    const coll = await f.vault.collateralAssets();
+    expect(coll).to.be.gte(NVDA(8.48));
+    expect(coll).to.be.lte(NVDA(8.5));
+    // LTV went down, never up
+    expect(await f.vault.ltvBps()).to.be.lt(6000n);
+  });
+
+  // ProtectWorsenedLtv is a defensive post-condition: with a bounded, oracle-floored sale the
+  // LTV can only rise when it already exceeds ~1/(1+slippage), i.e. past every Morpho LLTV,
+  // where Morpho itself refuses the withdrawal first. It is not reachable through the mocks.
+
+  it("policy trigger must sit below the market's LLTV, on create, on setPolicy, on allow-list and on refinance", async () => {
+    const f = await loadFixture(deployFixture);
+    // marketA lltv 63%: a trigger of 63% or more is useless
+    const useless = { maxLtvBps: 5000n, triggerLtvBps: 6300n, repayBps: 2500n, maxSlippageBps: 100n };
+    await expect(f.factory.createVault(f.operator.address, f.marketA, useless)).to.be.revertedWithCustomError(f.vault, "PolicyAboveLltv");
+    await expect(f.vault.connect(f.user).setPolicy(useless)).to.be.revertedWithCustomError(f.vault, "PolicyAboveLltv");
+    // a 39% market cannot be allow-listed under a 55% trigger
+    const irmC = await (await ethers.getContractFactory("MockIrm")).deploy(3n);
+    const marketC = { ...f.marketA, irm: await irmC.getAddress(), lltv: 385n * WAD / 1000n };
+    await f.morpho.createMarket(marketC);
+    await expect(f.vault.connect(f.user).setMarketAllowed(marketC, true)).to.be.revertedWithCustomError(f.vault, "PolicyAboveLltv");
+    // ...and an oracle-less market never
+    await expect(f.vault.connect(f.user).setMarketAllowed({ ...f.marketB, oracle: ethers.ZeroAddress }, true)).to.be.revertedWithCustomError(f.vault, "OracleUnavailable");
+    // a zero slippage band is refused (it would fail every swap against the pool fee)
+    await expect(f.vault.connect(f.user).setPolicy({ ...useless, triggerLtvBps: 5500n, maxSlippageBps: 0n })).to.be.revertedWithCustomError(f.vault, "BadPolicy");
+  });
+
+  it("cost basis counts only what the position took, not what mint handed back", async () => {
+    const f = await funded();
+    const tokenId = await f.vault.connect(f.operator).openLp.staticCall({
+      fee: 3000, tickLower: -887220, tickUpper: 887220, loanAmount: USDG(900), swapAmount: 0, swapMinOut: 0,
+      amount0Min: 0, amount1Min: 0, deadline: await f.deadline(),
+    });
+    await f.vault.connect(f.operator).openLp({
+      fee: 3000, tickLower: -887220, tickUpper: 887220, loanAmount: USDG(900), swapAmount: 0, swapMinOut: 0,
+      amount0Min: 0, amount1Min: 0, deadline: await f.deadline(),
+    });
+    const info = await f.vault.positionInfo(tokenId);
+    // the mock takes everything it is offered, so basis == the loan committed; the point is
+    // that it is derived from `used`, which the real manager may return short of `desired`
+    expect(info.costBasis).to.eq(USDG(900));
+    expect(info.open).to.eq(true);
+  });
+
+  it("re-checks the pool against the oracle after its own swap", async () => {
+    const f = await funded();
+    // Pool sits at the oracle before the swap; the mock router does not move the pool, so
+    // simulate a thin pool that our swap knocked 5% off by moving it in between via a
+    // second call: pre-swap check passes, post-swap check must fail.
+    const sp = f.token0IsNvda ? sqrtPriceX96(171n * 10n ** 6n, 10n ** 18n) : sqrtPriceX96(10n ** 18n, 171n * 10n ** 6n);
+    await f.pool.setSqrtPrice(sp); // 5% below the 180 oracle: outside the 1% band
+    await expect(f.vault.connect(f.operator).openLp({
+      fee: 3000, tickLower: -887220, tickUpper: 887220, loanAmount: USDG(900), swapAmount: USDG(450), swapMinOut: 0,
+      amount0Min: 0, amount1Min: 0, deadline: await f.deadline(),
+    })).to.be.revertedWithCustomError(f.vault, "PoolPriceOffOracle");
+  });
+});

@@ -186,6 +186,8 @@ export async function poolsForPair(collateralToken: string, loanToken: string, c
   return out;
 }
 
+const volumeFailedAt = new Map<string, number>();
+
 export type PoolVolume = {
   hours: number;
   swaps: number;
@@ -206,11 +208,14 @@ export type PoolVolume = {
  */
 export async function poolVolume(pool: PoolInfo, loanIsToken0: boolean, loanDec: number, hours: number, tvlUsd: number | null): Promise<PoolVolume | null> {
   const key = `vol:${pool.address}:${hours}`;
+  if ((volumeFailedAt.get(key) ?? 0) > Date.now() - 60_000) return null;
   try {
     const { value } = await cached(key, 10 * 60_000, () => readPoolVolume(pool, loanIsToken0, loanDec, hours, tvlUsd));
     return value;
   } catch {
-    // A pool too busy for the RPC's log query is reported as "unknown", not as an error page.
+    // A pool too busy for the RPC's log query is reported as "unknown", not as an error
+    // page, and not retried through the whole halving ladder on every request.
+    volumeFailedAt.set(key, Date.now());
     return null;
   }
 }

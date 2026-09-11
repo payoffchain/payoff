@@ -41,10 +41,12 @@ interface IPayoffFactory {
 ///      price of one vault per pair — which is also the natural unit for the UI.
 ///
 /// @dev PRICES ARE POLICED BY THE MARKET ORACLE. Every swap gets a floor derived from
-///      the Morpho market's oracle less the policy's slippage ceiling, and every mint or
-///      burn first checks the pool's spot price against the same oracle. An operator can
-///      pass minOut = 0; the vault tightens it. Without that a leaked key could sandwich
-///      the vault through a pool it controls.
+///      the Morpho market's oracle less the policy's slippage ceiling, and every mint
+///      (and every owner-initiated burn) first checks the pool's spot price against the
+///      same oracle. An operator can pass minOut = 0; the vault tightens it. When the
+///      oracle cannot be read the vault FAILS CLOSED: no swap, no mint, no collateral
+///      sale; only repaying from idle balance still works. Without that a leaked key
+///      could sandwich the vault through a pool it controls.
 ///
 /// @dev FEES. The protocol takes `harvestFeeBps` of harvested trading fees (cap 5%) and
 ///      `performanceFeeBps` of realized profit above cost basis when an LP position is
@@ -139,6 +141,9 @@ contract PayoffVault is IERC721Receiver, IMorphoFlashLoanCallback, ReentrancyGua
     error FlashLoanNotInProgress();
     error PoolPriceOffOracle(uint256 poolPrice, uint256 oraclePrice);
     error NoPool();
+    error OracleUnavailable();
+    error PolicyAboveLltv(uint256 triggerLtvBps, uint256 lltv);
+    error ProtectWorsenedLtv(uint256 before, uint256 after_);
 
     modifier onlyOwner() {
         if (msg.sender != owner) revert NotOwner();
@@ -178,10 +183,11 @@ contract PayoffVault is IERC721Receiver, IMorphoFlashLoanCallback, ReentrancyGua
         collateralToken = initialMarket.collateralToken;
         loanToken = initialMarket.loanToken;
         if (collateralToken == address(0) || loanToken == address(0) || collateralToken == loanToken) revert WrongPair();
-        _setPolicy(policy_);
+        if (initialMarket.oracle == address(0)) revert OracleUnavailable();
         bytes32 id = marketId(initialMarket);
         allowedMarkets[id] = true;
         market = initialMarket;
+        _setPolicy(policy_);
         createdAt = block.timestamp;
         emit MarketAllowed(id, true);
         emit Initialized(owner_, operator_, collateralToken, loanToken, id);
@@ -216,14 +222,26 @@ contract PayoffVault is IERC721Receiver, IMorphoFlashLoanCallback, ReentrancyGua
         // right after every borrow); everything is in basis points; and a ceiling above
         // 95% would be liquidated by the first tick.
         if (p.maxLtvBps > 9500 || p.triggerLtvBps < p.maxLtvBps || p.triggerLtvBps > BPS) revert BadPolicy();
-        if (p.repayBps == 0 || p.repayBps > BPS || p.maxSlippageBps > 2000) revert BadPolicy();
+        // A slippage band of zero would make every swap fail against the pool fee alone.
+        if (p.repayBps == 0 || p.repayBps > BPS || p.maxSlippageBps < 10 || p.maxSlippageBps > 2000) revert BadPolicy();
+        _requireTriggerBelowLltv(p.triggerLtvBps, market.lltv);
         policy = p;
         emit PolicySet(p.maxLtvBps, p.triggerLtvBps, p.repayBps, p.maxSlippageBps);
+    }
+
+    /// @dev protect() is only useful if it can fire before Morpho liquidates: the trigger
+    ///      (basis points) must be strictly below the market's LLTV (WAD).
+    function _requireTriggerBelowLltv(uint256 triggerBps, uint256 lltv) internal pure {
+        if (triggerBps * 1e14 >= lltv) revert PolicyAboveLltv(triggerBps, lltv);
     }
 
     /// @notice Allow-list a Morpho market the operator may refinance into. Must be the vault's pair.
     function setMarketAllowed(MarketParams calldata params, bool allowed) external onlyOwner {
         if (params.loanToken != loanToken || params.collateralToken != collateralToken) revert WrongPair();
+        if (allowed) {
+            if (params.oracle == address(0)) revert OracleUnavailable();
+            _requireTriggerBelowLltv(policy.triggerLtvBps, params.lltv);
+        }
         bytes32 id = marketId(params);
         allowedMarkets[id] = allowed;
         emit MarketAllowed(id, allowed);
@@ -320,6 +338,7 @@ contract PayoffVault is IERC721Receiver, IMorphoFlashLoanCallback, ReentrancyGua
         if (!allowedMarkets[toId]) revert MarketNotAllowed();
         if (target.loanToken != loanToken || target.collateralToken != collateralToken) revert WrongPair();
         if (toId == fromId) revert NothingToDo();
+        _requireTriggerBelowLltv(policy.triggerLtvBps, target.lltv);
 
         IMorpho m = IMorpho(factory.morpho());
         m.accrueInterest(market);
@@ -408,6 +427,9 @@ contract PayoffVault is IERC721Receiver, IMorphoFlashLoanCallback, ReentrancyGua
         uint256 collateralLeg;
         if (p.swapAmount > 0) {
             collateralLeg = _swap(loanToken, collateralToken, p.fee, p.swapAmount, p.swapMinOut, p.deadline, "openLp");
+            // The swap moved the pool. A thin pool could now sit far from the oracle and
+            // the mint would be arbed straight back; check again before minting.
+            _checkPoolPrice(p.fee);
         }
         uint256 loanLeg = p.loanAmount - p.swapAmount;
 
@@ -429,9 +451,14 @@ contract PayoffVault is IERC721Receiver, IMorphoFlashLoanCallback, ReentrancyGua
         if (a0 > 0) IERC20(token0).forceApprove(address(pm), 0);
         if (a1 > 0) IERC20(token1).forceApprove(address(pm), 0);
 
-        positions.push(LpPosition({ tokenId: tokenId, fee: p.fee, costBasis: p.loanAmount, open: true }));
+        // Cost basis is what the position actually took: the loan leg it used plus the
+        // share of the swapped amount that went in. Whatever mint returned stays in the
+        // vault and is not part of this position's profit calculation.
+        (uint256 usedLoan, uint256 usedColl) = token0 == loanToken ? (used0, used1) : (used1, used0);
+        uint256 costBasis = usedLoan + (collateralLeg == 0 ? 0 : p.swapAmount.mulDiv(usedColl, collateralLeg));
+        positions.push(LpPosition({ tokenId: tokenId, fee: p.fee, costBasis: costBasis, open: true }));
         positionIndex[tokenId] = positions.length;
-        emit LpOpened(tokenId, p.fee, p.tickLower, p.tickUpper, liquidity, used0, used1, p.loanAmount);
+        emit LpOpened(tokenId, p.fee, p.tickLower, p.tickUpper, liquidity, used0, used1, costBasis);
     }
 
     /// @notice Collect the fees a position has earned, take the protocol's cut, turn the
@@ -464,14 +491,19 @@ contract PayoffVault is IERC721Receiver, IMorphoFlashLoanCallback, ReentrancyGua
     function closeLp(uint256 tokenId, uint256 amount0Min, uint256 amount1Min, bool swapToLoan, uint256 swapMinOut, uint256 deadline)
         external onlyAuthorized nonReentrant checkDeadline(deadline) returns (uint256 loanOut, uint256 repaid)
     {
-        (loanOut, repaid) = _close(tokenId, amount0Min, amount1Min, swapToLoan, swapMinOut, deadline);
+        (loanOut, repaid) = _close(tokenId, amount0Min, amount1Min, swapToLoan, swapMinOut, deadline, true);
     }
 
-    function _close(uint256 tokenId, uint256 amount0Min, uint256 amount1Min, bool swapToLoan, uint256 swapMinOut, uint256 deadline)
+    /// @dev checkSpot compares the pool to the oracle before burning. protect() passes
+    ///      false: equity oracles hold the last print over nights and weekends while the
+    ///      pool keeps trading, and protection must still be able to run then. Burning at a
+    ///      skewed spot only changes the token mix that comes out; the swap that follows is
+    ///      still floored by the oracle, so no value leaks through the burn itself.
+    function _close(uint256 tokenId, uint256 amount0Min, uint256 amount1Min, bool swapToLoan, uint256 swapMinOut, uint256 deadline, bool checkSpot)
         internal returns (uint256 loanOut, uint256 repaid)
     {
         LpPosition storage pos = _position(tokenId);
-        _checkPoolPrice(pos.fee);
+        if (checkSpot) _checkPoolPrice(pos.fee);
         INonfungiblePositionManager pm = INonfungiblePositionManager(factory.positionManager());
         (,,,,,,, uint128 liquidity,,,,) = pm.positions(tokenId);
         if (liquidity > 0) {
@@ -511,15 +543,15 @@ contract PayoffVault is IERC721Receiver, IMorphoFlashLoanCallback, ReentrancyGua
     function protect(uint256[] calldata tokenIds, uint256 maxCollateralToSell, uint24 swapFee, uint256 deadline)
         external onlyAuthorized nonReentrant checkDeadline(deadline)
     {
-        uint256 before = ltvBps();
-        if (before < policy.triggerLtvBps) revert NotAtTrigger(before, policy.triggerLtvBps);
         IMorpho m = IMorpho(factory.morpho());
         m.accrueInterest(market);
+        uint256 before = ltvBps();
+        if (before < policy.triggerLtvBps) revert NotAtTrigger(before, policy.triggerLtvBps);
         uint256 target = debtAssets() * policy.repayBps / BPS;
         uint256 repaid = _repayFromBalance(target, "protect");
 
         for (uint256 i = 0; i < tokenIds.length && repaid < target; i++) {
-            (, uint256 r) = _close(tokenIds[i], 0, 0, true, 0, deadline);
+            (, uint256 r) = _close(tokenIds[i], 0, 0, true, 0, deadline, false);
             repaid += r;
         }
 
@@ -527,17 +559,25 @@ contract PayoffVault is IERC721Receiver, IMorphoFlashLoanCallback, ReentrancyGua
         if (repaid < target && maxCollateralToSell > 0) {
             // The collateral cannot leave Morpho while it backs the debt, so the repayment
             // is flash-borrowed, the collateral is freed and sold, and the sale pays the
-            // flash loan back — one transaction. Whatever the sale yields beyond the
-            // repayment stays in the vault as loan token.
+            // flash loan back — one transaction. The amount sold is bounded by what the
+            // repayment needs at the worst price the policy accepts, whatever the caller
+            // asked for: an operator cannot use protection to liquidate the vault.
             uint256 need = target - repaid;
+            uint256 px = _oraclePrice();
+            if (px == 0) revert OracleUnavailable();
+            uint256 enough = need.mulDiv(ORACLE_SCALE, px, Math.Rounding.Ceil).mulDiv(BPS, BPS - policy.maxSlippageBps, Math.Rounding.Ceil) + 1;
+            sold = Math.min(maxCollateralToSell, enough);
             flashMode = FL_PROTECT;
-            m.flashLoan(loanToken, need, abi.encode(need, uint256(0), maxCollateralToSell, swapFee, deadline));
+            m.flashLoan(loanToken, need, abi.encode(need, uint256(0), sold, swapFee, deadline));
             flashMode = FL_NONE;
-            sold = maxCollateralToSell;
             repaid += need;
         }
         if (repaid == 0) revert NothingToDo();
-        emit Protected(before, ltvBps(), repaid, sold);
+        uint256 after_ = ltvBps();
+        // Selling collateral to repay only helps while LTV < 100%; past that, or with a bad
+        // fill, it would leave the position closer to liquidation than before. Refuse.
+        if (after_ > before) revert ProtectWorsenedLtv(before, after_);
+        emit Protected(before, after_, repaid, sold);
     }
 
     // --- internals -----------------------------------------------------------------
@@ -587,7 +627,10 @@ contract PayoffVault is IERC721Receiver, IMorphoFlashLoanCallback, ReentrancyGua
     /// @dev Oracle-implied output less maxSlippageBps. Zero when the oracle cannot be read.
     function _oracleFloor(address tokenIn, uint256 amountIn) internal view returns (uint256) {
         uint256 px = _oraclePrice();
-        if (px == 0) return 0;
+        // Fail closed. With no price there is no floor, and "no floor" is exactly the
+        // moment a leaked operator key could route the whole balance through a pool it
+        // controls. Better that the vault does nothing until the oracle answers.
+        if (px == 0) revert OracleUnavailable();
         uint256 fair = tokenIn == collateralToken
             ? amountIn.mulDiv(px, ORACLE_SCALE)
             : amountIn.mulDiv(ORACLE_SCALE, px);
@@ -598,7 +641,7 @@ contract PayoffVault is IERC721Receiver, IMorphoFlashLoanCallback, ReentrancyGua
     ///      must sit within maxSlippageBps of the oracle. Skipped when the oracle is unreadable.
     function _checkPoolPrice(uint24 fee) internal view {
         uint256 px = _oraclePrice();
-        if (px == 0) return;
+        if (px == 0) revert OracleUnavailable();
         (address token0, address token1) = _sorted();
         address pool = IUniswapV3Factory(factory.uniswapFactory()).getPool(token0, token1, fee);
         if (pool == address(0)) revert NoPool();
