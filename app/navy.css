@@ -583,3 +583,12 @@ main > section:nth-of-type(4){clip-path:polygon(0 3%,100% 0,100% 97%,0 100%);pad
 .mk.featured .cta{grid-area:cta;margin:0}
 .mk.featured .go{width:auto;padding:12px 18px}
 @media(max-width:820px){.mk.featured{grid-column:span 1;grid-template-columns:1fr;grid-template-areas:"top" "rate" "meta" "cta"}.mk.featured .meta{border-left:0;border-top:2px solid var(--rule);padding:12px 0 0}.mk.featured .rate{font-size:34px}}
+/* shape pass, corrections 2: the ticket's step labels are underlines, not pills;
+   the statement number must fit its column instead of squeezing the text beside it */
+.tk-steps span{border-radius:0}
+.band{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:48px}
+.band > *{min-width:0}
+.band .huge{font-size:clamp(52px,7.4vw,96px);line-height:.9;letter-spacing:-.05em;margin-top:0;white-space:nowrap;display:block}
+.band .huge small{white-space:normal;margin-top:16px}
+.band h2{font-size:clamp(24px,2.4vw,34px)}
+@media(max-width:900px){.band{grid-template-columns:1fr;gap:28px}.band .huge{font-size:clamp(44px,11vw,72px)}}
