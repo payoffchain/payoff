@@ -19,7 +19,7 @@ export default function Demo() {
           <div className="card"><h3>What auto-repay does</h3><p>Puts idle USDG into the stock's pool, collects fees onto the debt, moves the debt to a cheaper market when there is one, and repays early at your safety line.</p></div>
           <div className="card"><h3>What nobody can do</h3><p>Send a token out of the vault to any address but yours. Not auto-repay, not {APP}, not a leaked key.</p></div>
         </div>
-        <p className="row" style={{ marginTop: 32 }}><Link className="btn green lg" href="/borrow">Open a loan →</Link><Link className="btn lg" href="/docs">Read the docs</Link></p>
+        <p className="row" style={{ marginTop: 32 }}><Link className="btn green lg" href="/borrow">Open a loan<span className="arr">→</span></Link><Link className="btn lg" href="/docs">Read the docs</Link></p>
       </main>
     </>
   );

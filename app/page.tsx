@@ -96,7 +96,7 @@ export default function Landing() {
                 Put tokenized stocks in as collateral, borrow USDG against them, and let the loan repay itself: the borrowed USDG earns trading fees in a Uniswap pool, and every fee goes onto your debt. Only you can take money out.
               </p>
               <div className="row" style={{ marginTop: 26, gap: 12, animation: "fadeUp .8s 1.1s both" }}>
-                <Link className="btn green lg" href="/borrow">Open a loan →</Link>
+                <Link className="btn green lg" href="/borrow">Open a loan<span className="arr">→</span></Link>
                 <Link className="btn lg" href="/demo">▶ Watch the demo</Link>
               </div>
               <div className="row faint mono" style={{ marginTop: 22, fontSize: 12, gap: 18, animation: "fadeUp .8s 1.3s both" }}>
@@ -173,13 +173,13 @@ export default function Landing() {
                     <div><span>available</span><b>{usd(g.best!.liquidityUsd)}</b></div>
                     <div><span>LLTV</span><b>{(g.best!.lltv * 100).toFixed(0)}%</b></div>
                   </div>
-                  <div className="cta"><span className="btn green go">Borrow USDG →</span></div>
+                  <div className="cta"><span className="btn green go">Borrow USDG<span className="arr">→</span></span></div>
                 </Reveal>
               ))}
               {shown.length === 0 && (
                 <div className="mk-empty">{board.loading ? <span><span className="spinner" /> Reading markets on chain…</span> : q ? `No market matches "${q}".` : board.error ?? "No live market data right now."}</div>
               )}
-              {shown.length > 0 && !q && <Link className="mk-more" href="/rates">All {marketCount} markets, every LLTV →</Link>}
+              {shown.length > 0 && !q && <Link className="mk-more" href="/rates">All {marketCount} markets, every LLTV<span className="arr">→</span></Link>}
             </div>
           </div>
         </section>
@@ -249,7 +249,7 @@ export default function Landing() {
               <span className="eyebrow">Get started</span>
               <h2>Put your idle stock tokens to work.</h2>
               <p className="lede">No minimum. No lock-in. Nothing to trust but a contract you own and can read.</p>
-              <div className="row" style={{ marginTop: 28 }}><Link className="btn green lg" href="/borrow">Open a loan →</Link><Link className="btn lg" href="/docs">Read the docs</Link></div>
+              <div className="row" style={{ marginTop: 28 }}><Link className="btn green lg" href="/borrow">Open a loan<span className="arr">→</span></Link><Link className="btn lg" href="/docs">Read the docs</Link></div>
             </Reveal>
           </div>
         </section>

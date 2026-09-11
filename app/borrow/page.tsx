@@ -229,7 +229,7 @@ function DeployInner() {
                   </table>
                 </div>
               )}
-              <div className="row" style={{ marginTop: 16 }}><button className="btn green" disabled={!stepDone[1]} onClick={() => setStep(2)}>Continue →</button></div>
+              <div className="row" style={{ marginTop: 16 }}><button className="btn green" disabled={!stepDone[1]} onClick={() => setStep(2)}>Continue<span className="arr">→</span></button></div>
             </div>
           </div>
         )}
@@ -273,7 +273,7 @@ function DeployInner() {
               )}
               {policyProblem && <p className="note bad" style={{ marginTop: 10 }}>{policyProblem[0].toUpperCase() + policyProblem.slice(1)}.</p>}
               {custom && <p className="faint" style={{ marginTop: 8, fontSize: 12 }}>Custom numbers. <button className="btn xs" onClick={() => setCustom(false)}>Back to {PRESETS[preset].label}</button></p>}
-              <div className="row" style={{ marginTop: 16 }}><button className="btn green" disabled={!stepDone[2]} onClick={() => setStep(3)}>Continue →</button><button className="btn" onClick={() => setStep(1)}>Back</button></div>
+              <div className="row" style={{ marginTop: 16 }}><button className="btn green" disabled={!stepDone[2]} onClick={() => setStep(3)}>Continue<span className="arr">→</span></button><button className="btn" onClick={() => setStep(1)}>Back</button></div>
             </div>
           </div>
         )}
@@ -314,7 +314,7 @@ function DeployInner() {
                   <button className="btn xs" onClick={() => setOpMode("generate")}>Create a new key instead</button>
                 </div>
               )}
-              <div className="row" style={{ marginTop: 16 }}><button className="btn green" disabled={!stepDone[3]} onClick={() => setStep(4)}>Continue →</button><button className="btn" onClick={() => setStep(2)}>Back</button></div>
+              <div className="row" style={{ marginTop: 16 }}><button className="btn green" disabled={!stepDone[3]} onClick={() => setStep(4)}>Continue<span className="arr">→</span></button><button className="btn" onClick={() => setStep(2)}>Back</button></div>
             </div>
           </div>
         )}
@@ -358,7 +358,7 @@ AGENT_DRY_RUN=true   # watch /decisions first, then set false
 npm run agent`}</pre>
                     </li>
                   </ol>
-                  <div className="row" style={{ marginTop: 14 }}><Link className="btn green" href={`/vault/${vault}`}>Open the vault →</Link><Link className="btn" href="/docs#runner">Auto-repay setup guide</Link></div>
+                  <div className="row" style={{ marginTop: 14 }}><Link className="btn green" href={`/vault/${vault}`}>Open the vault<span className="arr">→</span></Link><Link className="btn" href="/docs#runner">Auto-repay setup guide</Link></div>
                 </div>
               )}
             </div>
