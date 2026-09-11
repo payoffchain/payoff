@@ -496,3 +496,82 @@ footer{border-top-width:1px}
 .navlinks a > span{display:inline-block;transition:transform .28s cubic-bezier(.2,.7,.2,1)}
 .navlinks a:hover > span{transform:translateY(-2px)}
 @media(prefers-reduced-motion:reduce){.navlinks a,.navlinks a .ul,.navlinks a > span{transition:none;animation:none}}
+
+/* ============================================================================
+   SHAPE PASS. Boxes alone read as a spreadsheet. This gives the page rhythm:
+   soft corners, one tilted object, one oversized element that breaks a border,
+   angled section edges, a featured card that is bigger than its siblings, and
+   a ticker that sits like a sticker.
+   ========================================================================== */
+:root{--r:10px}
+.card,.stats .stat,.hero-card,.tblwrap.card,.wz-step,.mk,.builton-item,.demo-frame,.demo-scene,.dm-panel,.dm-card,.dm-stats > div,.note,.wz-done,.wz-stock,.wz-preset,.mk-search,.mk-empty,.mk-more,.modal,.dcard,.cta,.panel,.ticket{border-radius:var(--r)}
+.btn{border-radius:8px} .btn.xs,.btn.sm{border-radius:6px}
+.chip,.pill,.seg,.wz-bar li,.tk-steps span,.mk .tag,.builton-item,.tstep .dot,.demo-ctl{border-radius:999px}
+.seg button{border-radius:999px}
+.mk .logo,.wz-stock .logo,.builton-logo,.card .ico{border-radius:10px}
+.tok img,.tok .mono-logo{border-radius:50%}
+input,select,textarea,.field input,.field select{border-radius:8px!important}
+.mk .go{border-radius:8px}
+.wz-num{border-radius:50%}
+.demo-frame,.demo-scene{border-radius:14px}
+@media(max-width:700px){.demo-scene{border-radius:14px 14px 0 0}.demo-caption{border-radius:0 0 14px 14px}}
+
+/* hero: the ticket leans in, straightens under the cursor; a ring around the logo */
+.hero-grid > div:last-child{perspective:1200px}
+.ticket{transform:rotateY(-9deg) rotateX(3deg);transform-style:preserve-3d;transition:transform .5s cubic-bezier(.2,.7,.2,1),box-shadow .5s;box-shadow:14px 14px 0 0 var(--blue-deep),0 30px 60px -20px rgba(0,0,0,.7)}
+.hero-grid > div:last-child:hover .ticket{transform:rotateY(0) rotateX(0);box-shadow:6px 6px 0 0 var(--blue-deep),0 30px 60px -20px rgba(0,0,0,.7)}
+.ticket::after{content:"";position:absolute;top:-1px;right:28px;width:44px;height:14px;background:var(--paper);border:1px solid var(--rule-2);border-top:0;border-radius:0 0 8px 8px}
+.hero-logo{position:relative}
+.hero-logo::after{content:"";position:absolute;inset:-14%;border:1px dashed rgba(170,196,255,.35);border-radius:50%;animation:orbit 40s linear infinite;pointer-events:none}
+
+/* ticker: a sticker strip, slightly rotated, wider than the page */
+.ticker{transform:rotate(-1.2deg);margin:22px -3% 26px;width:106%;border-radius:8px;box-shadow:6px 6px 0 0 var(--blue-deep)}
+
+/* the statement number bursts out of its section */
+.band{position:relative;overflow:visible}
+.band .huge{font-size:clamp(96px,15vw,220px);line-height:.8;margin-top:-40px;text-shadow:0 0 60px rgba(47,91,214,.35)}
+.band .huge::after{height:8px;border-radius:4px}
+
+/* angled section edges: every other section leans */
+main > section:nth-of-type(3){clip-path:polygon(0 0,100% 2.5%,100% 100%,0 97.5%);padding-top:64px;padding-bottom:64px;margin:-12px 0}
+main > section:nth-of-type(5){clip-path:polygon(0 2.5%,100% 0,100% 97.5%,0 100%);padding-top:64px;padding-bottom:64px;margin:-12px 0}
+
+/* market grid: the first card is the featured one */
+.mk-grid{grid-auto-rows:1fr}
+.mk.featured{grid-column:span 2;grid-row:span 1;flex-direction:row;align-items:center;gap:22px;padding:22px}
+.mk.featured .top{flex:1;min-width:0}
+.mk.featured .logo{width:64px;height:64px;border-radius:16px}
+.mk.featured .sym{font-size:26px}
+.mk.featured .rate{font-size:48px;flex:none}
+.mk.featured .meta{border-top:0;border-left:1px solid var(--rule);padding:0 0 0 22px;grid-template-columns:1fr;gap:10px;flex:none}
+.mk.featured .cta{margin:0;flex:none}
+.mk.featured .go{width:auto;padding:12px 18px}
+@media(max-width:820px){.mk.featured{grid-column:span 1;flex-direction:column;align-items:stretch}.mk.featured .meta{border-left:0;border-top:2px solid var(--rule);padding:12px 0 0;grid-template-columns:1fr 1fr}.mk.featured .rate{font-size:34px}}
+.mk::before{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(60% 50% at 100% 0%,rgba(47,91,214,.18),transparent 70%);pointer-events:none}
+.mk > *{position:relative}
+
+/* numbered desk cards: alternate offsets, a corner fold on the third */
+.desk3 .dcard:nth-child(2){transform:translateY(18px)}
+.desk3 .dcard:nth-child(2):hover{transform:translate(-2px,16px)}
+.desk3 .dcard:nth-child(3)::after{content:"";position:absolute;right:0;bottom:0;width:0;height:0;border-style:solid;border-width:0 0 34px 34px;border-color:transparent transparent var(--paper) transparent;border-bottom-left-radius:var(--r)}
+@media(max-width:900px){.desk3 .dcard:nth-child(2){transform:none}}
+
+/* security bento: soft corner glows so the cards are not identical */
+.bento .card.feature:nth-child(odd)::before{background:radial-gradient(60% 60% at 0% 0%,rgba(47,91,214,.16),transparent 70%)}
+.bento .card.feature:nth-child(even)::before{background:radial-gradient(60% 60% at 100% 100%,rgba(185,205,255,.10),transparent 70%)}
+.bento .card.feature::before{opacity:1}
+
+/* closing box: a rounded slab with the logo watermark */
+.cta{border-radius:20px;overflow:hidden}
+.cta .wm{position:absolute;right:-40px;bottom:-60px;width:320px;opacity:.16;filter:blur(.5px);pointer-events:none;-webkit-mask-image:radial-gradient(60% 60% at 50% 50%,#000 50%,transparent 80%);mask-image:radial-gradient(60% 60% at 50% 50%,#000 50%,transparent 80%)}
+
+/* footer pills float */
+footer .builton-item{border-radius:999px}
+@media(prefers-reduced-motion:reduce){.hero-logo::after{animation:none}.ticket{transform:none}}
+/* shape pass, corrections */
+.ticker{animation:none}
+main > section:nth-of-type(3),main > section:nth-of-type(5){clip-path:none;margin:0;padding-top:88px;padding-bottom:88px}
+main > section:nth-of-type(2){clip-path:polygon(0 0,100% 4%,100% 100%,0 96%);padding-top:80px;padding-bottom:80px;margin:-16px 0}
+main > section:nth-of-type(4){clip-path:polygon(0 3%,100% 0,100% 97%,0 100%);padding-top:80px;padding-bottom:80px;margin:-16px 0}
+.band .huge{margin-top:-24px;padding-bottom:18px}
+.band .huge small{margin-top:22px}

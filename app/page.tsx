@@ -162,7 +162,7 @@ export default function Landing() {
 
             <div className="mk-grid">
               {shown.map((g, i) => (
-                <Reveal key={g.collateral.address} delay={(i % 4) * 60} as={Link} className="mk" href={`/borrow?market=${g.best!.id}`}>
+                <Reveal key={g.collateral.address} delay={(i % 4) * 60} as={Link} className={"mk" + (i === 0 && !q ? " featured" : "")} href={`/borrow?market=${g.best!.id}`}>
                   <div className="top">
                     <span className="logo"><TokenLogo symbol={g.collateral.symbol} size={46} /></span>
                     <span className="id">
@@ -261,6 +261,8 @@ export default function Landing() {
               <span className="eyebrow">Get started</span>
               <h2>Put your idle stock tokens to work.</h2>
               <p className="lede">No minimum. No lock-in. Nothing to trust but a contract you own and can read.</p>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img className="wm" src="/logo.png" alt="" aria-hidden />
               <div className="row" style={{ marginTop: 28 }}><Link className="btn green lg" href="/borrow">Open a loan<span className="arr">→</span></Link><Link className="btn lg" href="/docs">Read the docs</Link></div>
             </Reveal>
           </div>
