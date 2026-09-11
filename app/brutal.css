@@ -234,7 +234,7 @@ input[type=checkbox],input[type=radio]{accent-color:var(--green)}
 .loop .green{fill:var(--green)} .loop .coral{fill:var(--red)}
 .loop .track{fill:var(--paper-3)}
 .loop .dot{fill:var(--green);filter:none} .loop .dot.coral{fill:var(--red)}
-.loop .wire{stroke:var(--ink)} .loop .wire.coral{stroke:var(--red)}
+.loop .wire{fill:none;stroke:var(--ink)} .loop .wire.coral{fill:none;stroke:var(--red)}
 .loop .node.float-a,.loop .node.float-b,.loop .node.float-c{animation:none}
 
 /* --- built on / footer --- */

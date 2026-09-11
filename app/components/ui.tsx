@@ -72,7 +72,7 @@ export function Gauge({ ltv, max, trigger, lltv }: { ltv: number | null; max: nu
   return (
     <div className="gauge">
       <svg viewBox="0 0 200 100">
-        <defs><linearGradient id="lg-gauge" x1="0" x2="1"><stop offset="0" stopColor="#0c6b46" /><stop offset=".6" stopColor="#d9b071" /><stop offset="1" stopColor="#a33f36" /></linearGradient></defs>
+        <defs><linearGradient id="lg-gauge" x1="0" x2="1"><stop offset="0" stopColor="#9fc0ff" /><stop offset=".6" stopColor="#f2c06b" /><stop offset="1" stopColor="#ff6b4a" /></linearGradient></defs>
         <path className="arc" d={`M 20 92 A ${R} ${R} 0 0 1 180 92`} />
         <path className="val" d={`M 20 92 A ${R} ${R} 0 0 1 180 92`} style={{ stroke: tone, strokeDasharray: `${C * frac} ${C}` }} />
         <g className="marks">{tick(max / lltv, "max")}{tick(trigger / lltv, "trig")}{tick(1, "liq")}</g>

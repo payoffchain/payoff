@@ -15,9 +15,9 @@
   --ink:#e8f0ff;
   --mute:#b3c3e6;
   --faint:#7f93bf;
-  --green:#5fe3a1;
-  --green-ink:#3fc986;
-  --green-wash:#0d3a2e;
+  --green:#9fc0ff;
+  --green-ink:#7aa8ff;
+  --green-wash:#10245c;
   --red:#ff6b4a;
   --red-wash:#4a1a12;
   --coral:#ff6b4a;
@@ -33,7 +33,7 @@
   --panel-rule:rgba(219,230,251,.22);
   --panel-ink:#e8f0ff;
   --panel-mute:#b3c3e6;
-  --panel-green:#5fe3a1;
+  --panel-green:#9fc0ff;
   --panel-red:#ff8a70;
   --panel-amber:#f2c06b;
   --glass:#071130;
@@ -57,7 +57,7 @@ section{border-color:var(--rule)}
 .card .ico{background:var(--blue-wash);color:var(--ice)}
 .kv{border-color:rgba(219,230,251,.15)}
 .note{color:var(--ink)}
-.note.good{background:var(--green-wash)} .note.bad{background:var(--red-wash)} .note.warn{background:var(--amber-wash)}
+.note.good{background:var(--blue-wash)} .note.bad{background:var(--red-wash)} .note.warn{background:var(--amber-wash)}
 .note .amber{color:var(--amber)}
 .banner{background:var(--paper-3);border-bottom-color:var(--rule);color:var(--ink)}
 .skeleton{background:linear-gradient(90deg,var(--paper-2),var(--paper-3),var(--paper-2));background-size:200% 100%}
@@ -73,8 +73,8 @@ pre.code{background:var(--panel)}
 .btn:active{box-shadow:0 0 0 0 var(--blue)}
 .btn.primary{background:var(--ink);color:var(--paper)}
 .btn.primary:hover{background:#fff}
-.btn.green{background:var(--green);color:#03150d}
-.btn.green:hover{background:#7eeab5}
+.btn.green{background:var(--blue);color:#fff}
+.btn.green:hover{background:#5a86ff}
 .btn.coral,.btn.danger{background:var(--red);color:#1a0b06}
 .btn.blue{background:var(--blue);color:#fff}
 .btn.lg:hover{box-shadow:6px 6px 0 0 var(--blue)}
@@ -97,7 +97,7 @@ nav.top.open .navsheet{background:var(--paper);border-top-color:var(--rule)}
 
 /* pills, segments, inputs, tables */
 .pill{background:var(--paper-2);color:var(--ink)}
-.pill.g{background:var(--green-wash);color:var(--green)} .pill.r{background:var(--red-wash);color:var(--red)} .pill.a{background:var(--amber-wash);color:var(--amber)}
+.pill.g{background:var(--blue-wash);color:var(--ice)} .pill.r{background:var(--red-wash);color:var(--red)} .pill.a{background:var(--amber-wash);color:var(--amber)}
 .seg{background:var(--paper-2)}
 .seg button{color:var(--ink);border-right-color:var(--rule)}
 .seg button.on{background:var(--ink);color:var(--paper)}
@@ -132,15 +132,15 @@ input:focus,select:focus{box-shadow:var(--hs)!important}
 .tstep p{color:var(--mute)}
 .cta{background:var(--blue);color:#fff;box-shadow:5px 5px 0 0 var(--rule)}
 .cta .btn{background:var(--paper);color:var(--ink);border-color:var(--rule)}
-.cta .btn.green{background:var(--green);color:#03150d}
+.cta .btn.green{background:var(--ink);color:var(--paper)}
 .partners{color:var(--faint)} .partners i{background:var(--ink)}
-.hero-card .hd .live{color:var(--green)} .hero-card .hd .live::before{background:var(--green)}
+.hero-card .hd .live{color:var(--ice)} .hero-card .hd .live::before{background:var(--ice)}
 .mini td{border-top-color:rgba(219,230,251,.15)}
 
 /* market grid */
 .mk .logo,.wz-stock .logo,.builton-logo{background:#fff;border-color:var(--rule)}
 .mk .tag{background:var(--paper);border-color:var(--rule);color:var(--ink)}
-.mk .tag.stock{background:var(--green-wash);color:var(--green)}
+.mk .tag.stock{background:var(--blue-wash);color:var(--ice)}
 .mk .meta{border-top-color:var(--rule)}
 .mk .meta span{color:var(--faint)} .mk .meta b{color:var(--ink)}
 .mk .name{color:var(--faint)}
@@ -166,9 +166,9 @@ footer .builton-item{background:var(--paper-2)}
 .wz-bar li span{background:var(--paper);border-color:var(--rule);color:var(--ink)}
 .wz-bar li.cur{background:var(--paper-2);color:var(--ink);box-shadow:var(--hs)}
 .wz-bar li.cur span{background:var(--blue);color:#fff}
-.wz-bar li.done{color:var(--green)} .wz-bar li.done span{background:var(--green-wash);color:var(--green)}
+.wz-bar li.done{color:var(--ice)} .wz-bar li.done span{background:var(--blue-wash);color:var(--ice)}
 .wz-num{background:var(--blue);color:#fff;border-color:var(--rule);box-shadow:2px 2px 0 0 var(--rule)}
-.wz-num.done{background:var(--green-wash);color:var(--green)}
+.wz-num.done{background:var(--blue-wash);color:var(--ice)}
 .wz-done .wz-title{color:var(--faint)} .wz-done .wz-sum{color:var(--ink)}
 .wz-stock,.wz-preset{color:var(--ink)}
 .wz-stock:hover,.wz-preset:hover{background:var(--paper-2)}
@@ -188,5 +188,23 @@ footer .builton-item{background:var(--paper-2)}
 
 /* vault page */
 .tabs{border-bottom-color:var(--rule)}
-.tabs button{color:var(--mute)} .tabs button.on{color:var(--ink);border-bottom-color:var(--green)}
+.tabs button{color:var(--mute)} .tabs button.on{color:var(--ink);border-bottom-color:var(--ice)}
 .eyebrow{color:var(--ice)} .eyebrow::before{background:var(--ice)}
+
+/* the loop diagram, in the logo's colours: ice for flows, coral only for the repayment */
+.loop .dot{fill:var(--ice)} .loop .green{fill:var(--ice)}
+.loop .debt{fill:var(--red)}
+.chip .dot,.chip.live .dot{background:var(--ice)}
+.ticker .up{color:var(--ice)}
+.bar i{background:var(--ice)}
+.demo-seg i{background:var(--ice)} .demo-step{color:var(--ice)}
+.dm-btn.done{background:var(--blue);color:#fff}
+.dm-radio.on{background:var(--ice);border-color:var(--ice)}
+.dm-tbl tr.sel td{background:rgba(159,192,255,.12)}
+.dm-toast{background:rgba(159,192,255,.15);border-color:var(--ice);color:var(--ice)}
+.dm-bar i{background:var(--ice)}
+.dm-stage .green,.dm-term .green,.dm-cur::after,.term .k,.term .cur::after{color:var(--ice)}
+.wz-stock .rate{color:var(--ice)}
+.big-number.g{color:var(--ice)}
+.mk .rate{color:var(--ice)}
+.gauge .val{stroke:var(--ice)}
