@@ -43,7 +43,7 @@ export default function Dashboard() {
                 <Link key={v.address} href={`/vault/${v.address}`} className="card vault-card">
                   <div className="row" style={{ justifyContent: "space-between" }}>
                     <span className="hd"><span className="logo"><TokenLogo symbol={v.collateral.symbol} size={40} /></span><span><span className="sym" style={{ display: "block", fontFamily: "var(--display)", fontWeight: 800, fontSize: 18 }}>{v.collateral.symbol} <span className="faint" style={{ fontWeight: 500, fontSize: 13 }}>/ {v.loan.symbol}</span></span><span className="faint mono" style={{ fontSize: 11 }}>{short(v.address)}</span></span></span>
-                    <span className="row">{v.paused ? <span className="pill a">paused</span> : <span className="pill g">agent on</span>}</span>
+                    <span className="row">{v.paused ? <span className="pill a">agent off</span> : <span className="pill g">agent on</span>}</span>
                   </div>
                   <div className="grid g3" style={{ marginTop: 16, gap: 12 }}>
                     <div className="card soft" style={{ padding: 12 }}><span className="lbl">Collateral</span><span className="med">{usd(v.collateralUsd)}</span><span className="faint" style={{ fontSize: 11 }}>{v.collateral_.toLocaleString("en-US", { maximumFractionDigits: 4 })} {v.collateral.symbol}</span></div>

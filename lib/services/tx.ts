@@ -140,7 +140,7 @@ export async function buildSetPolicy(vault: string, policy: PolicyInput): Promis
 
 export async function buildSetPaused(vault: string, paused: boolean): Promise<Built> {
   const v = await ctx(vault);
-  return { tx: { to: v.address, data: vaultIface.encodeFunctionData("setPaused", [paused]), value: "0", description: paused ? "Pause the operator" : "Resume the operator" }, approvals: [] };
+  return { tx: { to: v.address, data: vaultIface.encodeFunctionData("setPaused", [paused]), value: "0", description: paused ? "Turn the agent off" : "Turn the agent on" }, approvals: [] };
 }
 
 export async function buildSetMarketAllowed(vault: string, marketId: string, allowed: boolean): Promise<Built> {

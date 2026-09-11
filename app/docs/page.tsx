@@ -46,7 +46,7 @@ export default function Docs() {
         <ul className="mute" style={{ paddingLeft: 20, lineHeight: 1.7 }}>
           <li>A concentrated position carries impermanent loss; if the stock moves out of the range it stops earning and the agent closes it into USDG, realising the move.</li>
           <li>Debt accrues interest whether or not the position earns. Fee income is variable; a quiet week can be a losing week.</li>
-          <li>Liquidation protection needs the operator to be running and funded with gas. A paused vault does not protect itself.</li>
+          <li>Liquidation protection needs the agent to be running and funded with gas. A vault with the agent turned off does not protect itself.</li>
           <li>Equity oracles pause outside market hours; the vault refuses to mint or burn while the pool price drifts from the oracle beyond your slippage.</li>
           <li>Thin markets show any rate. A "best" rate with no liquidity cannot be borrowed.</li>
         </ul>

@@ -92,12 +92,12 @@ export default function VaultPage() {
             <h2 style={{ display: "flex", alignItems: "center", gap: 14 }}><Tok symbol={v.collateral.symbol} /> {v.collateral.symbol} / {v.loan.symbol}</h2>
             <div className="row faint mono" style={{ fontSize: 12, marginTop: 8 }}>
               <span>owner <AddrLink address={v.owner} /></span><span>operator {v.operator === "0x0000000000000000000000000000000000000000" ? "none" : <AddrLink address={v.operator} />}</span><span>created {ago(v.createdAt)}</span>
-              {v.paused ? <span className="pill a">paused</span> : <span className="pill g">agent on</span>}
+              {v.paused ? <span className="pill a">agent off</span> : <span className="pill g">agent on</span>}
               {isOwner && <span className="pill g">you own this</span>}{isOperator && <span className="pill">you operate this</span>}
             </div>
           </div>
           <div className="row">
-            {isOwner && <button className="btn sm" onClick={() => send({ action: "setPaused", paused: !v.paused })} disabled={tx.busy}>{v.paused ? "Resume agent" : "Pause agent"}</button>}
+            {isOwner && <button className="btn sm" onClick={() => send({ action: "setPaused", paused: !v.paused })} disabled={tx.busy}>{v.paused ? "Turn the agent on" : "Turn the agent off"}</button>}
             <button className="btn sm" onClick={refresh}>Refresh</button>
           </div>
         </div>
@@ -128,7 +128,7 @@ export default function VaultPage() {
         {tx.busy && <p className="note" style={{ marginBottom: 14 }}>{tx.step}</p>}
         {tx.hash && !tx.busy && tx.outcome === "confirmed" && <p className="note good" style={{ marginBottom: 14 }}>Confirmed: <TxLink hash={tx.hash} /></p>}
         {tx.hash && !tx.busy && tx.outcome === null && <p className="note" style={{ marginBottom: 14 }}>Sent, still pending: <TxLink hash={tx.hash} /> · <button className="btn xs" onClick={refresh}>refresh</button></p>}
-        {isOperator && v.paused && <p className="note warn" style={{ marginBottom: 14 }}>This vault is paused: the operator cannot act until the owner resumes it.</p>}
+        {isOperator && v.paused && <p className="note warn" style={{ marginBottom: 14 }}>The agent is turned off for this vault. Only the owner can turn it back on.</p>}
 
         {tab === "position" && (
           <div className="grid g2">
