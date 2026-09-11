@@ -42,7 +42,7 @@ export default function Nav() {
             <span className="dot" />{FACTORY ? `live on ${CHAIN_NAME}` : "contracts pending"}
           </span>
           {TWITTER && <a className="btn sm" href={TWITTER} target="_blank" rel="noopener noreferrer">X</a>}
-          <button className={"btn sm " + (w.wrongChain ? "danger" : "primary")} onClick={action} disabled={w.connecting} title={w.address ?? undefined}>{label}</button>
+          <button className={"btn sm " + (w.wrongChain ? "danger" : w.address ? "" : "green")} onClick={action} disabled={w.connecting} title={w.address ?? undefined}>{label}</button>
         </div>
         <button className="navburger" aria-label="Menu" aria-expanded={open} onClick={() => setOpen((o) => !o)}><i /><i /><i /></button>
       </div>

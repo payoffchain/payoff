@@ -17,7 +17,7 @@ export function useReducedMotion() {
 }
 
 /** Fades and lifts its children in when they scroll into view. `delay` in ms staggers siblings. */
-export function Reveal({ children, delay = 0, className = "", as: Tag = "div", style }: { children: React.ReactNode; delay?: number; className?: string; as?: any; style?: React.CSSProperties }) {
+export function Reveal({ children, delay = 0, className = "", as: Tag = "div", style, ...rest }: { children: React.ReactNode; delay?: number; className?: string; as?: any; style?: React.CSSProperties; [k: string]: unknown }) {
   const ref = useRef<HTMLElement | null>(null);
   const [on, setOn] = useState(false);
   useEffect(() => {
@@ -28,7 +28,7 @@ export function Reveal({ children, delay = 0, className = "", as: Tag = "div", s
     io.observe(el);
     return () => io.disconnect();
   }, []);
-  return <Tag ref={ref} className={`reveal ${on ? "in" : ""} ${className}`} style={{ ...style, transitionDelay: `${delay}ms` }}>{children}</Tag>;
+  return <Tag ref={ref} {...rest} className={`reveal ${on ? "in" : ""} ${className}`} style={{ ...style, transitionDelay: `${delay}ms` }}>{children}</Tag>;
 }
 
 /** Counts from 0 to `value` over `ms` with ease-out. Formats with `format`. */

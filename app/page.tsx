@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import Nav from "./components/Nav";
 import LoopDiagram from "./components/LoopDiagram";
@@ -7,10 +8,17 @@ import DemoPlayer from "./components/DemoPlayer";
 import { CountUp, Reveal, Words } from "./components/motion";
 import { useLive } from "./components/useLive";
 import { APP, CHAIN_NAME, FACTORY } from "./components/brand";
-import { Tok, pct } from "./components/ui";
+import { TokenLogo, pct } from "./components/ui";
 import { usd } from "./components/format";
 
-type Board = { live: boolean; groups: Array<{ collateral: { address: string; symbol: string; isStock: boolean }; best: { borrowApy: number | null; lltv: number; liquidityUsd: number } | null; rows: Array<{ totalSupplyUsd: number }> }> };
+/**
+ * Landing as a product, not a brochure: a short hero, the live ticker, then the market
+ * grid people actually came for. The story (demo, how it works, security) follows.
+ */
+
+type Row = { id: string; lltv: number; borrowApy: number | null; liquidityUsd: number; totalSupplyUsd: number };
+type Group = { collateral: { address: string; symbol: string; isStock: boolean; name: string | null }; best: Row | null; rows: Row[] };
+type Board = { live: boolean; groups: Group[] };
 type Leader = { totals: { vaults: number; debtUsd: number; collateralUsd: number; repaidFromFeesUsd: number; harvestedUsd: number; refinances: number } };
 
 const I = {
@@ -20,14 +28,27 @@ const I = {
   flash: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8Z" /></svg>,
   eye: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z" /><circle cx="12" cy="12" r="3" /></svg>,
   life: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="4" /><path d="M5 5l4 4M15 15l4 4M19 5l-4 4M9 15l-4 4" /></svg>,
+  search: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" /></svg>,
 };
 
 export default function Landing() {
-  const board = useLive<Board>("/api/markets?stocks=1", { live: false, groups: [] });
+  const board = useLive<Board>("/api/markets", { live: false, groups: [] });
   const lb = useLive<Leader>("/api/leaderboard", { totals: { vaults: 0, debtUsd: 0, collateralUsd: 0, repaidFromFeesUsd: 0, harvestedUsd: 0, refinances: 0 } }, !!FACTORY);
-  const top = board.data?.groups.filter((g) => g.best).slice(0, 8) ?? [];
-  const totalAvailable = top.reduce((a, g) => a + (g.best?.liquidityUsd ?? 0), 0);
-  const marketCount = board.data?.groups.reduce((a, g) => a + g.rows.length, 0) ?? 0;
+  const [q, setQ] = useState("");
+  const [stocksOnly, setStocksOnly] = useState(true);
+
+  const groups = board.data?.groups ?? [];
+  const withRate = groups.filter((g) => g.best);
+  const shown = useMemo(() => {
+    const needle = q.trim().toLowerCase();
+    return withRate
+      .filter((g) => !stocksOnly || g.collateral.isStock)
+      .filter((g) => !needle || g.collateral.symbol.toLowerCase().includes(needle) || (g.collateral.name ?? "").toLowerCase().includes(needle))
+      .slice(0, needle ? 48 : 12);
+  }, [withRate, q, stocksOnly]);
+  const ticker = withRate.filter((g) => g.collateral.isStock).slice(0, 10);
+  const totalAvailable = withRate.reduce((a, g) => a + (g.best?.liquidityUsd ?? 0), 0);
+  const marketCount = groups.reduce((a, g) => a + g.rows.length, 0);
 
   return (
     <>
@@ -43,34 +64,18 @@ export default function Landing() {
                 <span className="hl"><Words text="Let the loan pay itself down." base={420} /></span>
               </h1>
               <p className="lede" style={{ animation: "fadeUp .8s .9s both" }}>
-                Tokenized stocks as collateral on Morpho, USDG borrowed against them, and an agent you scope that earns Uniswap V3 fees with the loan, pays them onto your debt, hops to cheaper markets and steps in before liquidation. The vault is yours. The agent's key cannot withdraw.
+                Tokenized stocks as collateral on Morpho, USDG borrowed against them, and an agent you scope that earns Uniswap V3 fees with the loan and pays them onto your debt. The vault is yours. The agent's key cannot withdraw.
               </p>
-              <div className="row" style={{ marginTop: 28, gap: 12, animation: "fadeUp .8s 1.1s both" }}>
-                <Link className="btn coral lg" href="/deploy">Deploy an agent →</Link>
+              <div className="row" style={{ marginTop: 26, gap: 12, animation: "fadeUp .8s 1.1s both" }}>
+                <Link className="btn green lg" href="/deploy">Deploy an agent →</Link>
                 <Link className="btn lg" href="/demo">▶ Watch the demo</Link>
               </div>
-              <div className="row faint mono" style={{ marginTop: 26, fontSize: 12, gap: 18, animation: "fadeUp .8s 1.3s both" }}>
+              <div className="row faint mono" style={{ marginTop: 22, fontSize: 12, gap: 18, animation: "fadeUp .8s 1.3s both" }}>
                 <span>0% to borrow</span><span>·</span><span>0% to hop</span><span>·</span><span>2.5% of harvested fees</span>
               </div>
             </div>
             <div style={{ animation: "fadeUp 1s .5s both" }}>
-              <LoopDiagram symbol={top[1]?.collateral.symbol ?? "NVDA"} />
-              <div className="hero-card" style={{ marginTop: 18 }}>
-                <div className="hd"><span>Cheapest USDG right now</span><span className="live">{board.data?.live ? "on-chain" : board.loading ? "reading" : "snapshot"}</span></div>
-                <table className="mini">
-                  <tbody>
-                    {top.slice(0, 4).map((g) => (
-                      <tr key={g.collateral.address}>
-                        <td><Tok symbol={g.collateral.symbol} /></td>
-                        <td className="r green">{pct(g.best!.borrowApy)}</td>
-                        <td className="r faint">LLTV {(g.best!.lltv * 100).toFixed(0)}%</td>
-                        <td className="r">{usd(g.best!.liquidityUsd)}</td>
-                      </tr>
-                    ))}
-                    {top.length === 0 && <tr><td colSpan={4} className="faint">{board.loading ? "reading Morpho markets…" : "no live data"}</td></tr>}
-                  </tbody>
-                </table>
-              </div>
+              <LoopDiagram symbol={ticker[1]?.collateral.symbol ?? "NVDA"} />
             </div>
           </div>
         </section>
@@ -79,23 +84,61 @@ export default function Landing() {
           <div className="track">
             {[0, 1].map((k) => (
               <span key={k} style={{ display: "inline-flex", gap: 40 }}>
-                {top.length ? top.map((g) => (
-                  <span key={g.collateral.address + k}>{g.collateral.symbol} borrow <b className="up">{pct(g.best!.borrowApy)}</b> · LLTV {(g.best!.lltv * 100).toFixed(0)}% · {usd(g.best!.liquidityUsd)} available</span>
+                {ticker.length ? ticker.map((g) => (
+                  <span key={g.collateral.address + k}><b>{g.collateral.symbol}</b> borrow <span className="up">{pct(g.best!.borrowApy)}</span> · LLTV {(g.best!.lltv * 100).toFixed(0)}% · {usd(g.best!.liquidityUsd)} available</span>
                 )) : <span>{board.loading ? "reading Morpho markets on Robinhood Chain…" : "Morpho rates unavailable right now"}</span>}
               </span>
             ))}
           </div>
         </div>
 
-        <div className="wrap partners">
-          <span><i />Morpho Blue</span><span><i />Uniswap V3</span><span><i />Chainlink oracles</span><span><i />Robinhood Stock Tokens</span><span><i />USDG</span>
-        </div>
+        <section style={{ padding: "48px 0 72px", borderTop: 0 }}>
+          <div className="wrap">
+            <div className="row" style={{ justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 16 }}>
+              <div>
+                <span className="eyebrow">Markets · Morpho Blue on {CHAIN_NAME}</span>
+                <h2 style={{ marginTop: 10 }}>Pick a stock. Borrow USDG against it.</h2>
+              </div>
+              <div className="row faint mono" style={{ fontSize: 12, gap: 18 }}>
+                <span><b className="green"><CountUp value={marketCount} /></b> markets</span>
+                <span><b className="green"><CountUp value={totalAvailable} format={(n) => usd(n)} /></b> available</span>
+                <span>{board.data?.live ? "on-chain, live" : board.loading ? "reading…" : "snapshot"}</span>
+              </div>
+            </div>
 
-        <section style={{ padding: "40px 0 72px", borderTop: 0 }}>
-          <div className="wrap bento">
-            <Reveal className="card b-2" delay={0}><span className="lbl">USDG markets on Morpho</span><div className="big-number" style={{ marginTop: 10 }}><CountUp value={marketCount} /></div><p style={{ marginTop: 8 }}>{board.data?.groups.length ?? 0} stock collaterals, several LLTVs each — the spread the agent hops.</p></Reveal>
-            <Reveal className="card b-2" delay={90}><span className="lbl">Available to borrow, top 8</span><div className="big-number g" style={{ marginTop: 10 }}><CountUp value={totalAvailable} format={(n) => usd(n)} /></div><p style={{ marginTop: 8 }}>Read on chain from each market's interest-rate model, not from an API.</p></Reveal>
-            <Reveal className="card b-2" delay={180}><span className="lbl">{FACTORY ? "Repaid from fees, all vaults" : "Fee on trading fees harvested"}</span><div className="big-number g" style={{ marginTop: 10 }}>{FACTORY ? <CountUp value={lb.data?.totals.repaidFromFeesUsd ?? 0} format={(n) => usd(n, 2)} /> : "2.5%"}</div><p style={{ marginTop: 8 }}>{FACTORY ? `${lb.data?.totals.vaults ?? 0} vaults · ${usd(lb.data?.totals.collateralUsd ?? 0)} collateral` : "10% of realized profit at close. Both caps are in the vault's code."}</p></Reveal>
+            <div className="mk-head">
+              <label className="mk-search">
+                {I.search}
+                <input placeholder="Search a ticker…" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Search markets" />
+                <kbd>{shown.length}</kbd>
+              </label>
+              <div className="seg"><button className={stocksOnly ? "on" : ""} onClick={() => setStocksOnly(true)}>Stocks</button><button className={!stocksOnly ? "on" : ""} onClick={() => setStocksOnly(false)}>All collateral</button></div>
+            </div>
+
+            <div className="mk-grid">
+              {shown.map((g, i) => (
+                <Reveal key={g.collateral.address} delay={(i % 4) * 60} as={Link} className="mk" href={`/deploy?market=${g.best!.id}`}>
+                  <div className="top">
+                    <span className="logo"><TokenLogo symbol={g.collateral.symbol} size={46} /></span>
+                    <span className="id">
+                      <span className="sym">{g.collateral.symbol}</span>
+                      <span className="name">{g.collateral.name ?? (g.collateral.isStock ? "Robinhood Stock Token" : "collateral")}</span>
+                    </span>
+                    <span className={"tag " + (g.collateral.isStock ? "stock" : "")}>{g.collateral.isStock ? "stock" : "crypto"}</span>
+                  </div>
+                  <div className="rate">{pct(g.best!.borrowApy)}<small>borrow APY · best of {g.rows.length}</small></div>
+                  <div className="meta">
+                    <div><span>available</span><b>{usd(g.best!.liquidityUsd)}</b></div>
+                    <div><span>LLTV</span><b>{(g.best!.lltv * 100).toFixed(0)}%</b></div>
+                  </div>
+                  <div className="cta"><span className="btn green go">Borrow USDG →</span></div>
+                </Reveal>
+              ))}
+              {shown.length === 0 && (
+                <div className="mk-empty">{board.loading ? <span><span className="spinner" /> Reading markets on chain…</span> : q ? `No market matches "${q}".` : board.error ?? "No live market data right now."}</div>
+              )}
+              {shown.length > 0 && !q && <Link className="mk-more" href="/rates">All {marketCount} markets, every LLTV →</Link>}
+            </div>
           </div>
         </section>
 
@@ -128,16 +171,16 @@ export default function Landing() {
               <Reveal className="card feature b-3" delay={0}>
                 <div className="ico">{I.key}</div>
                 <h3>Your vault, your owner key</h3>
-                <p>Every position lives in a contract only you own. Withdrawals go to the owner address and nowhere else. Pause the agent, replace its key, change the policy, hand the vault to a new owner in two steps — any time.</p>
+                <p>Every position lives in a contract only you own. Withdrawals go to the owner address and nowhere else. Pause the agent, replace its key, change the policy, hand the vault to a new owner in two steps. Any time.</p>
               </Reveal>
               <Reveal className="card feature b-3" delay={100}>
                 <div className="ico">{I.shield}</div>
                 <h3>A scoped operator key</h3>
                 <p>The agent may borrow within your LTV ceiling, open and close liquidity in the vault's own pair, harvest into the debt, refinance into markets you allow-listed and repay early. It cannot send a token to any address. A leaked key can trade badly inside the pair; it cannot steal.</p>
               </Reveal>
-              <Reveal className="card feature b-2" delay={0}><div className="ico">{I.oracle}</div><h3>Oracle-policed prices</h3><p>Every swap is floored at the Morpho oracle less your slippage; every mint and burn checks the pool's spot price against it.</p></Reveal>
+              <Reveal className="card feature b-2" delay={0}><div className="ico">{I.oracle}</div><h3>Oracle-policed prices</h3><p>Every swap is floored at the Morpho oracle less your slippage; every mint checks the pool's spot price against it. No price, no trade.</p></Reveal>
               <Reveal className="card feature b-2" delay={100}><div className="ico">{I.flash}</div><h3>Atomic refinancing</h3><p>Morpho's own flash loan: repay the old market, move the collateral, borrow in the new one, repay the loan. All or nothing.</p></Reveal>
-              <Reveal className="card feature b-2" delay={200}><div className="ico">{I.life}</div><h3>Liquidation protection</h3><p>Set a trigger below the market's line and a repay share. Liquidity is closed first; collateral is sold only if it must be.</p></Reveal>
+              <Reveal className="card feature b-2" delay={200}><div className="ico">{I.life}</div><h3>Liquidation protection</h3><p>Set a trigger below the market's line and a repay share. Liquidity is closed first; collateral is sold only as much as the repayment needs.</p></Reveal>
               <Reveal className="card feature b-6" delay={0} style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: 20, alignItems: "center" }}>
                 <div className="ico" style={{ marginBottom: 0 }}>{I.eye}</div>
                 <div><h3>Open contracts, open brain</h3><p>The rules the agent follows are one readable file. The plan it would sign right now is shown on every vault page, before it happens, with the reason for each action. Every action lands on chain and in the activity log.</p></div>
@@ -146,33 +189,16 @@ export default function Landing() {
           </div>
         </section>
 
-        <section>
-          <div className="wrap">
-            <Reveal>
-              <span className="eyebrow">Live on Morpho · {CHAIN_NAME}</span>
-              <h2>Where the cheapest USDG is today.</h2>
-            </Reveal>
-            <Reveal delay={120} className="tblwrap card" style={{ marginTop: 28 }}>
-              <table className="tbl">
-                <thead><tr><th>Collateral</th><th className="r">Best borrow APY</th><th className="r">LLTV</th><th className="r">USDG available</th><th className="r">Markets</th><th></th></tr></thead>
-                <tbody>
-                  {top.map((g) => (
-                    <tr key={g.collateral.address}>
-                      <td><Tok symbol={g.collateral.symbol} /></td>
-                      <td className="r green">{pct(g.best!.borrowApy)}</td>
-                      <td className="r">{(g.best!.lltv * 100).toFixed(0)}%</td>
-                      <td className="r">{usd(g.best!.liquidityUsd)}</td>
-                      <td className="r">{g.rows.length}</td>
-                      <td className="r"><Link className="btn xs" href="/deploy">Borrow →</Link></td>
-                    </tr>
-                  ))}
-                  {top.length === 0 && <tr><td colSpan={6} className="faint">{board.loading ? <span><span className="spinner" /> Reading markets…</span> : board.error ?? "No live market data."}</td></tr>}
-                </tbody>
-              </table>
-            </Reveal>
-            <div className="row" style={{ marginTop: 18 }}><Link className="btn sm" href="/rates">All markets →</Link></div>
-          </div>
-        </section>
+        {FACTORY && (
+          <section style={{ padding: "40px 0 72px" }}>
+            <div className="wrap stats">
+              <Reveal className="stat" delay={0}><span className="lbl">Vaults</span><span className="big"><CountUp value={lb.data?.totals.vaults ?? 0} /></span><span className="faint" style={{ fontSize: 12 }}>{usd(lb.data?.totals.collateralUsd ?? 0)} collateral</span></Reveal>
+              <Reveal className="stat" delay={80}><span className="lbl">Debt outstanding</span><span className="big"><CountUp value={lb.data?.totals.debtUsd ?? 0} format={(n) => usd(n)} /></span><span className="faint" style={{ fontSize: 12 }}>USDG across all vaults</span></Reveal>
+              <Reveal className="stat" delay={160}><span className="lbl">Repaid from fees</span><span className="big green"><CountUp value={lb.data?.totals.repaidFromFeesUsd ?? 0} format={(n) => usd(n, 2)} /></span><span className="faint" style={{ fontSize: 12 }}>paid by agents, not owners</span></Reveal>
+              <Reveal className="stat" delay={240}><span className="lbl">Refinances</span><span className="big"><CountUp value={lb.data?.totals.refinances ?? 0} /></span><span className="faint" style={{ fontSize: 12 }}>hops to a cheaper market</span></Reveal>
+            </div>
+          </section>
+        )}
 
         <section>
           <div className="wrap">
@@ -180,7 +206,7 @@ export default function Landing() {
               <span className="eyebrow">Get started</span>
               <h2>Put your idle stock tokens to work.</h2>
               <p className="lede">No minimum. No lock-in. Nothing to trust but a contract you own and can read.</p>
-              <div className="row" style={{ marginTop: 28 }}><Link className="btn coral lg" href="/deploy">Deploy an agent →</Link><Link className="btn lg" href="/docs">Read the docs</Link></div>
+              <div className="row" style={{ marginTop: 28 }}><Link className="btn green lg" href="/deploy">Deploy an agent →</Link><Link className="btn lg" href="/docs">Read the docs</Link></div>
             </Reveal>
           </div>
         </section>

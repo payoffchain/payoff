@@ -16,7 +16,7 @@ import { ApiError } from "../http";
 
 export type RateRow = {
   id: string;
-  collateral: { address: string; symbol: string; decimals: number; isStock: boolean };
+  collateral: { address: string; symbol: string; decimals: number; isStock: boolean; name: string | null };
   loan: { address: string; symbol: string; decimals: number };
   lltv: number;                 // 0.63
   listed: boolean;
@@ -53,7 +53,7 @@ function toRow(m: MarketMeta, s: MarketState | undefined): RateRow {
   const liq = s ? Number(ethers.formatUnits(s.liquidity, loanDec)) : m.snapshotState?.liquidityUsd ?? 0;
   return {
     id: m.id,
-    collateral: { address: m.params.collateralToken, symbol: m.collateral.symbol, decimals: collDec, isStock: collMeta?.isStock ?? false },
+    collateral: { address: m.params.collateralToken, symbol: m.collateral.symbol, decimals: collDec, isStock: collMeta?.isStock ?? false, name: (collMeta?.name ?? m.collateral.name ?? null)?.replace(/s*[•·].*$/, "") ?? null },
     loan: { address: m.params.loanToken, symbol: m.loan.symbol, decimals: loanDec },
     lltv: Number(m.params.lltv) / 1e18,
     listed: m.listed,

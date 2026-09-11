@@ -3,6 +3,7 @@ import "./globals.css";
 import "./motion.css";
 import "./theme.css";
 import "./demo.css";
+import "./tactile.css";
 import { WalletProvider } from "./components/WalletProvider";
 import { APP, SITE } from "./components/brand";
 

@@ -4,7 +4,7 @@ import Link from "next/link";
 import Nav from "../components/Nav";
 import { useLive } from "../components/useLive";
 import { useWallet } from "../components/WalletProvider";
-import { DataBanner, Empty, LtvBar, Tok, bps } from "../components/ui";
+import { DataBanner, Empty, LtvBar, TokenLogo, bps } from "../components/ui";
 import { usd, short, ago } from "../components/format";
 import { FACTORY } from "../components/brand";
 
@@ -40,22 +40,22 @@ export default function Dashboard() {
             </div>
             <div className="grid g2" style={{ marginTop: 28 }}>
               {vaults.map((v) => (
-                <Link key={v.address} href={`/vault/${v.address}`} className="card" style={{ display: "block" }}>
+                <Link key={v.address} href={`/vault/${v.address}`} className="card vault-card">
                   <div className="row" style={{ justifyContent: "space-between" }}>
-                    <Tok symbol={v.collateral.symbol} name={`/ ${v.loan.symbol}`} />
-                    <span className="row">{v.paused ? <span className="pill a">paused</span> : <span className="pill g">agent on</span>}<span className="faint mono" style={{ fontSize: 11 }}>{short(v.address)}</span></span>
+                    <span className="hd"><span className="logo"><TokenLogo symbol={v.collateral.symbol} size={40} /></span><span><span className="sym" style={{ display: "block", fontFamily: "var(--display)", fontWeight: 800, fontSize: 18 }}>{v.collateral.symbol} <span className="faint" style={{ fontWeight: 500, fontSize: 13 }}>/ {v.loan.symbol}</span></span><span className="faint mono" style={{ fontSize: 11 }}>{short(v.address)}</span></span></span>
+                    <span className="row">{v.paused ? <span className="pill a">paused</span> : <span className="pill g">agent on</span>}</span>
                   </div>
                   <div className="grid g3" style={{ marginTop: 16, gap: 12 }}>
-                    <div className="stat"><span className="lbl">Collateral</span><span className="med">{usd(v.collateralUsd)}</span><span className="faint" style={{ fontSize: 11 }}>{v.collateral_.toLocaleString("en-US", { maximumFractionDigits: 4 })} {v.collateral.symbol}</span></div>
-                    <div className="stat"><span className="lbl">Debt</span><span className="med">{usd(v.debt, 2)}</span><span className="faint" style={{ fontSize: 11 }}>LTV {bps(v.ltvBps)}</span></div>
-                    <div className="stat"><span className="lbl">Repaid from fees</span><span className="med green">{usd(v.totalRepaidFromFees, 2)}</span><span className="faint" style={{ fontSize: 11 }}>{v.openPositions} position{v.openPositions === 1 ? "" : "s"} · {v.refinanceCount} hop{v.refinanceCount === 1 ? "" : "s"}</span></div>
+                    <div className="card soft" style={{ padding: 12 }}><span className="lbl">Collateral</span><span className="med">{usd(v.collateralUsd)}</span><span className="faint" style={{ fontSize: 11 }}>{v.collateral_.toLocaleString("en-US", { maximumFractionDigits: 4 })} {v.collateral.symbol}</span></div>
+                    <div className="card soft" style={{ padding: 12 }}><span className="lbl">Debt</span><span className="med">{usd(v.debt, 2)}</span><span className="faint" style={{ fontSize: 11 }}>LTV {bps(v.ltvBps)}</span></div>
+                    <div className="card soft" style={{ padding: 12 }}><span className="lbl">Repaid from fees</span><span className="med green">{usd(v.totalRepaidFromFees, 2)}</span><span className="faint" style={{ fontSize: 11 }}>{v.openPositions} position{v.openPositions === 1 ? "" : "s"} · {v.refinanceCount} hop{v.refinanceCount === 1 ? "" : "s"}</span></div>
                   </div>
                   <div style={{ marginTop: 14 }}><LtvBar ltv={v.ltvBps === null ? null : v.ltvBps / 10_000} max={v.policy.maxLtvBps / 10_000} trigger={v.policy.triggerLtvBps / 10_000} lltv={v.lltv} /></div>
                   <div className="faint mono" style={{ fontSize: 11, marginTop: 10 }}>created {ago(v.createdAt)} · operator {short(v.operator)}</div>
                 </Link>
               ))}
               {vaults.length === 0 && !r.loading && (
-                <div style={{ gridColumn: "1 / -1" }}><Empty>No vaults for {short(w.address)} yet. <span className="row" style={{ justifyContent: "center", marginTop: 16 }}><Link className="btn primary" href="/deploy">Deploy an agent</Link></span></Empty></div>
+                <div style={{ gridColumn: "1 / -1" }}><Empty>No vaults for {short(w.address)} yet. <span className="row" style={{ justifyContent: "center", marginTop: 16 }}><Link className="btn green" href="/deploy">Deploy an agent</Link></span></Empty></div>
               )}
             </div>
           </>
