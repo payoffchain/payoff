@@ -658,3 +658,19 @@ main > section:nth-of-type(4){clip-path:polygon(0 3%,100% 0,100% 97%,0 100%);pad
 .vlog-lines{overflow-x:hidden;overflow-y:auto;scrollbar-width:thin}
 .vlog-lines > div{margin:0}
 .vlog-lines em{overflow-wrap:anywhere}
+/* fund the loan inside the wizard: deposit, then borrow, on the same page */
+.fund{margin-top:14px;padding:16px 18px;background:rgba(185,205,255,.04);border:1px solid var(--rule);border-radius:var(--r)}
+.fund h4{font-family:var(--display);font-size:17px;font-weight:700;margin:0 0 4px}
+.fund p{font-size:14px;color:var(--mute);line-height:1.55;margin:0}
+.fund .hint{display:block;margin-top:6px;font-size:12px;color:var(--faint)}
+.linkbtn{background:none;border:0;padding:0;font:inherit;color:var(--ice);text-decoration:underline;cursor:pointer}
+.fund-slider{margin-top:12px}
+.fund-slider input[type=range]{width:100%;accent-color:var(--ice)}
+.wz-more summary{cursor:pointer;font-size:13px;color:var(--faint);font-family:var(--mono);letter-spacing:.04em}
+.wz-more summary:hover{color:var(--ice)}
+/* vault page: the "what next" card sits above the numbers */
+.nextcard{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;padding:18px 20px;background:linear-gradient(160deg,#0f2158,#0a1636);border:1px solid var(--rule-2);border-radius:var(--r);box-shadow:var(--hs)}
+.nextcard .nc-step{font-family:'Pixelify Sans',var(--mono);font-size:13px;letter-spacing:.1em;color:var(--ice);padding:6px 10px;border:1px solid rgba(185,205,255,.35);border-radius:999px;white-space:nowrap}
+.nextcard b{font-family:var(--display);font-size:19px;display:block;margin-bottom:3px}
+.nextcard p{font-size:14px;color:var(--mute);line-height:1.5;margin:0}
+@media(max-width:700px){.nextcard{grid-template-columns:1fr}.nextcard .nc-step{justify-self:start}}

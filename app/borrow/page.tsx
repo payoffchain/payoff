@@ -12,6 +12,7 @@ import { TokenLogo, TxLink, pct } from "../components/ui";
 import { usd } from "../components/format";
 import { CHAIN_NAME, FACTORY } from "../components/brand";
 import FactoryAbi from "@/lib/abis/PayoffVaultFactory.json";
+import FundLoan from "../components/FundLoan";
 
 /**
  * Deploy an agent, one step at a time. Each step asks one question in plain words,
@@ -345,20 +346,19 @@ function DeployInner() {
               {tx.hash && !vault && !tx.busy && <p className="note" style={{ marginTop: 10 }}>Confirming… your vault will appear on the <Link href="/app" style={{ textDecoration: "underline" }}>dashboard</Link>.</p>}
               {vault && (
                 <div style={{ marginTop: 12 }}>
-                  <p className="note good">Vault <Link href={`/vault/${vault}`} className="mono" style={{ textDecoration: "underline" }}>{vault}</Link> is yours. Three things left, in this order:</p>
-                  <ol className="wz-next">
-                    <li><b>Deposit {sym}</b> on the vault page. It goes into Morpho under your vault's name.</li>
-                    <li><b>Borrow USDG</b> there, up to your {policy.maxLtvBps / 100}% ceiling. It waits in the vault to be put to work.</li>
-                    <li><b>Start auto-repay</b> on any machine that stays on. It puts the USDG to work, collects fees onto your debt, and protects you.
-                      <pre className="code" style={{ marginTop: 8 }}>{`PAYOFF_API_URL=${typeof window !== "undefined" ? window.location.origin : "https://payoff-pi.vercel.app"}
+                  <p className="note good">Vault <Link href={`/vault/${vault}`} className="mono" style={{ textDecoration: "underline" }}>{vault}</Link> is yours. Now fund it, right here:</p>
+                  {group && <FundLoan vault={vault} symbol={sym} token={group.collateral.address} price={px} maxLtvBps={policy.maxLtvBps} />}
+                  <details className="wz-more" style={{ marginTop: 16 }}>
+                    <summary>Running auto-repay yourself</summary>
+                    <p style={{ marginTop: 8 }}>Auto-repay is a small program. Run it on any machine that stays on, with the key you saved:</p>
+                    <pre className="code" style={{ marginTop: 8 }}>{`PAYOFF_API_URL=${typeof window !== "undefined" ? window.location.origin : "https://payoff-pi.vercel.app"}
 PAYOFF_FACTORY_ADDRESS=${FACTORY}
 AGENT_VAULTS=${vault}
 AGENT_PRIVATE_KEY=<the key you saved>
 AGENT_DRY_RUN=true   # watch /decisions first, then set false
 npm run agent`}</pre>
-                    </li>
-                  </ol>
-                  <div className="row" style={{ marginTop: 14 }}><Link className="btn green" href={`/vault/${vault}`}>Open the vault<span className="arr">→</span></Link><Link className="btn" href="/docs#runner">Auto-repay setup guide</Link></div>
+                    <Link href="/docs#runner" style={{ textDecoration: "underline", fontSize: 13 }}>Full setup guide</Link>
+                  </details>
                 </div>
               )}
             </div>

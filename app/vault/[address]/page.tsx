@@ -92,6 +92,19 @@ export default function VaultPage() {
   const p = v.position;
   const maxBorrow = p.collateralUsd === null ? null : p.collateralUsd * v.policy.maxLtvBps / 10_000 - p.debt;
 
+  // The one thing to do next, in plain words. Owners get a button that opens the
+  // right form; everyone else just reads the state.
+  const jump = (id: string) => { setTab("position"); setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "center" }), 60); };
+  const next = (() => {
+    const sym = v.collateral.symbol;
+    if (p.collateral === 0 && v.balances.collateral === 0) return { n: "1 of 3", t: `Put your ${sym} in`, d: `Nothing is in the vault yet. Deposit ${sym} and it goes into Morpho under your vault's name; only your wallet can take it back out.`, cta: isOwner ? { label: `Deposit ${sym}`, go: () => jump("f-deposit") } : null };
+    if (p.debt === 0) return { n: "2 of 3", t: "Borrow USDG against it", d: `${amount(p.collateral)} ${sym} is in. You can borrow up to ${maxBorrow === null ? "your ceiling" : usd(Math.max(0, maxBorrow), 2)}; a little under it leaves room for a bad day.`, cta: can ? { label: "Borrow USDG", go: () => jump("f-borrow") } : null };
+    if (v.paused) return { n: "3 of 3", t: "Auto-repay is off", d: "The loan is open but nothing is working on it. Turn auto-repay on and the USDG goes into the pool, fees get collected, and the debt starts going down.", cta: isOwner ? { label: "Turn auto-repay on", go: () => send({ action: "setPaused", paused: false }) } : null };
+    if (v.lp.length === 0 && v.balances.loan > 0) return { n: "3 of 3", t: "USDG is waiting to be put to work", d: `${amount(v.balances.loan, 2)} USDG sits in the vault. Auto-repay puts it into the ${sym}/USDG pool on its next run; nothing for you to do.`, cta: null };
+    if (v.lp.length > 0) return { n: "earning", t: "Your loan is paying itself down", d: `${v.lp.length} pool position${v.lp.length === 1 ? "" : "s"} open. Every swap in the pool pays a fee; each collection lands on the loan. Repaid so far: ${usd(v.stats.totalRepaidFromFees, 2)}.`, cta: null };
+    return null;
+  })();
+
   return (
     <>
       <Nav />
@@ -112,6 +125,14 @@ export default function VaultPage() {
             <button className="btn sm" onClick={refresh}>Refresh</button>
           </div>
         </div>
+
+        {next && (
+          <div className="nextcard" style={{ marginTop: 24 }}>
+            <span className="nc-step">{next.n}</span>
+            <div><b>{next.t}</b><p>{next.d}</p></div>
+            {next.cta && <button className="btn green" disabled={tx.busy} onClick={next.cta.go}>{next.cta.label}<span className="arr">→</span></button>}
+          </div>
+        )}
 
         <div className="stats" style={{ marginTop: 28 }}>
           <Stat label="Collateral" value={usd(p.collateralUsd)} sub={`${amount(p.collateral)} ${v.collateral.symbol} @ ${p.collateralPrice ? usd(p.collateralPrice, 2) : "—"}`} />
@@ -178,7 +199,9 @@ export default function VaultPage() {
                 <div className="kv"><span>Total borrowed / repaid</span><b>{usd(v.stats.totalBorrowed, 2)} / {usd(v.stats.totalRepaid, 2)}</b></div>
                 <div className="kv"><span>Protocol fees paid</span><b>{usd(v.stats.totalProtocolFees, 2)}</b></div>
               </div>
+              {isOwner && <div id="f-deposit" />}
               {isOwner && <AmountForm label={`Deposit ${v.collateral.symbol} collateral`} hint="approve, then deposit into Morpho under the vault" busy={tx.busy} onSubmit={(a) => send({ action: "depositCollateral", amount: a })} />}
+              {can && <div id="f-borrow" />}
               {can && <AmountForm label={`Borrow ${v.loan.symbol}`} hint={maxBorrow === null ? "" : `up to ${usd(Math.max(0, maxBorrow), 2)} within the policy ceiling`} busy={tx.busy} onSubmit={(a) => send({ action: "borrow", amount: a })} />}
               {can && <AmountForm label={`Repay ${v.loan.symbol} from the vault`} hint="empty = everything the vault holds" busy={tx.busy} allowEmpty onSubmit={(a) => send({ action: "repay", amount: a || undefined })} />}
               {isOwner && <AmountForm label={`Deposit ${v.loan.symbol}`} hint="to repay, or to LP without borrowing" busy={tx.busy} onSubmit={(a) => send({ action: "depositLoanToken", amount: a })} />}
