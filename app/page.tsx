@@ -9,6 +9,7 @@ import LoanTicket from "./components/LoanTicket";
 import { CountUp, Reveal, Words } from "./components/motion";
 import { useLive } from "./components/useLive";
 import { APP, CHAIN_NAME, FACTORY, TWITTER, TWITTER_HANDLE, TOKEN_CA } from "./components/brand";
+import SocialTags from "./components/SocialTags";
 import { TokenLogo, pct } from "./components/ui";
 import { usd } from "./components/format";
 
@@ -101,6 +102,7 @@ export default function Landing() {
               <div className="row faint mono" style={{ marginTop: 22, fontSize: 12, gap: 18, animation: "fadeUp .8s 1.3s both" }}>
                 <span>0% to borrow</span><span>·</span><span>0% to hop</span><span>·</span><span>2.5% of harvested fees</span>
               </div>
+              <SocialTags style={{ marginTop: 26, animation: "fadeUp .8s 1.5s both" }} />
             </div>
             <div>
               <LoanTicket symbol={nvda?.collateral.symbol ?? "NVDA"} price={nvda?.best?.collateralPrice ?? 224.72} apy={nvda?.best?.borrowApy ?? 0.0003} />
@@ -263,6 +265,7 @@ export default function Landing() {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img className="wm" src="/logo.png" alt="" aria-hidden />
               <div className="row" style={{ marginTop: 28 }}><Link className="btn green lg" href="/borrow">Open a loan<span className="arr">→</span></Link><Link className="btn lg" href="/docs">Read the docs</Link></div>
+              <SocialTags style={{ marginTop: 22 }} />
             </Reveal>
           </div>
         </section>

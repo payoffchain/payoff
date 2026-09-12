@@ -5,7 +5,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useWallet } from "./WalletProvider";
 import { EXPLORER } from "./format";
-import { APP, CHAIN_NAME, FACTORY, TWITTER, TWITTER_HANDLE, TOKEN_CA } from "./brand";
+import { APP, CHAIN_NAME, FACTORY } from "./brand";
+import SocialTags from "./SocialTags";
 
 const ROUTES = [
   { href: "/app", label: "Dashboard" },
@@ -33,11 +34,6 @@ export default function Nav() {
     document.addEventListener("mousedown", off); document.addEventListener("keydown", key);
     return () => { document.removeEventListener("mousedown", off); document.removeEventListener("keydown", key); };
   }, [menu]);
-  const [caCopied, setCaCopied] = useState(false);
-  const copyCa = async () => {
-    if (!TOKEN_CA) return;
-    try { await navigator.clipboard.writeText(TOKEN_CA); setCaCopied(true); setTimeout(() => setCaCopied(false), 1400); } catch { /* clipboard blocked */ }
-  };
   const copy = async () => {
     if (!w.address) return;
     try { await navigator.clipboard.writeText(w.address); setCopied(true); setTimeout(() => setCopied(false), 1400); } catch { /* clipboard blocked */ }
@@ -61,10 +57,6 @@ export default function Nav() {
         </div>
         <div className="navright">
           {!FACTORY && <span className="chip warn" title="Contracts not deployed yet"><span className="dot" />contracts pending</span>}
-          {TWITTER && <a className="xpill" href={TWITTER} target="_blank" rel="noopener noreferrer" title="PAYOFF on X"><span className="xlogo">𝕏</span><span className="xh">{TWITTER_HANDLE}</span></a>}
-          {TOKEN_CA
-            ? <button className="capill" onClick={copyCa} title={TOKEN_CA}><span className="ca">CA</span><span className="mono">{caCopied ? "copied" : TOKEN_CA.slice(0, 6) + "…" + TOKEN_CA.slice(-4)}</span><span className="cp">⧉</span></button>
-            : <span className="capill soon" title="Token contract address: not launched yet"><span className="ca">CA</span><span className="mono">soon</span></span>}
           <div className="wmenu-wrap">
             <button className={"btn sm " + (w.wrongChain ? "danger" : w.address ? "" : "green")} onClick={action} disabled={w.connecting} title={w.address ?? undefined} aria-haspopup={connected ? "menu" : undefined} aria-expanded={connected ? menu : undefined}>
               {connected && <span className="dot on" aria-hidden />}{label}{connected && <span className="caret" aria-hidden>▾</span>}
@@ -83,10 +75,7 @@ export default function Nav() {
       </div>
       <div className="navsheet">
         {ROUTES.map((r) => <Link key={r.href} href={r.href}>{r.label}</Link>)}
-        <div className="row" style={{ gap: 8, padding: "6px 0" }}>
-          {TWITTER && <a className="xpill" href={TWITTER} target="_blank" rel="noopener noreferrer"><span className="xlogo">𝕏</span><span className="xh">{TWITTER_HANDLE}</span></a>}
-          {TOKEN_CA ? <button className="capill" onClick={copyCa}><span className="ca">CA</span><span className="mono">{caCopied ? "copied" : TOKEN_CA.slice(0, 6) + "…" + TOKEN_CA.slice(-4)}</span></button> : <span className="capill soon"><span className="ca">CA</span><span className="mono">soon</span></span>}
-        </div>
+        <SocialTags style={{ padding: "6px 0" }} />
         {connected ? (
           <div className="wsheet">
             <div className="mono faint" style={{ fontSize: 12 }}>Connected as {short(w.address!)}</div>

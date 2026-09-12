@@ -696,3 +696,17 @@ main > section:nth-of-type(4){clip-path:polygon(0 3%,100% 0,100% 97%,0 100%);pad
 @media(max-width:1100px){.navright .xpill .xh{display:none}.navright .xpill{padding:0 10px}}
 @media(max-width:900px){.navright .xpill,.navright .capill{display:none}}
 footer .links a{color:var(--mute)}
+/* X and CA as desk stickers: tilted, mono, the CA a dashed "soon" stamp until launch */
+.navright .xpill,.navright .capill{display:none}
+.stickers{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.sticker{display:inline-flex;align-items:center;gap:10px;padding:8px 14px 8px 10px;border:1px solid var(--rule-2);border-radius:8px;background:linear-gradient(180deg,#0f2158,#0a1636);box-shadow:3px 3px 0 0 var(--blue-deep);color:var(--ink);font-family:var(--mono);font-size:12.5px;letter-spacing:.03em;text-decoration:none;cursor:pointer;transition:transform .18s cubic-bezier(.2,.7,.2,1),box-shadow .18s}
+.sticker .lbl{font-family:'Pixelify Sans',var(--mono);font-size:11px;letter-spacing:.14em;color:var(--ice);padding:2px 6px;border:1px solid rgba(185,205,255,.35);border-radius:4px}
+.sticker .val{color:var(--ink)}
+.sticker .cp{color:var(--faint)}
+.sticker.x{transform:rotate(-1.6deg)}
+.sticker.ca{transform:rotate(1.2deg)}
+.sticker:hover{transform:rotate(0) translate(-1px,-2px);box-shadow:5px 5px 0 0 var(--blue-deep)}
+.sticker.soon{border-style:dashed;background:rgba(10,22,54,.6);box-shadow:none;cursor:default}
+.sticker.soon .val{color:var(--faint);letter-spacing:.14em;font-family:'Pixelify Sans',var(--mono);font-size:13px}
+.sticker.soon:hover{transform:rotate(1.2deg);box-shadow:none}
+.cta .stickers{justify-content:center;position:relative}
