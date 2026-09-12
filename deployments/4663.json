@@ -14,5 +14,8 @@
     "treasury": "0x7751d6826b01e45eBC6f28ABF788cEFf1f779365",
     "harvestFeeBps": 250,
     "performanceFeeBps": 1000
-  }
+  },
+  "treasury": "0x8b8e3AafD5aB41150C19bcfe0523Fce38eCCb0C9",
+  "treasuryChangedAt": "2026-09-12T08:05:00Z",
+  "treasuryChangeTx": "0x69e020cfa221585f61447cdef3e5a9b1c404ecc477fb98d271701e4a2545a0fb"
 }
