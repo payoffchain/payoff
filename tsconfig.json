@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -14,10 +18,31 @@
     "jsx": "preserve",
     "incremental": true,
     "baseUrl": ".",
-    "paths": { "@/*": ["./*"] },
-    "plugins": [{ "name": "next" }]
+    "paths": {
+      "@/*": [
+        "./*"
+      ]
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "next-env.d.ts",
+    ".next-dev/types/**/*.ts"
+  ],
   "//exclude": "test/, scripts/ and hardhat.config.ts are compiled by tsconfig.hardhat.json instead. They rely on Hardhat type augmentation that this Next.js-oriented config does not load, so type-checking them here reports errors that do not exist.",
-  "exclude": ["node_modules", "contracts", "scripts", "test", "typechain-types", "hardhat.config.ts"]
+  "exclude": [
+    "node_modules",
+    "contracts",
+    "scripts",
+    "test",
+    "typechain-types",
+    "hardhat.config.ts"
+  ]
 }

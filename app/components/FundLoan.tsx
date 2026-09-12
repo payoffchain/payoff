@@ -21,7 +21,7 @@ export default function FundLoan({ vault, symbol, token, price, maxLtvBps, loanS
   const w = useWallet();
   const tx = useTx();
   const [phase, setPhase] = useState<"deposit" | "borrow" | "done">("deposit");
-  const [bal, setBal] = useState<{ amount: number; decimals: number } | null>(null);
+  const [bal, setBal] = useState<{ amount: number; decimals: number } | null | "unknown">(null);
   const [amt, setAmt] = useState("");
   const [deposited, setDeposited] = useState(0);
   const [share, setShare] = useState(80); // % of the ceiling to borrow
@@ -37,12 +37,13 @@ export default function FundLoan({ vault, symbol, token, price, maxLtvBps, loanS
         const c = new ethers.Contract(token, ERC20, p);
         const [raw, dec] = await Promise.all([c.balanceOf(w.address), c.decimals()]);
         if (!dead) setBal({ amount: Number(ethers.formatUnits(raw, dec)), decimals: Number(dec) });
-      } catch { /* balance is a convenience only */ }
+      } catch { if (!dead) setBal("unknown"); /* balance is a convenience only */ }
     })();
     return () => { dead = true; };
   }, [w.address, token, phase]);
 
-  const amountOk = /^\d*\.?\d+$/.test(amt) && Number(amt) > 0 && (bal === null || Number(amt) <= bal.amount + 1e-12);
+  const have = bal !== null && bal !== "unknown" ? bal : null;
+  const amountOk = /^\d*\.?\d+$/.test(amt) && Number(amt) > 0 && (have === null || Number(amt) <= have.amount + 1e-12);
   const ceiling = price === null ? null : deposited * price * maxLtvBps / 10_000;
   const borrow = ceiling === null ? null : Math.floor(ceiling * share / 100 * 100) / 100;
 
@@ -71,13 +72,13 @@ export default function FundLoan({ vault, symbol, token, price, maxLtvBps, loanS
               <label>Amount of {symbol}</label>
               <input inputMode="decimal" placeholder="0.0" value={amt} onChange={(e) => setAmt(e.target.value.trim())} />
               <span className="hint">
-                {bal === null ? (w.address ? "reading your balance…" : "connect a wallet") : <>you have {bal.amount.toLocaleString("en-US", { maximumFractionDigits: 6 })} {symbol}{bal.amount > 0 && <> · <button type="button" className="linkbtn" onClick={() => setAmt(String(bal.amount))}>use all</button></>}</>}
+                {bal === null ? (w.address ? "reading your balance…" : "connect a wallet") : bal === "unknown" ? "balance could not be read (is the wallet on Robinhood Chain?)" : <>you have {bal.amount.toLocaleString("en-US", { maximumFractionDigits: 6 })} {symbol}{bal.amount > 0 && <> · <button type="button" className="linkbtn" onClick={() => setAmt(String(bal.amount))}>use all</button></>}</>}
                 {price !== null && amountOk ? ` · worth ${usd(Number(amt) * price)}` : ""}
               </span>
             </div>
             <button className="btn green" disabled={!amountOk || tx.busy} onClick={deposit}>{tx.busy ? tx.step : `Deposit ${symbol}`}</button>
           </div>
-          {bal !== null && bal.amount === 0 && <p className="note" style={{ marginTop: 10 }}>This wallet holds no {symbol}. Buy some on Robinhood Chain first, or <Link href={`/vault/${vault}`} style={{ textDecoration: "underline" }}>open the vault page</Link> and come back later.</p>}
+          {have !== null && have.amount === 0 && <p className="note" style={{ marginTop: 10 }}>This wallet holds no {symbol}. Buy some on Robinhood Chain first, or <Link href={`/vault/${vault}`} style={{ textDecoration: "underline" }}>open the vault page</Link> and come back later.</p>}
         </>
       )}
 

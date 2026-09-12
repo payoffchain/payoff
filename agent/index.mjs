@@ -288,11 +288,13 @@ async function tick() {
   state.lastTick = new Date().toISOString();
   const vaults = await discoverVaults();
   state.vaults = vaults;
+  // gas is checked every tick, vaults or not, so /health always shows the balance and
+  // an empty wallet is noticed before the first vault arrives
+  const hasGas = await gasOk();
   if (vaults.length === 0) {
     log("no vaults to operate", operator ? `(operator ${operator})` : "(no key: set AGENT_VAULTS to plan in dry-run)");
     return;
   }
-  const hasGas = await gasOk();
   const canSign = !cfg.dryRun && wallet && (await settlePending());
 
   for (const vault of vaults) {

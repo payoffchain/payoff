@@ -31,6 +31,9 @@ const securityHeaders = [
 ];
 
 const nextConfig = {
+  // NEXT_DIST_DIR lets a dev server build somewhere other than .next, so a production
+  // build run in the same checkout cannot clobber it mid-session.
+  distDir: process.env.NEXT_DIST_DIR || ".next",
   outputFileTracingRoot: __dirname,
   reactStrictMode: true,
   poweredByHeader: false,

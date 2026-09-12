@@ -5,7 +5,7 @@ export const runtime = "nodejs";
 
 /**
  * GET /api/logo/NVDA -> a ticker logo, fetched server-side and cached, so the page
- * stays same-origin. 404 (no body) when no source has one; the UI shows a monogram.
+ * stays same-origin. A monogram SVG when no source has one.
  */
 const SOURCES = (symbol: string) => [
   `https://assets.parqet.com/logos/symbol/${symbol}?format=png&size=64`,
@@ -25,5 +25,8 @@ export const GET = handler("logo", async (req) => {
       return new NextResponse(buf, { status: 200, headers: { "content-type": type, "cache-control": "public, max-age=86400, s-maxage=86400" } });
     } catch { /* next source */ }
   }
-  return new NextResponse(null, { status: 404, headers: { "cache-control": "public, max-age=3600" } });
+  // No source has one: a monogram tile, served as an image so the page never logs a
+  // failed request and the slot never flickers between "image" and "text".
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#e9edfc"/><text x="32" y="38" text-anchor="middle" font-family="IBM Plex Mono, Consolas, monospace" font-size="${symbol.length > 3 ? 15 : 20}" font-weight="600" fill="#5b78f2">${symbol.slice(0, 4)}</text></svg>`;
+  return new NextResponse(svg, { status: 200, headers: { "content-type": "image/svg+xml", "cache-control": "public, max-age=3600, s-maxage=86400", "x-logo": "monogram" } });
 });

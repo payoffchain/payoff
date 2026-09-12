@@ -19,3 +19,4 @@ deployments/fork.json
 .vercel
 .env*
 .railway/
+.next-dev/

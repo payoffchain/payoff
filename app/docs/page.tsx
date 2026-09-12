@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Nav from "../components/Nav";
-import { APP, CHAIN_NAME } from "../components/brand";
+import { APP, CHAIN_NAME, HOSTED_OPERATOR, HOSTED_STATUS_URL } from "../components/brand";
 
 export const metadata = { title: "Docs" };
 
@@ -45,6 +45,10 @@ export default function Docs() {
 
         <h3 style={{ marginTop: 40 }}>Refinancing</h3>
         <p className="mute">On {CHAIN_NAME} one collateral usually has several Morpho markets against USDG, at different LLTVs and with different curators. Each has its own utilisation and so its own borrow rate. You allow-list the markets you trust; when one is cheaper by at least the savings threshold, has the liquidity, and keeps LTV inside the ceiling, the agent moves the whole position there: flash-borrow the debt, repay the old market, withdraw the collateral, supply it to the new market, borrow there, repay the flash loan. All or nothing.</p>
+
+        <h3 id="runner" style={{ marginTop: 40 }}>Who runs auto-repay</h3>
+        <p className="mute">By default, {APP} does. A program we host checks every vault whose operator is our key{HOSTED_OPERATOR ? <> (<code className="inline">{HOSTED_OPERATOR}</code>)</> : null} once a minute and signs the steps the plan below calls for. The key is an <em>operator</em>: the contract lets it borrow within your ceiling, place and collect liquidity, repay, refinance between markets you allowed, and run protection. It cannot withdraw anything; every withdraw path pays the owner and nobody else. You can turn it off on the vault page, or replace it with your own key at any time.{HOSTED_STATUS_URL ? <> Its live status is public at <a href={`${HOSTED_STATUS_URL}/health`} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "underline" }}>{HOSTED_STATUS_URL.replace(/^https?:\/\//, "")}/health ↗</a>.</> : null}</p>
+        <p className="mute">Prefer to run it yourself? Choose "I'd rather run it myself" in the borrow wizard, save the key it makes, and start <code className="inline">npm run agent</code> on any machine that stays on, with <code className="inline">PAYOFF_API_URL</code>, <code className="inline">PAYOFF_FACTORY_ADDRESS</code>, <code className="inline">AGENT_VAULTS</code> and <code className="inline">AGENT_PRIVATE_KEY</code> set. It starts in dry-run: watch <code className="inline">/decisions</code> first, then set <code className="inline">AGENT_DRY_RUN=false</code>.</p>
 
         <h3 style={{ marginTop: 40 }}>The agent</h3>
         <p className="mute">The brain is one file, <code className="inline">lib/services/plan.ts</code>, evaluated by the site for any vault at <code className="inline">/api/vaults/&lt;vault&gt;/plan</code>. In priority order: protect, refinance, close (loss limit or out of range), harvest (above the fee floor), deploy idle USDG into the pool with the best recent fee yield. The runner (<code className="inline">agent/index.mjs</code>) fetches the plan every tick, simulates each transaction, and signs with the operator key. It starts in dry-run. With an Anthropic key, Claude may veto an action with a reason — it can never add one.</p>

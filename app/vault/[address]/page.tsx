@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import Nav from "../../components/Nav";
 import { useWallet } from "../../components/WalletProvider";
 import { useTx } from "../../components/useTx";
-import { AddrLink, DataBanner, Empty, Gauge, LtvBar, Stat, Tok, TxLink, bps, pct } from "../../components/ui";
+import { AddrLink, DataBanner, Empty, Gauge, LtvBar, Stat, TokenLogo, TxLink, bps, pct } from "../../components/ui";
 import { usd, ago, amount, EXPLORER } from "../../components/format";
 import VaultLog from "../../components/VaultLog";
 import { HOSTED_OPERATOR } from "../../components/brand";
@@ -114,7 +114,7 @@ export default function VaultPage() {
         <div className="row" style={{ justifyContent: "space-between", alignItems: "flex-end" }}>
           <div>
             <span className="eyebrow">Vault · <span style={{ textTransform: "none", letterSpacing: 0 }}><AddrLink address={v.address} /></span></span>
-            <h2 style={{ display: "flex", alignItems: "center", gap: 14 }}><Tok symbol={v.collateral.symbol} /> {v.collateral.symbol} / {v.loan.symbol}</h2>
+            <h2 style={{ display: "flex", alignItems: "center", gap: 14 }}><TokenLogo symbol={v.collateral.symbol} size={30} /> {v.collateral.symbol} / {v.loan.symbol}</h2>
             <div className="row faint mono" style={{ fontSize: 12, marginTop: 8 }}>
               <span>owner <AddrLink address={v.owner} /></span><span>auto-repay {v.operator === "0x0000000000000000000000000000000000000000" ? "none" : HOSTED_OPERATOR && v.operator.toLowerCase() === HOSTED_OPERATOR.toLowerCase() ? <><span className="pill a">by PAYOFF</span> <AddrLink address={v.operator} /></> : <>key <AddrLink address={v.operator} /></>}</span><span>created {ago(v.createdAt)}</span>
               {v.paused ? <span className="pill a">auto-repay off</span> : <span className="pill g">auto-repay on</span>}
