@@ -6,6 +6,7 @@ import "./demo.css";
 import "./tactile.css";
 import "./brutal.css";
 import "./navy.css";
+import "./glass.css";
 import { WalletProvider } from "./components/WalletProvider";
 import { APP, SITE } from "./components/brand";
 

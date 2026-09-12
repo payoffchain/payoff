@@ -149,3 +149,8 @@ footer{background:var(--paper-2)}
   .reveal{opacity:1;transform:none}
   .ticker .track{animation:none}
 }
+
+/* ?reveal=all: everything visible at once, no transitions (full-page screenshots) */
+.reveal-all .reveal,.reveal-all .reveal *{transition:none!important;animation:none!important}
+.reveal-all .reveal{opacity:1!important;transform:none!important}
+.reveal-all .band .huge{clip-path:none!important;opacity:1!important}

@@ -23,6 +23,8 @@ export function Reveal({ children, delay = 0, className = "", as: Tag = "div", s
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    // ?reveal=all shows everything at once (full-page screenshots, headless renders)
+    if (location.search.includes("reveal=all")) { document.documentElement.classList.add("reveal-all"); setOn(true); return; }
     if (!("IntersectionObserver" in window)) { setOn(true); return; }
     const io = new IntersectionObserver((es) => { for (const e of es) if (e.isIntersecting) { setOn(true); io.disconnect(); } }, { rootMargin: "0px 0px -10% 0px", threshold: 0.08 });
     io.observe(el);
