@@ -38,7 +38,13 @@ const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   async redirects() {
-    return [{ source: "/deploy", destination: "/borrow", permanent: true }];
+    return [
+      { source: "/deploy", destination: "/borrow", permanent: true },
+      // the old preview host forwards to the real domain (API paths included, since the
+      // runner and any old bookmark should land on one canonical origin)
+      // (payoff-pi.vercel.app -> payoffchain.tech is switched on once DNS resolves; see below)
+      { source: "/:path*", has: [{ type: "host", value: "www.payoffchain.tech" }], destination: "https://payoffchain.tech/:path*", permanent: true },
+    ];
   },
   async headers() {
     return [{ source: "/(.*)", headers: securityHeaders }];

@@ -10,7 +10,7 @@ import { useWallet } from "../components/WalletProvider";
 import { useTx } from "../components/useTx";
 import { TokenLogo, TxLink, pct } from "../components/ui";
 import { usd } from "../components/format";
-import { CHAIN_NAME, FACTORY, HOSTED_OPERATOR } from "../components/brand";
+import { CHAIN_NAME, FACTORY, HOSTED_OPERATOR, SITE } from "../components/brand";
 import HostedStatus from "../components/HostedStatus";
 import FactoryAbi from "@/lib/abis/PayoffVaultFactory.json";
 import FundLoan from "../components/FundLoan";
@@ -365,7 +365,7 @@ function DeployInner() {
                   {opMode !== "hosted" && <details className="wz-more" style={{ marginTop: 16 }}>
                     <summary>Running auto-repay yourself</summary>
                     <p style={{ marginTop: 8 }}>Auto-repay is a small program. Run it on any machine that stays on, with the key you saved:</p>
-                    <pre className="code" style={{ marginTop: 8 }}>{`PAYOFF_API_URL=${typeof window !== "undefined" ? window.location.origin : "https://payoff-pi.vercel.app"}
+                    <pre className="code" style={{ marginTop: 8 }}>{`PAYOFF_API_URL=${typeof window !== "undefined" ? window.location.origin : SITE}
 PAYOFF_FACTORY_ADDRESS=${FACTORY}
 AGENT_VAULTS=${vault}
 AGENT_PRIVATE_KEY=<the key you saved>
