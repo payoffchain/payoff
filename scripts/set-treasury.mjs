@@ -8,7 +8,7 @@ const RPC = process.env.RPC_URL ?? "https://rpc.mainnet.chain.robinhood.com";
 const deployments = JSON.parse(readFileSync(new URL("../deployments/4663.json", import.meta.url), "utf8"));
 const FACTORY = deployments.addresses?.PAYOFF_FACTORY_ADDRESS ?? deployments.factory;
 const next = process.argv[2];
-const key = process.env.DEPLOYER_PRIVATE_KEY;
+const key = process.env.DEPLOYER_PRIVATE_KEY; // the factory OWNER key (PAYOFF_OWNER_PRIVATE_KEY since 12 Sep 2026)
 if (!ethers.isAddress(next ?? "")) { console.error("usage: node scripts/set-treasury.mjs 0xNewTreasury"); process.exit(1); }
 if (!key) { console.error("DEPLOYER_PRIVATE_KEY is not set"); process.exit(1); }
 

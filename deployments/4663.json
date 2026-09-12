@@ -16,5 +16,9 @@
     "performanceFeeBps": 1000
   },
   "treasuryChangedAt": "2026-09-12T08:05:00Z",
-  "treasuryChangeTx": "0x69e020cfa221585f61447cdef3e5a9b1c404ecc477fb98d271701e4a2545a0fb"
+  "treasuryChangeTx": "0x69e020cfa221585f61447cdef3e5a9b1c404ecc477fb98d271701e4a2545a0fb",
+  "owner": "0xe197885619f2506A049b2BDB7d4a7d051b3D2FB6",
+  "ownerChangedAt": "2026-09-12T08:20:00Z",
+  "ownerChangeTx": "0xef41f73c68aa881bf211807bdefdc51aae92695fb0ecf16c05ed117005630b46",
+  "note": "deployer 0x197A... only deployed; owner, treasury and operator are PAYOFF-only wallets"
 }
