@@ -75,7 +75,7 @@ export async function vaultActivity(vault: string, opts: { limit?: number; fromB
       case "OperatorSet": title = "Operator changed"; detail = String(a.operator); break;
       case "PolicySet": title = "Policy updated"; detail = `max LTV ${Number(a.maxLtvBps) / 100}% · trigger ${Number(a.triggerLtvBps) / 100}% · repay ${Number(a.repayBps) / 100}% · slippage ${Number(a.maxSlippageBps) / 100}%`; break;
       case "MarketAllowed": title = a.allowed ? "Market allowed" : "Market removed"; detail = String(a.id).slice(0, 10); break;
-      case "Paused": title = a.paused ? "Paused" : "Resumed"; break;
+      case "Paused": title = a.paused ? "Auto-repay turned off" : "Auto-repay turned on"; break;
       case "OwnershipProposed": title = "Ownership proposed"; detail = String(a.pendingOwner); break;
       case "OwnershipTransferred": title = "Ownership transferred"; detail = `${a.from} → ${a.to}`; break;
     }

@@ -272,6 +272,8 @@ export default function DemoPlayer({ compact = false }: { compact?: boolean }) {
   const scene = SCENES[i];
   return (
     <div ref={rootRef} className={"demo " + (compact ? "compact" : "")} onClick={() => setPlaying((p) => !p)} onKeyDown={onKey} tabIndex={0} role="group" aria-label="Product tour: Space plays or pauses, arrow keys step">
+      {/* a browser window around the scenes, so the tour reads as a screen recording of the real site */}
+      <div className="demo-chrome" aria-hidden><span className="dots"><i /><i /><i /></span><span className="url">payoff-pi.vercel.app/{i === 0 ? "" : i < 5 ? "borrow" : "vault/0x443D…bDCB"}</span><span className="rec"><i />REC</span></div>
       <div className="demo-frame">
         <div className="demo-scene" key={i}>{scene.render(t)}</div>
         <div className="demo-caption"><span className="demo-step">{i + 1} / {SCENES.length}</span><b>{scene.title}</b><span>{scene.caption}</span></div>

@@ -7,6 +7,16 @@ import { useWallet } from "../../components/WalletProvider";
 import { useTx } from "../../components/useTx";
 import { AddrLink, DataBanner, Empty, Gauge, LtvBar, Stat, Tok, TxLink, bps, pct } from "../../components/ui";
 import { usd, ago, amount, EXPLORER } from "../../components/format";
+import VaultLog from "../../components/VaultLog";
+
+/** The next auto-repay step, in plain words, for the live log. */
+const NEXT_WORDS: Record<string, string> = {
+  protect: "sell a little collateral and pay the loan down (protection)",
+  refinance: "move the loan to a cheaper market",
+  harvest: "collect the pool fees and pay them onto the loan",
+  close: "close a pool position and pay the loan down",
+  open: "put the idle USDG into the pool",
+};
 
 type Lp = { tokenId: string; fee: number; tickLower: number; tickUpper: number; inRange: boolean; priceLower: number | null; priceUpper: number | null; currentPrice: number | null; amountCollateral: number; amountLoan: number; valueUsd: number | null; uncollected: { collateral: number; loan: number; usd: number | null } | null; costBasis: number };
 type Vault = {
@@ -43,6 +53,7 @@ export default function VaultPage() {
   const [tab, setTab] = useState<"position" | "agent" | "activity" | "settings">("position");
   const [panelErr, setPanelErr] = useState<{ plan?: string; activity?: string; targets?: string }>({});
   const [tick, setTick] = useState(0);
+  const [refreshedAt, setRefreshedAt] = useState(0);
   const refresh = useCallback(() => setTick((t) => t + 1), []);
 
   useEffect(() => {
@@ -51,7 +62,7 @@ export default function VaultPage() {
     setPanelErr({});
     get<Vault>(`/api/vaults/${address}`).then((d) => { if (!dead) setV(d); }).catch((e) => { if (!dead) setErr(e.message); });
     get<Plan>(`/api/vaults/${address}/plan`).then((d) => { if (!dead) setPlan(d); }).catch((e) => { if (!dead) setPanelErr((x) => ({ ...x, plan: e.message })); });
-    get<Activity>(`/api/vaults/${address}/activity?limit=100`).then((d) => { if (!dead) setAct(d); }).catch((e) => { if (!dead) setPanelErr((x) => ({ ...x, activity: e.message })); });
+    get<Activity>(`/api/vaults/${address}/activity?limit=100`).then((d) => { if (!dead) { setAct(d); setRefreshedAt(Date.now()); } }).catch((e) => { if (!dead) setPanelErr((x) => ({ ...x, activity: e.message })); });
     get<{ targets: Target[] }>(`/api/vaults/${address}/targets`).then((d) => { if (!dead) setTargets(d.targets); }).catch((e) => { if (!dead) setPanelErr((x) => ({ ...x, targets: e.message })); });
     return () => { dead = true; };
   }, [address, tick]);
@@ -108,7 +119,8 @@ export default function VaultPage() {
           <Stat label="Repaid from fees" value={usd(v.stats.totalRepaidFromFees, 2)} tone="green" sub={`harvested ${usd(v.stats.totalHarvested, 2)} · ${v.stats.refinanceCount} hop${v.stats.refinanceCount === 1 ? "" : "s"}`} />
           <Stat label="Net value" value={usd(v.netValueUsd)} sub={`liquidity ${usd(v.lpValueUsd)} · idle ${amount(v.balances.loan, 2)} ${v.loan.symbol}`} />
         </div>
-        <div className="card ltv-card" style={{ marginTop: 18 }}>
+        <div className="vault-top" style={{ marginTop: 18 }}>
+        <div className="card ltv-card">
           <Gauge ltv={p.ltv} max={v.policy.maxLtvBps / 10_000} trigger={v.policy.triggerLtvBps / 10_000} lltv={v.market.lltv} />
           <div>
             <LtvBar ltv={p.ltv} max={v.policy.maxLtvBps / 10_000} trigger={v.policy.triggerLtvBps / 10_000} lltv={v.market.lltv} />
@@ -118,6 +130,12 @@ export default function VaultPage() {
               {p.ltvBps !== null && p.ltvBps >= v.policy.triggerLtvBps ? <span className="pill r">at trigger — protection due</span> : <span className="pill g">inside policy</span>}
             </div>
           </div>
+        </div>
+        <VaultLog
+          entries={act ? act.entries : null}
+          refreshedAt={refreshedAt}
+          now={{ price: p.collateralPrice, ltvBps: p.ltvBps, triggerBps: v.policy.triggerLtvBps, maxBps: v.policy.maxLtvBps, paused: v.paused, symbol: v.collateral.symbol, next: plan?.actions[0] ? (NEXT_WORDS[plan.actions[0].kind] ?? plan.actions[0].kind) : null }}
+        />
         </div>
 
         <div className="tabs" style={{ marginTop: 32 }}>

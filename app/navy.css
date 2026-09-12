@@ -620,3 +620,41 @@ main > section:nth-of-type(4){clip-path:polygon(0 3%,100% 0,100% 97%,0 100%);pad
 .wmenu button.danger{color:var(--red)}
 .wmenu button.danger:hover{background:rgba(255,138,112,.1)}
 .wsheet{display:grid;gap:8px;padding-top:6px}
+/* vault page: the LTV card and the live log side by side */
+.vault-top{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:18px;align-items:stretch}
+@media(max-width:1000px){.vault-top{grid-template-columns:1fr}}
+.vlog{background:linear-gradient(180deg,#0a1636,#071130);border:1px solid var(--rule-2);border-radius:var(--r);box-shadow:var(--hs);padding:14px 16px 12px;font-family:var(--mono);font-size:12px;color:var(--ink);position:relative;overflow:hidden;display:flex;flex-direction:column;min-height:260px}
+.vlog::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(185,205,255,.025) 3px 4px);pointer-events:none}
+.vlog-head{display:flex;justify-content:space-between;font-size:10.5px;letter-spacing:.14em;color:var(--faint);padding-bottom:10px;border-bottom:1px solid var(--rule)}
+.vlog-head .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--ice);box-shadow:0 0 8px var(--ice);margin-right:8px;animation:dotBlink 1.6s ease-in-out infinite;vertical-align:1px}
+.vlog-now{display:grid;gap:4px;padding:10px 0;border-bottom:1px solid var(--rule)}
+.vlog-now > div{display:grid;grid-template-columns:44px 1fr;gap:10px;align-items:baseline}
+.vlog-now span{font-size:10px;letter-spacing:.14em;color:var(--faint)}
+.vlog-now b{font-weight:500}
+.vlog-now b.good{color:var(--ice)} .vlog-now b.bad{color:var(--red)}
+.vlog-lines{padding-top:8px;overflow:auto;max-height:300px;flex:1}
+.vlog-lines > div{display:grid;grid-template-columns:92px 1fr auto;gap:10px;padding:5px 8px;margin:0 -8px;opacity:0;transform:translateX(-6px);transition:opacity .35s,transform .35s;border-radius:6px}
+.vlog-lines > div.on{opacity:1;transform:none}
+.vlog-lines > div:hover{background:rgba(185,205,255,.05)}
+.vlog-lines span:first-child{color:var(--faint);white-space:nowrap}
+.vlog-lines b{font-weight:500}
+.vlog-lines em{font-style:normal;color:var(--mute)}
+.vlog-lines .good b{color:var(--ice)} .vlog-lines .bad b{color:var(--red)}
+.vlog-lines a{color:var(--faint);text-decoration:none} .vlog-lines a:hover{color:var(--ice)}
+.vlog-lines .cursor{color:var(--faint)}
+.vlog-lines .cursor i{display:inline-block;width:7px;height:11px;background:var(--ice);margin-left:6px;vertical-align:-1px;animation:dotBlink 1s steps(2) infinite}
+@media(max-width:600px){.vlog-lines > div{grid-template-columns:1fr auto}.vlog-lines span:first-child{display:none}}
+/* demo: a browser window frame with a REC light; the player sits on a slab with a shadow */
+.demo{position:relative}
+.demo-chrome{display:flex;align-items:center;gap:12px;padding:9px 14px;background:#0a1636;border:1px solid var(--rule-2);border-bottom:0;border-radius:14px 14px 0 0;font-family:var(--mono);font-size:11px;color:var(--faint);letter-spacing:.06em}
+.demo-chrome .dots{display:inline-flex;gap:6px}
+.demo-chrome .dots i{width:10px;height:10px;border-radius:50%;background:rgba(185,205,255,.18);border:1px solid rgba(185,205,255,.25)}
+.demo-chrome .dots i:first-child{background:#ff8a70;border-color:#ff8a70}
+.demo-chrome .url{flex:1;text-align:center;background:rgba(5,10,28,.8);border:1px solid var(--rule);border-radius:6px;padding:4px 10px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.demo-chrome .rec{display:inline-flex;align-items:center;gap:6px;color:var(--red);font-weight:600}
+.demo-chrome .rec i{width:7px;height:7px;border-radius:50%;background:var(--red);box-shadow:0 0 8px var(--red);animation:dotBlink 1.2s ease-in-out infinite}
+.demo .demo-frame{border-radius:0 0 14px 14px;border-top:0;box-shadow:var(--hs-lg),0 40px 80px -40px rgba(0,0,0,.9)}
+@media(max-width:700px){.demo .demo-frame{border-radius:0 0 14px 14px}.demo .demo-scene{border-radius:0}.demo-chrome .rec span{display:none}}
+.vlog-lines{overflow-x:hidden;overflow-y:auto;scrollbar-width:thin}
+.vlog-lines > div{margin:0}
+.vlog-lines em{overflow-wrap:anywhere}
