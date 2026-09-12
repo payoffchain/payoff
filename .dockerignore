@@ -1,0 +1,8 @@
+# only what the runner image needs is copied explicitly in agent/Dockerfile
+node_modules
+.next
+.env
+.env.*
+artifacts
+cache
+typechain-types
