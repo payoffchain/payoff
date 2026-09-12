@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>PAYOFF teaser</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@700;800&family=Archivo:wght@400;500&family=IBM+Plex+Mono:wght@400;500&family=Pixelify+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--ice:#b9cdff;--ink:#f2f6ff;--mute:#9fb0d8;--faint:#6f80a8;--red:#ff8a70;--deep:#13275e;--paper:#0a1636;--mono:'IBM Plex Mono',monospace;--disp:'Bricolage Grotesque',sans-serif;--body:'Archivo',sans-serif}
+  *{box-sizing:border-box;margin:0}
+  html,body{width:1200px;height:675px;overflow:hidden;background:#050a1c}
+  body{position:relative;font-family:var(--body);color:var(--ink);
+    background:
+      radial-gradient(55% 60% at 78% 45%,rgba(47,91,214,.45),transparent 70%),
+      repeating-linear-gradient(0deg,rgba(185,205,255,.045) 0 1px,transparent 1px 40px),
+      repeating-linear-gradient(90deg,rgba(185,205,255,.045) 0 1px,transparent 1px 40px),
+      linear-gradient(135deg,#050a1c,#07112e)}
+  .brand{position:absolute;left:56px;top:44px;display:flex;align-items:center;gap:12px}
+  .brand img{width:64px;height:64px}
+  .brand b{font-family:var(--disp);font-weight:800;font-size:30px;letter-spacing:.02em}
+  .sub{position:absolute;left:56px;top:128px;font-family:var(--mono);font-size:12px;letter-spacing:.24em;color:var(--faint)}
+  h1{position:absolute;left:52px;top:210px;font-family:var(--disp);font-weight:800;font-size:82px;line-height:.98;letter-spacing:-.03em;width:640px}
+  h1 span{color:var(--ice)}
+  .lede{position:absolute;left:56px;top:420px;font-size:22px;line-height:1.45;color:var(--mute);width:560px}
+  .stamp{position:absolute;left:56px;top:560px;padding:12px 22px;border:1px dashed rgba(185,205,255,.5);border-radius:999px;font-family:'Pixelify Sans',var(--mono);font-size:15px;letter-spacing:.18em;color:var(--ice)}
+  .ticket{position:absolute;left:720px;top:88px;width:420px;height:520px;padding:26px 22px 18px;background:linear-gradient(180deg,var(--paper),#071130);border:1px solid rgba(170,196,255,.4);border-radius:10px;box-shadow:14px 14px 0 0 var(--deep);transform:rotate(-1.5deg);font-family:var(--mono);font-size:12px}
+  .ticket::after{content:"";position:absolute;top:-1px;right:28px;width:44px;height:14px;background:#050a1c;border:1px solid rgba(170,196,255,.3);border-top:0;border-radius:0 0 8px 8px}
+  .th{display:flex;justify-content:space-between;font-size:11px;letter-spacing:.14em;color:var(--faint);padding-bottom:10px;border-bottom:1px solid rgba(185,205,255,.25)}
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:12px 0 14px}
+  .steps span{font-size:10px;letter-spacing:.12em;color:var(--faint);padding:8px 6px 4px;border-top:2px solid rgba(170,196,255,.18);border-radius:10px 10px 0 0;text-align:center}
+  .steps span.on{color:var(--ice);border-top-color:var(--ice)}
+  .rows div{display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;border-bottom:1px solid rgba(170,196,255,.12)}
+  .rows span{font-size:10px;letter-spacing:.14em;color:var(--faint)}
+  .rows b{font-weight:500;font-size:14px}
+  .rows small{font-size:10px;color:var(--faint)}
+  .rows s{color:var(--faint);font-size:12px;margin-right:10px;font-weight:400}
+  .debt{color:var(--red);font-size:18px!important;font-weight:600!important}
+  .fh{display:flex;justify-content:space-between;font-size:10px;letter-spacing:.14em;color:var(--faint);margin:16px 0 8px}
+  .log div{display:grid;grid-template-columns:56px 1fr auto;gap:10px;padding:5px 0;font-size:12.5px;color:var(--faint)}
+  .log b{font-weight:500;color:var(--ice)}
+  .tf{position:absolute;left:22px;right:22px;bottom:16px;padding-top:10px;border-top:1px solid rgba(185,205,255,.25);font-size:9.5px;letter-spacing:.14em;color:var(--faint);text-align:center}
+</style>
+</head>
+<body>
+  <div class="brand"><img src="../public/mark-c.png" alt=""><b>PAYOFF</b></div>
+  <div class="sub">SELF-REPAYING LOANS · ROBINHOOD CHAIN</div>
+  <h1 id="h1">a loan strangers <span>pay for.</span></h1>
+  <p class="lede" id="lede">every NVDA trade on chain pays your debt down.<br>you keep the shares.</p>
+  <div class="stamp" id="stamp">COMING THIS WEEK</div>
+
+  <div class="ticket">
+    <div class="th"><span>PAYOFF · LOAN STATEMENT</span><span>NO. 0001</span></div>
+    <div class="steps"><span class="on">DEPOSITED</span><span class="on">BORROWED</span><span class="on">EARNING</span><span>REPAID</span></div>
+    <div class="rows">
+      <div><span>TICKER</span><b>NVDA</b></div>
+      <div><span>COLLATERAL</span><b>10.00 <small>@ $218.30</small></b></div>
+      <div><span>BORROWED</span><b>$982 USDG</b></div>
+      <div><span>PAID BY YOU</span><b>$0.00</b></div>
+      <div><span>DEBT NOW</span><b class="debt"><s>$982.00</s><s>$946.10</s>$911.42</b></div>
+    </div>
+    <div class="fh"><span>FEES COLLECTED</span><span>USDG → DEBT</span></div>
+    <div class="log">
+      <div><span>09:12</span><span>pool fee</span><b>−0.84</b></div>
+      <div><span>10:41</span><span>pool fee</span><b>−1.12</b></div>
+      <div><span>12:03</span><span>pool fee</span><b>−0.67</b></div>
+      <div><span>13:55</span><span>pool fee</span><b>−1.38</b></div>
+      <div><span>15:20</span><span>pool fee</span><b>−0.91</b></div>
+    </div>
+    <div class="tf">PAID BY 1,204 TRADES · NONE OF THEM YOURS</div>
+  </div>
+  <script>
+    // ?h1=…&lede=…&stamp=… override the words, so one file serves every teaser
+    const q = new URLSearchParams(location.search);
+    for (const k of ["h1", "lede", "stamp"]) if (q.get(k)) document.getElementById(k).innerHTML = q.get(k);
+  </script>
+</body>
+</html>
