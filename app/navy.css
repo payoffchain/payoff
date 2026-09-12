@@ -674,3 +674,13 @@ main > section:nth-of-type(4){clip-path:polygon(0 3%,100% 0,100% 97%,0 100%);pad
 .nextcard b{font-family:var(--display);font-size:19px;display:block;margin-bottom:3px}
 .nextcard p{font-size:14px;color:var(--mute);line-height:1.5;margin:0}
 @media(max-width:700px){.nextcard{grid-template-columns:1fr}.nextcard .nc-step{justify-self:start}}
+/* who runs auto-repay: the hosted option */
+.hosted{margin-top:12px;padding:16px 18px;background:linear-gradient(160deg,#0f2158,#0a1636);border:1px solid var(--rule-2);border-radius:var(--r)}
+.hosted-head{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.hosted-head b{font-family:var(--display);font-size:17px}
+.hosted p{font-size:14px;color:var(--mute);line-height:1.55;margin:0}
+.hosted .wz-list{margin-top:10px}
+.hosted-status{font-family:var(--mono);font-size:12px;letter-spacing:.04em;margin-top:12px!important;color:var(--faint)}
+.hosted-status i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:8px;vertical-align:1px;background:var(--faint)}
+.hosted-status.on i{background:var(--ice);box-shadow:0 0 8px var(--ice);animation:dotBlink 1.6s ease-in-out infinite}
+.hosted-status.off i{background:var(--red)}

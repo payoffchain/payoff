@@ -10,7 +10,8 @@ import { useWallet } from "../components/WalletProvider";
 import { useTx } from "../components/useTx";
 import { TokenLogo, TxLink, pct } from "../components/ui";
 import { usd } from "../components/format";
-import { CHAIN_NAME, FACTORY } from "../components/brand";
+import { CHAIN_NAME, FACTORY, HOSTED_OPERATOR } from "../components/brand";
+import HostedStatus from "../components/HostedStatus";
 import FactoryAbi from "@/lib/abis/PayoffVaultFactory.json";
 import FundLoan from "../components/FundLoan";
 
@@ -56,7 +57,7 @@ function DeployInner() {
   const [policy, setPolicy] = useState({ maxLtvBps: PRESETS.balanced.maxLtvBps, triggerLtvBps: PRESETS.balanced.triggerLtvBps, repayBps: PRESETS.balanced.repayBps, maxSlippageBps: PRESETS.balanced.maxSlippageBps });
   const [custom, setCustom] = useState(false);
   const [fineTune, setFineTune] = useState(false);
-  const [opMode, setOpMode] = useState<"generate" | "paste">("generate");
+  const [opMode, setOpMode] = useState<"hosted" | "generate" | "paste">(HOSTED_OPERATOR ? "hosted" : "generate");
   const [generated, setGenerated] = useState<{ address: string; privateKey: string } | null>(null);
   const [pasted, setPasted] = useState("");
   const [saved, setSaved] = useState(false);
@@ -85,7 +86,7 @@ function DeployInner() {
   useEffect(() => { if (!custom) { const p = PRESETS[preset]; setPolicy({ maxLtvBps: p.maxLtvBps, triggerLtvBps: p.triggerLtvBps, repayBps: p.repayBps, maxSlippageBps: p.maxSlippageBps }); } }, [preset, custom]);
   function editPolicy(k: keyof typeof policy, v: number) { setCustom(true); setPolicy({ ...policy, [k]: v }); }
 
-  const operator = opMode === "generate" ? generated?.address ?? "" : ethers.isAddress(pasted) ? ethers.getAddress(pasted) : "";
+  const operator = opMode === "hosted" ? HOSTED_OPERATOR : opMode === "generate" ? generated?.address ?? "" : ethers.isAddress(pasted) ? ethers.getAddress(pasted) : "";
   const lltvOk = market ? policy.triggerLtvBps < market.lltv * 10_000 : true;
   const policyProblem = (() => {
     const p = policy;
@@ -280,17 +281,29 @@ function DeployInner() {
         )}
 
         {/* 4. agent key */}
-        {step > 3 && stepDone[3] ? <Summary i={3} text={<span className="mono">{operator.slice(0, 6)}…{operator.slice(-4)}</span>} /> : step >= 3 && (
+        {step > 3 && stepDone[3] ? <Summary i={3} text={opMode === "hosted" ? <>by PAYOFF <span className="mono faint">{operator.slice(0, 6)}…{operator.slice(-4)}</span></> : <span className="mono">{operator.slice(0, 6)}…{operator.slice(-4)}</span>} /> : step >= 3 && (
           <div className="wz-step">
             <span className="wz-num">4</span>
             <div>
-              <h3>Set up auto-repay</h3>
-              <p>Auto-repay needs its own key to do its work: put USDG in the pool, collect fees, repay. It cannot send anything out of the vault. The key is made in this tab and never sent anywhere.</p>
-              {opMode === "generate" ? (
+              <h3>Who runs auto-repay?</h3>
+              {opMode === "hosted" ? (
+                <div className="hosted">
+                  <div className="hosted-head"><b>PAYOFF runs it for you</b><span className="pill a">recommended</span></div>
+                  <p>Our program checks your loan every minute, around the clock: puts the USDG into the pool, collects the fees, pays them onto the loan, and moves the loan if a cheaper market shows up.</p>
+                  <ul className="wz-list">
+                    <li>Its key can only <b>work</b> the loan. It cannot send anything out of your vault. Only your wallet can.</li>
+                    <li>You can switch it off, or swap in your own key, any time on the vault page.</li>
+                    <li>Nothing to install, no key to save.</li>
+                  </ul>
+                  <HostedStatus />
+                  <button className="btn xs" style={{ marginTop: 10 }} onClick={() => setOpMode("generate")}>I'd rather run it myself</button>
+                </div>
+              ) : opMode === "generate" ? (
                 !generated ? (
                   <div className="row" style={{ marginTop: 14 }}>
                     <button className="btn green" onClick={generate}>Create the auto-repay key</button>
                     <button className="btn xs" onClick={() => setOpMode("paste")}>I already have an auto-repay address</button>
+                    {HOSTED_OPERATOR && <button className="btn xs" onClick={() => setOpMode("hosted")}>Let PAYOFF run it</button>}
                   </div>
                 ) : (
                   <div className="panel" style={{ marginTop: 14 }}>
@@ -331,7 +344,7 @@ function DeployInner() {
                 <div className="card soft" style={{ marginTop: 12 }}>
                   <div className="kv"><span>Collateral</span><b className="row" style={{ gap: 8 }}><TokenLogo symbol={sym} size={18} /> {sym} → borrow USDG at {pct(market.borrowApy)}</b></div>
                   <div className="kv"><span>Safety</span><b>borrow up to {policy.maxLtvBps / 100}% · protect at {policy.triggerLtvBps / 100}% · liquidation line {(market.lltv * 100).toFixed(0)}%</b></div>
-                  <div className="kv"><span>Auto-repay key</span><b className="mono">{operator}</b></div>
+                  <div className="kv"><span>Auto-repay</span><b className="mono">{opMode === "hosted" ? "by PAYOFF · " : ""}{operator}</b></div>
                   <div className="kv"><span>Fees</span><b>0% to borrow · 2.5% of harvested fees · 10% of realised profit</b></div>
                 </div>
               )}
@@ -348,7 +361,8 @@ function DeployInner() {
                 <div style={{ marginTop: 12 }}>
                   <p className="note good">Vault <Link href={`/vault/${vault}`} className="mono" style={{ textDecoration: "underline" }}>{vault}</Link> is yours. Now fund it, right here:</p>
                   {group && <FundLoan vault={vault} symbol={sym} token={group.collateral.address} price={px} maxLtvBps={policy.maxLtvBps} />}
-                  <details className="wz-more" style={{ marginTop: 16 }}>
+                  {opMode === "hosted" && <p className="note good" style={{ marginTop: 14 }}>Auto-repay by PAYOFF is watching this vault from now on. It checks every minute; the vault page shows each step it takes.</p>}
+                  {opMode !== "hosted" && <details className="wz-more" style={{ marginTop: 16 }}>
                     <summary>Running auto-repay yourself</summary>
                     <p style={{ marginTop: 8 }}>Auto-repay is a small program. Run it on any machine that stays on, with the key you saved:</p>
                     <pre className="code" style={{ marginTop: 8 }}>{`PAYOFF_API_URL=${typeof window !== "undefined" ? window.location.origin : "https://payoff-pi.vercel.app"}
@@ -358,7 +372,7 @@ AGENT_PRIVATE_KEY=<the key you saved>
 AGENT_DRY_RUN=true   # watch /decisions first, then set false
 npm run agent`}</pre>
                     <Link href="/docs#runner" style={{ textDecoration: "underline", fontSize: 13 }}>Full setup guide</Link>
-                  </details>
+                  </details>}
                 </div>
               )}
             </div>

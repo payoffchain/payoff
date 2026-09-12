@@ -395,6 +395,7 @@ async function main() {
   createServer((req, res) => {
     const url = new URL(req.url, "http://x");
     res.setHeader("content-type", "application/json");
+    res.setHeader("access-control-allow-origin", "*"); // read-only status, safe to show on the site
     if (url.pathname === "/health") return res.end(JSON.stringify({ ok: state.consecutiveFailures < 5 && !state.lowGas, ...state, decisions: undefined }));
     if (url.pathname === "/decisions") return res.end(JSON.stringify(state.decisions.slice(0, Number(url.searchParams.get("limit") ?? 50))));
     res.statusCode = 404;

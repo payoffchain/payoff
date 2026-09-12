@@ -8,6 +8,7 @@ import { useTx } from "../../components/useTx";
 import { AddrLink, DataBanner, Empty, Gauge, LtvBar, Stat, Tok, TxLink, bps, pct } from "../../components/ui";
 import { usd, ago, amount, EXPLORER } from "../../components/format";
 import VaultLog from "../../components/VaultLog";
+import { HOSTED_OPERATOR } from "../../components/brand";
 
 /** The next auto-repay step, in plain words, for the live log. */
 const NEXT_WORDS: Record<string, string> = {
@@ -115,7 +116,7 @@ export default function VaultPage() {
             <span className="eyebrow">Vault · <span style={{ textTransform: "none", letterSpacing: 0 }}><AddrLink address={v.address} /></span></span>
             <h2 style={{ display: "flex", alignItems: "center", gap: 14 }}><Tok symbol={v.collateral.symbol} /> {v.collateral.symbol} / {v.loan.symbol}</h2>
             <div className="row faint mono" style={{ fontSize: 12, marginTop: 8 }}>
-              <span>owner <AddrLink address={v.owner} /></span><span>auto-repay key {v.operator === "0x0000000000000000000000000000000000000000" ? "none" : <AddrLink address={v.operator} />}</span><span>created {ago(v.createdAt)}</span>
+              <span>owner <AddrLink address={v.owner} /></span><span>auto-repay {v.operator === "0x0000000000000000000000000000000000000000" ? "none" : HOSTED_OPERATOR && v.operator.toLowerCase() === HOSTED_OPERATOR.toLowerCase() ? <><span className="pill a">by PAYOFF</span> <AddrLink address={v.operator} /></> : <>key <AddrLink address={v.operator} /></>}</span><span>created {ago(v.createdAt)}</span>
               {v.paused ? <span className="pill a">auto-repay off</span> : <span className="pill g">auto-repay on</span>}
               {isOwner && <span className="pill g">you own this</span>}{isOperator && <span className="pill">you run auto-repay here</span>}
             </div>
