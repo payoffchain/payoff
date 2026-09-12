@@ -39,6 +39,12 @@ export const useWallet = () => {
   return c;
 };
 
+/** Set when the user chose "Disconnect". The wallet still authorises the site (EIP-1193
+ *  has no real disconnect), so without this flag a reload would silently reconnect. */
+const OFF_KEY = "payoff.wallet.off";
+const isOff = () => { try { return localStorage.getItem(OFF_KEY) === "1"; } catch { return false; } };
+const setOff = (v: boolean) => { try { v ? localStorage.setItem(OFF_KEY, "1") : localStorage.removeItem(OFF_KEY); } catch { /* private mode */ } };
+
 function eth(): any | null {
   if (typeof window === "undefined") return null;
   return (window as any).ethereum ?? null;
@@ -55,7 +61,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const e = eth();
     if (!e) return;
-    const onAccounts = (accs: string[]) => setAddress(accs[0] ?? null);
+    const onAccounts = (accs: string[]) => { if (!isOff()) setAddress(accs[0] ?? null); };
     const onChain = (cid: string) => setChainId(parseInt(cid, 16));
     try {
       e.on?.("accountsChanged", onAccounts);
@@ -66,7 +72,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
     // wrapped so a non-conforming injected provider (a synchronous throw, a request
     // that is not a function) cannot take the root provider down.
     if (typeof e.request === "function") {
-      Promise.resolve()
+      if (!isOff()) Promise.resolve()
         .then(() => e.request({ method: "eth_accounts" }))
         .then((accs: string[]) => { if (accs?.[0]) setAddress(accs[0]); })
         .catch(() => {});
@@ -113,6 +119,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
     setError(null);
     try {
       const accs: string[] = await e.request({ method: "eth_requestAccounts" });
+      setOff(false);
       setAddress(accs[0] ?? null);
       const cid: string = await e.request({ method: "eth_chainId" });
       setChainId(parseInt(cid, 16));
@@ -125,10 +132,19 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const disconnect = useCallback(() => {
-    // EIP-1193 has no real disconnect — this only clears local state. The wallet keeps
-    // the site authorised until the user revokes it in the wallet itself.
+    // EIP-1193 has no real disconnect. Clear local state, remember the choice so a reload
+    // does not reconnect, and ask the wallet to drop the permission where it supports
+    // that (MetaMask does); elsewhere the wallet keeps the site authorised until the
+    // user revokes it in the wallet itself.
+    setOff(true);
     setAddress(null);
     setError(null);
+    const e = eth();
+    if (typeof e?.request === "function") {
+      Promise.resolve()
+        .then(() => e.request({ method: "wallet_revokePermissions", params: [{ eth_accounts: {} }] }))
+        .catch(() => {});
+    }
   }, []);
 
   const switchChain = useCallback(async () => {

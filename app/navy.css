@@ -609,3 +609,14 @@ main > section:nth-of-type(4){clip-path:polygon(0 3%,100% 0,100% 97%,0 100%);pad
 .loop .node rect.debt{fill:var(--ice);stroke:none;rx:7;ry:7}
 /* hero mark sits still inside its ring: a small bob only, and the ring turns around the same centre */
 @keyframes logoFloat{0%,100%{transform:translateY(0) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg))}50%{transform:translateY(-4px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg))}}
+/* wallet menu: the address button opens a small card with copy / explorer / disconnect */
+.wmenu-wrap{position:relative}
+.wmenu-wrap .btn .dot{width:7px;height:7px;border-radius:50%;background:var(--ice);margin-right:7px;display:inline-block;box-shadow:0 0 8px var(--ice)}
+.wmenu-wrap .btn .caret{margin-left:6px;font-size:10px;opacity:.7}
+.wmenu{position:absolute;right:0;top:calc(100% + 8px);min-width:240px;background:var(--paper);border:1px solid var(--rule-2);border-radius:var(--r);box-shadow:var(--hs),0 20px 40px -16px rgba(0,0,0,.7);padding:6px;z-index:60;animation:fadeUp .18s ease-out both}
+.wmenu-addr{font-size:11px;color:var(--faint);padding:8px 10px 10px;border-bottom:1px solid var(--rule);margin-bottom:4px;word-break:break-all}
+.wmenu button,.wmenu a{display:block;width:100%;text-align:left;background:none;border:0;color:var(--ink);font:inherit;font-size:13.5px;padding:9px 10px;border-radius:6px;cursor:pointer;text-decoration:none;box-shadow:none}
+.wmenu button:hover,.wmenu a:hover{background:rgba(185,205,255,.08);transform:none}
+.wmenu button.danger{color:var(--red)}
+.wmenu button.danger:hover{background:rgba(255,138,112,.1)}
+.wsheet{display:grid;gap:8px;padding-top:6px}
