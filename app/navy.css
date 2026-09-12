@@ -684,3 +684,15 @@ main > section:nth-of-type(4){clip-path:polygon(0 3%,100% 0,100% 97%,0 100%);pad
 .hosted-status i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:8px;vertical-align:1px;background:var(--faint)}
 .hosted-status.on i{background:var(--ice);box-shadow:0 0 8px var(--ice);animation:dotBlink 1.6s ease-in-out infinite}
 .hosted-status.off i{background:var(--red)}
+/* nav: X handle and CA pills, the desk style */
+.xpill,.capill{display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 12px;border:1px solid var(--rule-2);border-radius:999px;background:rgba(10,22,54,.9);color:var(--ink);font-family:var(--mono);font-size:12px;letter-spacing:.02em;text-decoration:none;cursor:pointer;transition:border-color .15s,box-shadow .15s,transform .12s}
+.xpill:hover,.capill:hover{border-color:var(--ice);box-shadow:0 0 0 3px rgba(185,205,255,.12);transform:translateY(-1px)}
+.xpill .xlogo{font-size:15px;line-height:1}
+.xpill .xh{color:var(--mute)}
+.capill .ca{font-size:10px;letter-spacing:.14em;color:var(--ice);padding:2px 6px;border:1px solid rgba(185,205,255,.35);border-radius:4px}
+.capill .cp{color:var(--faint);font-size:13px}
+.capill.soon{cursor:default;color:var(--faint)}
+.capill.soon:hover{border-color:var(--rule-2);box-shadow:none;transform:none}
+@media(max-width:1100px){.navright .xpill .xh{display:none}.navright .xpill{padding:0 10px}}
+@media(max-width:900px){.navright .xpill,.navright .capill{display:none}}
+footer .links a{color:var(--mute)}

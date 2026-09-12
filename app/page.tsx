@@ -8,7 +8,7 @@ import DemoPlayer from "./components/DemoPlayer";
 import LoanTicket from "./components/LoanTicket";
 import { CountUp, Reveal, Words } from "./components/motion";
 import { useLive } from "./components/useLive";
-import { APP, CHAIN_NAME, FACTORY } from "./components/brand";
+import { APP, CHAIN_NAME, FACTORY, TWITTER, TWITTER_HANDLE, TOKEN_CA } from "./components/brand";
 import { TokenLogo, pct } from "./components/ui";
 import { usd } from "./components/format";
 
@@ -269,7 +269,7 @@ export default function Landing() {
       </main>
       <footer>
         <div className="wrap">
-          <span className="links"><Link href="/docs">Docs</Link><Link href="/leaderboard">Leaderboard</Link><Link href="/demo">Demo</Link><a href="/api/health">Status</a></span>
+          <span className="links"><Link href="/docs">Docs</Link><Link href="/leaderboard">Leaderboard</Link><Link href="/demo">Demo</Link><a href="/api/health">Status</a>{TWITTER && <a href={TWITTER} target="_blank" rel="noopener noreferrer">{TWITTER_HANDLE}</a>}<span className="faint mono" style={{ fontSize: 12 }}>CA · {TOKEN_CA || "soon"}</span></span>
         </div>
       </footer>
     </>
