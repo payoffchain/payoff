@@ -5,7 +5,6 @@ import Link from "next/link";
 import Nav from "./components/Nav";
 import LoopDiagram from "./components/LoopDiagram";
 import DemoPlayer from "./components/DemoPlayer";
-import BuiltOn from "./components/BuiltOn";
 import LoanTicket from "./components/LoanTicket";
 import { CountUp, Reveal, Words } from "./components/motion";
 import { useLive } from "./components/useLive";
@@ -270,7 +269,6 @@ export default function Landing() {
       </main>
       <footer>
         <div className="wrap">
-          <BuiltOn />
           <span className="links"><Link href="/docs">Docs</Link><Link href="/leaderboard">Leaderboard</Link><Link href="/demo">Demo</Link><a href="/api/health">Status</a></span>
         </div>
       </footer>
