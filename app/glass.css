@@ -192,3 +192,10 @@ a{color:inherit}
 /* no sideways scroll: the rotated ticker is wider than the page on purpose, so clip it */
 html,body{overflow-x:hidden}
 @media(max-width:700px){.ticker{width:100%;margin-left:0;margin-right:0;transform:none}}
+/* holding page */
+.soon{min-height:100vh;display:grid;place-content:center;justify-items:center;gap:14px;text-align:center;padding:40px}
+.soon img{width:96px;height:96px;border-radius:26px;border:1px solid rgba(255,255,255,.9);box-shadow:0 24px 48px -18px rgba(60,80,150,.45)}
+.soon h1{font-family:var(--display);font-weight:800;font-size:34px;letter-spacing:.02em;margin:6px 0 0}
+.soon p{font-family:'Pixelify Sans',var(--mono);font-size:15px;letter-spacing:.24em;color:var(--ice);text-transform:uppercase;margin:0}
+.soon a{margin-top:10px;font-family:var(--mono);font-size:13px;color:var(--mute);text-decoration:none;padding:8px 14px;border:1px solid var(--rule-2);border-radius:999px;background:rgba(255,255,255,.8)}
+.soon a:hover{color:var(--ink);border-color:var(--ice)}
