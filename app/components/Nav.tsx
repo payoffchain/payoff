@@ -11,6 +11,7 @@ import SocialTags from "./SocialTags";
 const ROUTES = [
   { href: "/app", label: "Dashboard" },
   { href: "/rates", label: "Rates" },
+  { href: "/simulate", label: "Calculator" },
   { href: "/demo", label: "Demo" },
   { href: "/borrow", label: "Borrow" },
   { href: "/leaderboard", label: "Leaderboard" },
