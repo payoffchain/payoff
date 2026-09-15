@@ -42,6 +42,12 @@ export const useWallet = () => {
 /** Set when the user chose "Disconnect". The wallet still authorises the site (EIP-1193
  *  has no real disconnect), so without this flag a reload would silently reconnect. */
 const OFF_KEY = "payoff.wallet.off";
+/** Set once the user has connected here. Until then the page never touches
+ *  window.ethereum: several extensions (Coinbase Wallet, Phantom, OKX, Rabby) treat the
+ *  first eth_accounts call as "this site wants to connect" and pop a floating prompt. */
+const ON_KEY = "payoff.wallet.on";
+const wasOn = () => { try { return localStorage.getItem(ON_KEY) === "1"; } catch { return false; } };
+const setOn = (v: boolean) => { try { v ? localStorage.setItem(ON_KEY, "1") : localStorage.removeItem(ON_KEY); } catch { /* private mode */ } };
 const isOff = () => { try { return localStorage.getItem(OFF_KEY) === "1"; } catch { return false; } };
 const setOff = (v: boolean) => { try { v ? localStorage.setItem(OFF_KEY, "1") : localStorage.removeItem(OFF_KEY); } catch { /* private mode */ } };
 
@@ -59,6 +65,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
   // Reflect wallet-side changes. Without these listeners the UI silently shows a stale
   // account after the user switches in MetaMask — and they'd sign from the wrong one.
   useEffect(() => {
+    if (!wasOn() || isOff()) return; // never connected here (or chose to disconnect): leave the wallet alone
     const e = eth();
     if (!e) return;
     const onAccounts = (accs: string[]) => { if (!isOff()) setAddress(accs[0] ?? null); };
@@ -120,6 +127,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
     try {
       const accs: string[] = await e.request({ method: "eth_requestAccounts" });
       setOff(false);
+      setOn(true);
       setAddress(accs[0] ?? null);
       const cid: string = await e.request({ method: "eth_chainId" });
       setChainId(parseInt(cid, 16));
@@ -137,6 +145,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
     // that (MetaMask does); elsewhere the wallet keeps the site authorised until the
     // user revokes it in the wallet itself.
     setOff(true);
+    setOn(false);
     setAddress(null);
     setError(null);
     const e = eth();
