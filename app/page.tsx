@@ -5,7 +5,7 @@ import Link from "next/link";
 import Nav from "./components/Nav";
 import LoopDiagram from "./components/LoopDiagram";
 import DemoPlayer from "./components/DemoPlayer";
-import LoanTicket from "./components/LoanTicket";
+import LiveLoan from "./components/LiveLoan";
 import { CountUp, Reveal, Words } from "./components/motion";
 import { useLive } from "./components/useLive";
 import { APP, CHAIN_NAME, FACTORY, TWITTER, TWITTER_HANDLE, TOKEN_CA } from "./components/brand";
@@ -105,7 +105,7 @@ export default function Landing() {
               <SocialTags style={{ marginTop: 26, animation: "fadeUp .8s 1.5s both" }} />
             </div>
             <div>
-              <LoanTicket symbol={nvda?.collateral.symbol ?? "NVDA"} price={nvda?.best?.collateralPrice ?? 224.72} apy={nvda?.best?.borrowApy ?? 0.0003} />
+              <LiveLoan symbol={nvda?.collateral.symbol ?? "NVDA"} price={nvda?.best?.collateralPrice ?? 224.72} apy={nvda?.best?.borrowApy ?? 0.0003} />
             </div>
           </div>
         </section>

@@ -13,3 +13,5 @@ export const TOKEN_CA = process.env.NEXT_PUBLIC_TOKEN_CA ?? "";
 /** The auto-repay key PAYOFF runs itself (Railway service). Empty = self-run only. */
 export const HOSTED_OPERATOR = process.env.NEXT_PUBLIC_PAYOFF_OPERATOR ?? "";
 export const HOSTED_STATUS_URL = (process.env.NEXT_PUBLIC_PAYOFF_OPERATOR_STATUS_URL ?? "").replace(/\/$/, "");
+/** A real vault shown live in the hero ticket; empty = the worked example. */
+export const FEATURED_VAULT = process.env.NEXT_PUBLIC_FEATURED_VAULT ?? "";
