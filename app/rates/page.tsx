@@ -30,10 +30,10 @@ export default function Rates() {
       <DataBanner live={b.live && !!b.data?.live} loading={b.loading} error={b.error ?? b.data?.error ?? null} what={b.data && !b.data.live ? `Live rates unavailable — showing the snapshot from ${b.data.snapshot.fetchedAt.slice(0, 16).replace("T", " ")} UTC` : "Morpho rates"} />
       <main className="wrap" style={{ padding: "48px 24px 80px" }}>
         <span className="eyebrow">Rate comparison · Morpho Blue on {CHAIN_NAME}</span>
-        <h2>Every USDG market, by collateral.</h2>
+        <h2>Every USDC market, by collateral.</h2>
         <p className="lede">Borrow APY is read from each market's interest-rate model on chain. The cheapest market with at least {usd(b.data?.minLiquidityUsd ?? 100)} available is marked best. Click a collateral to see all of its markets — that spread is what a vault can hop between.</p>
         <div className="row" style={{ marginTop: 22 }}>
-          <div className="seg"><button className={stocksOnly ? "on" : ""} onClick={() => setStocksOnly(true)}>Stocks</button><button className={!stocksOnly ? "on" : ""} onClick={() => setStocksOnly(false)}>All collateral</button></div>
+          <div className="seg"><button className={stocksOnly ? "on" : ""} onClick={() => setStocksOnly(true)}>BTC & ETH</button><button className={!stocksOnly ? "on" : ""} onClick={() => setStocksOnly(false)}>All collateral</button></div>
           <input placeholder="Search ticker" value={q} onChange={(e) => setQ(e.target.value)} style={{ padding: "8px 12px", border: "1px solid var(--rule-2)", borderRadius: 999, background: "#fff" }} />
           <span className="faint mono" style={{ fontSize: 12 }}>{b.data?.statesCachedAt ? `rates as of ${new Date(b.data.statesCachedAt).toLocaleTimeString()}` : ""}</span>
         </div>

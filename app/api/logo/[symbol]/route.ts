@@ -4,10 +4,21 @@ import { handler } from "@/lib/http";
 export const runtime = "nodejs";
 
 /**
- * GET /api/logo/NVDA -> a ticker logo, fetched server-side and cached, so the page
+ * GET /api/logo/cirBTC -> a token logo, fetched server-side and cached, so the page
  * stays same-origin. A monogram SVG when no source has one.
  */
+/** Crypto collateral on Arc: known logos first, then the ticker services (for any tokenized stock that arrives). */
+const KNOWN: Record<string, string> = {
+  CIRBTC: "https://assets.coingecko.com/coins/images/1/small/bitcoin.png",
+  WBTC: "https://assets.coingecko.com/coins/images/1/small/bitcoin.png",
+  BTC: "https://assets.coingecko.com/coins/images/1/small/bitcoin.png",
+  WETH: "https://assets.coingecko.com/coins/images/279/small/ethereum.png",
+  ETH: "https://assets.coingecko.com/coins/images/279/small/ethereum.png",
+  USDC: "https://assets.coingecko.com/coins/images/6319/small/usdc.png",
+  EURC: "https://assets.coingecko.com/coins/images/26045/small/euro.png",
+};
 const SOURCES = (symbol: string) => [
+  ...(KNOWN[symbol] ? [KNOWN[symbol]] : []),
   `https://assets.parqet.com/logos/symbol/${symbol}?format=png&size=64`,
   `https://logo.synthfinance.com/ticker/${symbol}`,
 ];

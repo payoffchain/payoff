@@ -8,13 +8,13 @@ import { TokenLogo } from "../components/ui";
 import { usd } from "../components/format";
 
 /**
- * "What would my loan do?" Pick a stock and an amount, and see, from live numbers, how
- * much USDG you could borrow, what the pool's recent fees would pay onto the loan, what
+ * "What would my loan do?" Pick your collateral and an amount, and see, from live numbers, how
+ * much USDC you could borrow, what the pool's recent fees would pay onto the loan, what
  * the interest costs, and how long the loan would take to pay itself off at that pace.
- * A price slider shows how far the stock can fall before protection or liquidation.
+ * A price slider shows how far the price can fall before protection or liquidation.
  *
  * Every input is live: prices and rates from the Morpho markets, fees from the swaps
- * in the stock's Uniswap pool over the last 6 hours. It is an estimate, and says so.
+ * in the collateral's Uniswap pool over the last 6 hours. It is an estimate, and says so.
  */
 
 type Row = { id: string; lltv: number; borrowApy: number | null; collateralPrice: number | null; liquidityUsd: number };
@@ -26,7 +26,7 @@ type Pools = { pools: Pool[]; hours: number };
 const PRESETS = {
   careful: { label: "Careful", maxLtv: 0.35, trigger: 0.50 },
   balanced: { label: "Balanced", maxLtv: 0.45, trigger: 0.55 },
-  bold: { label: "Bold", maxLtv: 0.55, trigger: 0.60 },
+  bold: { label: "Bold", maxLtv: 0.60, trigger: 0.70 },
 };
 type PresetKey = keyof typeof PRESETS;
 
@@ -41,8 +41,8 @@ function span(days: number): string {
 export default function Simulate() {
   const board = useLive<Board>("/api/markets", { live: false, groups: [] });
   const stocks = useMemo(() => (board.data?.groups ?? []).filter((g) => g.best && g.collateral.isStock && g.best.collateralPrice), [board.data]);
-  const [sym, setSym] = useState("NVDA");
-  const [shares, setShares] = useState("10");
+  const [sym, setSym] = useState("cirBTC");
+  const [shares, setShares] = useState("0.05");
   const [preset, setPreset] = useState<PresetKey>("balanced");
   const [move, setMove] = useState(0); // % price move for the what-if slider
   const [pools, setPools] = useState<Pools | null | "err">(null);
@@ -51,7 +51,7 @@ export default function Simulate() {
   const best = g?.best ?? null;
   const price = best?.collateralPrice ?? null;
 
-  // the pool with the most fee per dollar of liquidity, read when the stock changes
+  // the pool with the most fee per dollar of liquidity, read when the collateral changes
   useEffect(() => {
     if (!g) return;
     let dead = false;
@@ -79,7 +79,7 @@ export default function Simulate() {
   const protectAt = ok ? price! * (P.maxLtv / P.trigger) : 0;
   const liqAt = ok && lltv > 0 ? price! * (P.maxLtv / lltv) : 0;
 
-  // what-if: the stock moves by `move` percent right after borrowing
+  // what-if: the price moves by `move` percent right after borrowing
   const moved = ok ? price! * (1 + move / 100) : 0;
   const ltvNow = ok && moved > 0 ? borrow / (n * moved) : 0;
   const state = !ok ? "" : ltvNow >= lltv ? "liquidated" : ltvNow >= P.trigger ? "protecting" : "fine";
@@ -90,11 +90,11 @@ export default function Simulate() {
       <main className="wrap" style={{ padding: "40px 24px 80px", maxWidth: 1040 }}>
         <span className="eyebrow">Calculator</span>
         <h2>What would your loan do?</h2>
-        <p className="lede">Pick a stock and an amount. Everything below is worked out from today's prices, rates and pool fees; it changes as they do.</p>
+        <p className="lede">Pick your collateral and an amount. Everything below is worked out from today's prices, rates and pool fees; it changes as they do.</p>
 
         <div className="sim">
           <div className="sim-in card">
-            <label className="lbl">Stock</label>
+            <label className="lbl">Collateral</label>
             <div className="sim-stocks">
               {stocks.slice(0, 12).map((s) => (
                 <button key={s.collateral.symbol} className={"sim-stock" + (s.collateral.symbol === (g?.collateral.symbol ?? "") ? " on" : "")} onClick={() => { setSym(s.collateral.symbol); setMove(0); }}>
@@ -104,7 +104,7 @@ export default function Simulate() {
               {stocks.length === 0 && <span className="faint">{board.loading ? "reading markets…" : "no live markets right now"}</span>}
             </div>
 
-            <label className="lbl" style={{ marginTop: 18 }}>How many shares</label>
+            <label className="lbl" style={{ marginTop: 18 }}>How much</label>
             <div className="row" style={{ gap: 10, alignItems: "center" }}>
               <input inputMode="decimal" value={shares} onChange={(e) => setShares(e.target.value.trim())} style={{ width: 140 }} />
               <span className="faint">{ok ? `= ${usd(value)} at ${usd(price!)}` : price === null ? "price feed closed" : ""}</span>
@@ -120,7 +120,7 @@ export default function Simulate() {
           <div className="sim-out">
             <div className="sim-big card">
               <span className="lbl">You could borrow</span>
-              <b>{ok ? usd(borrow, 0) : "—"} <small>USDG</small></b>
+              <b>{ok ? usd(borrow, 0) : "—"} <small>USDC</small></b>
               <span className="faint">against {ok ? `${fmt(n, n % 1 ? 4 : 0)} ${g!.collateral.symbol}` : "—"} · rate {best?.borrowApy === null || best?.borrowApy === undefined ? "—" : (best.borrowApy * 100).toFixed(2) + "% / yr"}</span>
             </div>
 
@@ -133,7 +133,7 @@ export default function Simulate() {
 
             <div className="card sim-whatif">
               <div className="row" style={{ justifyContent: "space-between" }}>
-                <span className="lbl">What if {g?.collateral.symbol ?? "the stock"} moves</span>
+                <span className="lbl">What if {g?.collateral.symbol ?? "the price"} moves</span>
                 <b className={state === "liquidated" ? "bad" : state === "protecting" ? "warn" : ""}>{move > 0 ? "+" : ""}{move}% → {ok ? usd(moved) : "—"}</b>
               </div>
               <input type="range" min={-60} max={60} step={5} value={move} onChange={(e) => setMove(Number(e.target.value))} />

@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import { ADDR, BLOCKS_PER_DAY, cached, decode, getLogsChunked, getProvider, multicall, type Call } from "./chain";
 
 /**
- * Uniswap V3 on Robinhood Chain: pool discovery for a pair, tick maths for range
+ * Uniswap V3 on Arc: pool discovery for a pair, tick maths for range
  * selection, position valuation, and a fee-yield estimate from recent swap volume.
  *
  * The RPC is not an archive node, so historic fee-growth cannot be read back; the

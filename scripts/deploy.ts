@@ -8,23 +8,23 @@ import { writeFileSync, readFileSync, existsSync, mkdirSync } from "node:fs";
  *
  * Env: DEPLOYER_PRIVATE_KEY, TREASURY_ADDRESS (defaults to the deployer, loudly),
  * HARVEST_FEE_BPS (250), PERFORMANCE_FEE_BPS (1000), and the third-party addresses
- * (defaults are the canonical Robinhood Chain deployments). Writes deployments/<chainId>.json.
+ * (defaults are the canonical Arc deployments). Writes deployments/<chainId>.json.
  */
 async function main() {
   const [deployer] = await ethers.getSigners();
   const chainId = Number((await ethers.provider.getNetwork()).chainId);
   const env = (k: string, d: string) => process.env[k] || d;
   const cfg = {
-    morpho: env("MORPHO_ADDRESS", "0x9D53d5E3bd5E8d4Cbfa6DB1ca238AEA02E651010"),
-    positionManager: env("UNISWAP_V3_POSITION_MANAGER", "0x73991a25C818Bf1f1128dEAaB1492D45638DE0D3"),
-    swapRouter: env("UNISWAP_V3_SWAP_ROUTER", "0xcaf681a66d020601342297493863e78c959e5cb2"),
-    uniswapFactory: env("UNISWAP_V3_FACTORY", "0x1f7d7550b1b028f7571e69a784071f0205fd2efa"),
+    morpho: env("MORPHO_ADDRESS", "0x34CD04070dD72b14E241112F6d83812Df5Af7fCD"),
+    positionManager: env("UNISWAP_V3_POSITION_MANAGER", "0x39654a85a4c05127f5fd6ed22caec077a0fb1377"),
+    swapRouter: env("UNISWAP_V3_SWAP_ROUTER", "0x53bf6b0684ec7ef91e1387da3d1a1769bc5a6f77"),
+    uniswapFactory: env("UNISWAP_V3_FACTORY", "0xf0db7b58379503491d857db50ac9ece64c653918"),
     treasury: env("TREASURY_ADDRESS", deployer.address),
     harvestFeeBps: Number(env("HARVEST_FEE_BPS", "250")),
     performanceFeeBps: Number(env("PERFORMANCE_FEE_BPS", "1000")),
   };
   if (!process.env.TREASURY_ADDRESS) console.warn("TREASURY_ADDRESS not set: the deployer receives protocol fees. Change it with factory.setTreasury().");
-  console.log(`network ${network.name} chainId ${chainId} deployer ${deployer.address} balance ${ethers.formatEther(await ethers.provider.getBalance(deployer.address))} ETH`);
+  console.log(`network ${network.name} chainId ${chainId} deployer ${deployer.address} balance ${ethers.formatEther(await ethers.provider.getBalance(deployer.address))} native (USDC on Arc)`);
 
   // Every third-party address must have code: a typo here deploys a factory that can never work.
   for (const [k, a] of Object.entries({ morpho: cfg.morpho, positionManager: cfg.positionManager, swapRouter: cfg.swapRouter, uniswapFactory: cfg.uniswapFactory })) {

@@ -7,8 +7,8 @@ import VaultAbi from "./abis/PayoffVault.json";
  *
  * The server holds no key. Every state-changing route returns unsigned calldata that
  * the owner's wallet (or the operator key inside the runner) signs. Reads go through
- * one JSON-RPC provider with small batches (the Robinhood RPC stops answering above a
- * few dozen calls per batch) and through Multicall3 wherever a page needs many values.
+ * one JSON-RPC provider with small batches (public RPCs stop answering above a few
+ * dozen calls per batch) and through Multicall3 wherever a page needs many values.
  */
 
 export class ConfigError extends Error {
@@ -31,22 +31,31 @@ export function envAddress(name: string, fallback?: string): string {
   return ethers.getAddress(v);
 }
 
-/** Robinhood Chain (4663) defaults. Every one can be overridden by env. */
+/**
+ * Arc (5042) defaults. Every one can be overridden by env. Sources: docs.arc.io
+ * (chain, USDC, Multicall3), docs.morpho.org (Morpho Blue + IRM), Uniswap sdk-core
+ * ARC_ADDRESSES (v3 factory, SwapRouter02, QuoterV2, position manager).
+ */
 export const DEFAULTS = {
-  chainId: 4663,
-  rpcUrl: "https://rpc.mainnet.chain.robinhood.com",
-  explorer: "https://robinhoodchain.blockscout.com",
-  morpho: "0x9D53d5E3bd5E8d4Cbfa6DB1ca238AEA02E651010",
-  adaptiveCurveIrm: "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
-  uniswapV3Factory: "0x1f7d7550b1b028f7571e69a784071f0205fd2efa",
-  uniswapV3SwapRouter: "0xcaf681a66d020601342297493863e78c959e5cb2",
-  uniswapV3Quoter: "0x33e885ed0ec9bf04ecfb19341582aadcb4c8a9e7",
-  uniswapV3PositionManager: "0x73991a25C818Bf1f1128dEAaB1492D45638DE0D3",
+  chainId: 5042,
+  /** Blockdaemon's public Arc endpoint: the one that answers 20k-block log queries (the
+   *  official and QuickNode ones cap at 10k, dRPC's free tier lower still). */
+  rpcUrl: "https://rpc.blockdaemon.mainnet.arc.io",
+  explorer: "https://explorer.arc.io",
+  morpho: "0x34CD04070dD72b14E241112F6d83812Df5Af7fCD",
+  adaptiveCurveIrm: "0xF02615d094Fc02fC031C35fe705e175aA4653f20",
+  uniswapV3Factory: "0xf0db7b58379503491d857db50ac9ece64c653918",
+  uniswapV3SwapRouter: "0x53bf6b0684ec7ef91e1387da3d1a1769bc5a6f77",
+  uniswapV3Quoter: "0x7dfd4f31be6814d2906bde155c3e1b146eac1468",
+  uniswapV3PositionManager: "0x39654a85a4c05127f5fd6ed22caec077a0fb1377",
   multicall3: "0xcA11bde05977b3631167028862bE2a173976CA11",
-  usdg: "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
-  weth: "0x0Bd7D308f8E1639FAb988df18A8011f41EAcAD73",
-  /** Robinhood Chain makes a block every ~100 ms. */
-  blocksPerDay: 864_000,
+  /** USDC on Arc: native gas token, with this 6-decimal ERC-20 interface. */
+  usdc: "0x3600000000000000000000000000000000000000",
+  weth: "0x128cC466B61f542da60c70e3aA11c10e19B84EDB",
+  /** Arc makes a block every ~500 ms. */
+  blocksPerDay: 172_800,
+  /** the largest eth_getLogs range the default RPC accepts */
+  logChunkBlocks: 20_000,
 };
 
 export const CHAIN_ID = Number(process.env.CHAIN_ID ?? DEFAULTS.chainId);
@@ -59,7 +68,7 @@ export const ADDR = {
   quoter: () => envAddress("UNISWAP_V3_QUOTER", DEFAULTS.uniswapV3Quoter),
   positionManager: () => envAddress("UNISWAP_V3_POSITION_MANAGER", DEFAULTS.uniswapV3PositionManager),
   multicall3: () => envAddress("MULTICALL3_ADDRESS", DEFAULTS.multicall3),
-  usdg: () => envAddress("USDG_ADDRESS", DEFAULTS.usdg),
+  usdc: () => envAddress("USDC_ADDRESS", DEFAULTS.usdc),
   factory: () => envAddress("PAYOFF_FACTORY_ADDRESS"),
   factoryOrNull: () => {
     const v = process.env.PAYOFF_FACTORY_ADDRESS;
@@ -142,7 +151,7 @@ export function decode(iface: ethers.Interface, fn: string, r: CallResult | unde
 // --- getLogs in chunks -----------------------------------------------------------
 
 /**
- * getLogs over a wide range, oldest first. The Robinhood RPC times out a log query
+ * getLogs over a wide range, oldest first. Public RPCs time out a log query
  * over a busy address long before it hits a block limit, so the chunk size adapts:
  * a range that fails is halved and retried, down to `minChunk`, after which the error
  * is the caller's to report.
@@ -151,7 +160,7 @@ export async function getLogsChunked(
   filter: { address?: string | string[]; topics?: (string | string[] | null)[] },
   fromBlock: number,
   toBlock: number,
-  chunk = Number(process.env.LOG_CHUNK_BLOCKS ?? 100_000),
+  chunk = Number(process.env.LOG_CHUNK_BLOCKS ?? DEFAULTS.logChunkBlocks),
   minChunk = 2_000
 ): Promise<ethers.Log[]> {
   const provider = getProvider();
@@ -188,7 +197,7 @@ export async function getLogsRecent(
   const provider = getProvider();
   const budget = opts.budgetMs ?? 20_000;
   const minChunk = opts.minChunk ?? 2_000;
-  let size = opts.chunk ?? Number(process.env.LOG_CHUNK_BLOCKS ?? 100_000);
+  let size = opts.chunk ?? Number(process.env.LOG_CHUNK_BLOCKS ?? DEFAULTS.logChunkBlocks);
   const started = Date.now();
   const logs: ethers.Log[] = [];
   let to = toBlock;
@@ -199,7 +208,7 @@ export async function getLogsRecent(
       const part = await provider.getLogs({ ...filter, fromBlock: from, toBlock: to });
       logs.push(...part);
       to = from - 1;
-      if (size < (opts.chunk ?? 100_000)) size = Math.min(opts.chunk ?? 100_000, size * 2);
+      if (size < (opts.chunk ?? DEFAULTS.logChunkBlocks)) size = Math.min(opts.chunk ?? DEFAULTS.logChunkBlocks, size * 2);
     } catch (err) {
       if (size <= minChunk) return { logs, scannedFrom: to + 1, partial: true };
       size = Math.max(minChunk, Math.floor(size / 2));

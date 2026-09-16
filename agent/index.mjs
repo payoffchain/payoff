@@ -28,14 +28,14 @@
  * Env:
  *   PAYOFF_API_URL       the site, https:// (http only for localhost), required
  *   AGENT_PRIVATE_KEY    operator key, required unless AGENT_DRY_RUN=true
- *   RPC_URL              default Robinhood Chain public RPC
- *   CHAIN_ID             default 4663; the RPC must agree
+ *   RPC_URL              default Arc public RPC (Blockdaemon)
+ *   CHAIN_ID             default 5042; the RPC must agree
  *   PAYOFF_FACTORY_ADDRESS  the factory, used to confirm each vault is a real clone (optional but recommended)
  *   AGENT_VAULTS         comma-separated vault addresses; default: every vault whose operator is this key
  *   AGENT_DRY_RUN        default true
  *   AGENT_TICK_MS        default 60000
  *   AGENT_MAX_ACTIONS    per tick, default 3
- *   AGENT_MIN_ETH        refuse to sign below this ETH balance (gas), default 0.0005
+ *   AGENT_MIN_ETH        refuse to sign below this native balance (gas; USDC on Arc), default 0.5
  *   AGENT_PLAN_QUERY     query string appended to /plan, e.g. minDeployUsd=10&rangeWidthPct=3
  *   AGENT_PLAN_MAX_AGE_S refuse a plan older than this, default 45
  *   AGENT_STUCK_MIN      replace a pending transaction after this many minutes, default 3
@@ -72,15 +72,15 @@ function fail(msg) {
 
 const cfg = {
   apiUrl: (process.env.PAYOFF_API_URL ?? "").replace(/\/$/, ""),
-  rpcUrl: process.env.RPC_URL ?? "https://rpc.mainnet.chain.robinhood.com",
-  chainId: num("CHAIN_ID", 4663, { min: 1 }),
+  rpcUrl: process.env.RPC_URL ?? "https://rpc.blockdaemon.mainnet.arc.io",
+  chainId: num("CHAIN_ID", 5042, { min: 1 }),
   privateKey: process.env.AGENT_PRIVATE_KEY ?? "",
   factory: process.env.PAYOFF_FACTORY_ADDRESS ?? "",
   vaults: (process.env.AGENT_VAULTS ?? "").split(",").map((s) => s.trim()).filter(Boolean),
   dryRun: process.env.AGENT_DRY_RUN !== "false",
   tickMs: num("AGENT_TICK_MS", 60_000, { min: 5_000 }),
   maxActions: num("AGENT_MAX_ACTIONS", 3, { min: 1 }),
-  minEth: process.env.AGENT_MIN_ETH ?? "0.0005",
+  minEth: process.env.AGENT_MIN_ETH ?? "0.5",
   planQuery: (process.env.AGENT_PLAN_QUERY ?? "").replace(/^[?]/, ""),
   planMaxAgeS: num("AGENT_PLAN_MAX_AGE_S", 45, { min: 5 }),
   stuckMin: num("AGENT_STUCK_MIN", 3, { min: 1 }),
@@ -196,7 +196,7 @@ async function gasOk() {
     const bal = await provider.getBalance(wallet.address);
     state.ethBalance = ethers.formatEther(bal);
     const ok = bal >= ethers.parseEther(cfg.minEth);
-    if (state.lowGas !== !ok) log(ok ? "gas ok:" : "LOW GAS:", state.ethBalance, "ETH");
+    if (state.lowGas !== !ok) log(ok ? "gas ok:" : "LOW GAS:", state.ethBalance, "native (USDC on Arc)");
     state.lowGas = !ok;
     return ok;
   } catch (err) {

@@ -3,12 +3,12 @@ import "@nomicfoundation/hardhat-toolbox";
 import * as dotenv from "dotenv";
 dotenv.config();
 
-const RPC_URL = process.env.RPC_URL || "https://rpc.mainnet.chain.robinhood.com";
-const CHAIN_ID = Number(process.env.CHAIN_ID || 4663);
+const RPC_URL = process.env.RPC_URL || "https://rpc.blockdaemon.mainnet.arc.io";
+const CHAIN_ID = Number(process.env.CHAIN_ID || 5042);
 const DEPLOYER_PRIVATE_KEY = process.env.DEPLOYER_PRIVATE_KEY || "";
-const BLOCKSCOUT_URL = process.env.BLOCKSCOUT_URL || "https://robinhoodchain.blockscout.com";
+const BLOCKSCOUT_URL = process.env.BLOCKSCOUT_URL || "https://explorer.arc.io";
 
-// FORK=1 runs the hardhat network as a fork of Robinhood Chain so the fork tests can
+// FORK=1 runs the hardhat network as a fork of the target chain so the fork tests can
 // exercise the vault against the real Morpho Blue and Uniswap V3 deployments.
 const forking = process.env.FORK ? { url: RPC_URL, ...(process.env.FORK_BLOCK ? { blockNumber: Number(process.env.FORK_BLOCK) } : {}) } : undefined;
 
@@ -20,18 +20,19 @@ const config: HardhatUserConfig = {
   networks: {
     // chains: a forked custom chain needs a hardfork history or `hardhat node` refuses calls at the fork block.
     hardhat: forking ? { forking, chainId: CHAIN_ID, chains: { [CHAIN_ID]: { hardforkHistory: { cancun: 0 } } } } : {},
-    // A local hardhat node (npx hardhat node --port 8546), typically a fork of Robinhood Chain, for seeding the UI.
+    // A local hardhat node (npx hardhat node --port 8546), typically a fork of the target chain, for seeding the UI.
     localhost: { url: process.env.LOCAL_RPC_URL || "http://127.0.0.1:8546", chainId: CHAIN_ID },
-    robinhood: {
+    // the live target (Arc by default; RPC_URL/CHAIN_ID switch it)
+    arc: {
       url: RPC_URL,
       chainId: CHAIN_ID,
       accounts: DEPLOYER_PRIVATE_KEY ? [DEPLOYER_PRIVATE_KEY] : [],
     },
   },
   etherscan: {
-    apiKey: { robinhood: "blockscout" },
+    apiKey: { arc: "blockscout" },
     customChains: [
-      { network: "robinhood", chainId: CHAIN_ID, urls: { apiURL: `${BLOCKSCOUT_URL}/api`, browserURL: BLOCKSCOUT_URL } },
+      { network: "arc", chainId: CHAIN_ID, urls: { apiURL: `${BLOCKSCOUT_URL}/api`, browserURL: BLOCKSCOUT_URL } },
     ],
   },
   sourcify: { enabled: false },

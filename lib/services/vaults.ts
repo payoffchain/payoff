@@ -316,7 +316,7 @@ export function factoryStartBlock(): number {
 /**
  * A block at or before the vault's creation, without scanning the factory's whole log
  * history (which grows for the life of the protocol and times out on the public RPC):
- * the vault stores its creation timestamp, and Robinhood Chain makes ~10 blocks a
+ * the vault stores its creation timestamp, and Arc makes ~2 blocks a
  * second, so the block is estimated from the age and padded by a generous margin. The
  * estimate only decides where an activity scan starts; it never has to be exact.
  */

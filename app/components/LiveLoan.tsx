@@ -66,7 +66,7 @@ export default function LiveLoan(props: { symbol?: string; price?: number; apy?:
       <div className="tk-sub"><span>FEES COLLECTED</span><span>{usd(v.stats.totalRepaidFromFees)} → DEBT</span></div>
       <div className="tk-log">
         {fees === null && <div className="on faint"><span>—</span><span>reading the chain…</span><b /></div>}
-        {fees !== null && fees.length === 0 && <div className="on faint"><span>—</span><span>{v.paused ? "auto-repay is off" : v.lp.length === 0 ? "USDG waiting to be put to work" : "waiting for the next swap"}</span><b /></div>}
+        {fees !== null && fees.length === 0 && <div className="on faint"><span>—</span><span>{v.paused ? "auto-repay is off" : v.lp.length === 0 ? "USDC waiting to be put to work" : "waiting for the next swap"}</span><b /></div>}
         {(fees ?? []).map((f) => (
           <div key={f.tx} className="on">
             <span>{f.time ? hhmm(f.time) : "—"}</span>
@@ -75,7 +75,7 @@ export default function LiveLoan(props: { symbol?: string; price?: number; apy?:
           </div>
         ))}
       </div>
-      <div className="tk-foot">A REAL LOAN ON ROBINHOOD CHAIN · <Link href={`/vault/${v.address}`}>VAULT {short} ↗</Link></div>
+      <div className="tk-foot">A REAL LOAN ON ARC · <Link href={`/vault/${v.address}`}>VAULT {short} ↗</Link></div>
     </div>
   );
 }

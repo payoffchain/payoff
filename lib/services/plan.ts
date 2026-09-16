@@ -143,7 +143,7 @@ export async function planFor(vaultAddress: string, overrides: Partial<PlanSetti
     if (s.outOfRangeExit && !p.inRange && p.currentPrice !== null && p.priceUpper !== null && p.priceLower !== null) {
       if (p.currentPrice >= p.priceUpper) {
         // Above the range the position is entirely loan token and earns nothing: closing
-        // costs no market exposure, and the idle USDG is redeployed by rule 5.
+        // costs no market exposure, and the idle USDC is redeployed by rule 5.
         if (gate) { skipped.push({ rule: `close #${p.tokenId}`, why: `above range, but ${gate}` }); continue; }
         const built = await buildCloseLp(v.address, p.tokenId, { swapToLoan: true });
         actions.push({ kind: "close", args: { tokenId: p.tokenId }, reason: `position #${p.tokenId} is above its range (${p.currentPrice.toFixed(2)} > ${p.priceUpper.toFixed(2)}) and holds only ${v.loan.symbol}: close and redeploy`, built, valueUsd: null });
@@ -168,14 +168,18 @@ export async function planFor(vaultAddress: string, overrides: Partial<PlanSetti
     let pick = s.preferredFee ? candidates.find((p) => p.fee === s.preferredFee) ?? null : null;
     let reason = "";
     if (!pick) {
-      // Busiest pool by fee yield over the last hour (a short window keeps the log scan
-      // inside a serverless time budget), falling back to the deepest pool.
-      let bestApr = -1;
+      // The pool where THIS deposit would earn the most: the last hour's fees, scaled by
+      // the share of the pool the deposit would hold once it is in. A thin pool with real
+      // flow can beat a deep one; a deep pool dilutes a small deposit to nothing. The
+      // short window keeps the log scan inside a serverless time budget.
+      let bestUsdDay = -1;
       const vols = await Promise.all(candidates.map((p) => poolVolume(p, p.token0.toLowerCase() === v.loan.address.toLowerCase(), v.loan.decimals, 1, p.tvlUsd)));
       candidates.forEach((p, i) => {
         const vol = vols[i];
-        const apr = vol?.feeApr ?? -1;
-        if (apr > bestApr) { bestApr = apr; pick = p; reason = vol ? `fee yield ≈ ${(apr * 100).toFixed(0)}% APR on ${Math.round(p.tvlUsd ?? 0).toLocaleString("en-US")} TVL over the last hour` : "deepest pool"; }
+        if (!vol) return;
+        const share = v.balances.loan / ((p.tvlUsd ?? 0) + v.balances.loan);
+        const usdDay = vol.feesLoan * (24 / vol.hours) * share;
+        if (usdDay > bestUsdDay) { bestUsdDay = usdDay; pick = p; reason = `≈ ${usdDay.toFixed(2)}/day for this deposit at the last hour's pace (${Math.round(share * 100)}% of a ${Math.round(p.tvlUsd ?? 0).toLocaleString("en-US")} TVL pool)`; }
       });
       if (!pick && candidates.length) { pick = candidates.sort((a, b) => (b.tvlUsd ?? 0) - (a.tvlUsd ?? 0))[0]; reason = "deepest pool"; }
     } else reason = `preferred tier ${pick.fee / 10_000}%`;

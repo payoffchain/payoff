@@ -22,7 +22,7 @@ import FundLoan from "../components/FundLoan";
  * more than one decision at once.
  *
  *   1. connect the wallet that will OWN the vault
- *   2. choose the stock to borrow against (the best Morpho market is picked for you)
+ *   2. choose the collateral to borrow against (the best Morpho market is picked for you)
  *   3. choose how careful the agent should be (three presets; fine-tune if you like)
  *   4. create the agent's key in this browser (it can work, it cannot withdraw)
  *   5. sign once; then deposit, borrow, and start the runner
@@ -35,11 +35,11 @@ type Board = { live: boolean; groups: Group[] };
 const PRESETS = {
   careful: { label: "Careful", maxLtvBps: 3500, triggerLtvBps: 5000, repayBps: 3000, maxSlippageBps: 100, blurb: "Borrows little, protects early. Sleeps well through a bad week.", needsLltv: 0.5 },
   balanced: { label: "Balanced", maxLtvBps: 4500, triggerLtvBps: 5500, repayBps: 2500, maxSlippageBps: 100, blurb: "The default. Room to earn, a wide cushion before anything happens.", needsLltv: 0.55 },
-  bold: { label: "Bold", maxLtvBps: 5500, triggerLtvBps: 6000, repayBps: 2500, maxSlippageBps: 150, blurb: "Borrows more, protects later. For markets with a high liquidation line.", needsLltv: 0.6 },
+  bold: { label: "Bold", maxLtvBps: 6000, triggerLtvBps: 7000, repayBps: 2500, maxSlippageBps: 150, blurb: "Borrows more, protects later. For markets with a high liquidation line.", needsLltv: 0.75 },
 };
 type PresetKey = keyof typeof PRESETS;
 
-const STEPS = ["Connect", "Choose a stock", "Choose safety", "Auto-repay", "Open"];
+const STEPS = ["Connect", "Choose collateral", "Choose safety", "Auto-repay", "Open"];
 
 function DeployInner() {
   const params = useSearchParams();
@@ -75,7 +75,7 @@ function DeployInner() {
   const group = allGroups.find((g) => g.collateral.address.toLowerCase() === collateral.toLowerCase()) ?? allGroups.find((g) => g.rows.some((r) => r.id === marketId));
   const market = group?.rows.find((r) => r.id === marketId) ?? null;
 
-  // ?market= from the landing grid: preselect, and skip straight past the stock step once connected.
+  // ?market= from the landing grid: preselect, and skip straight past the collateral step once connected.
   useEffect(() => {
     if (marketId && !collateral && board.data) {
       const g = board.data.groups.find((x) => x.rows.some((r) => r.id === marketId));
@@ -137,9 +137,11 @@ function DeployInner() {
 
   // Plain-language example for the safety step, from live prices.
   const px = market?.collateralPrice ?? null;
-  const sym = group?.collateral.symbol ?? "the stock";
+  const sym = group?.collateral.symbol ?? "the collateral";
+  // a worked example sized to the asset: 0.05 of a bitcoin-priced token, 1 of anything else
+  const exampleUnits = px && px > 10_000 ? 0.05 : 1;
   const example = px && market ? {
-    borrow: 10 * px * policy.maxLtvBps / 10_000,
+    borrow: exampleUnits * px * policy.maxLtvBps / 10_000,
     protectAt: px * policy.maxLtvBps / policy.triggerLtvBps,
     liqAt: px * policy.maxLtvBps / (market.lltv * 10_000),
   } : null;
@@ -157,7 +159,7 @@ function DeployInner() {
     <main className="wrap" style={{ padding: "40px 24px 80px", maxWidth: 820 }}>
       <span className="eyebrow">Open a loan</span>
       <h2>Five short steps. One signature at the end.</h2>
-      <p className="lede">Borrow USDG against a stock you hold, and let the loan pay itself down. Only your wallet can take money out; auto-repay can only work inside the limits you set here.</p>
+      <p className="lede">Borrow USDC against BTC or ETH you hold, and let the loan pay itself down. Only your wallet can take money out; auto-repay can only work inside the limits you set here.</p>
       {!FACTORY && <p className="note warn" style={{ marginTop: 18 }}>The vault factory is not deployed on this site yet. You can walk through the steps; the final signature is disabled.</p>}
 
       <ol className="wz-bar" aria-label="Progress">
@@ -182,16 +184,16 @@ function DeployInner() {
           </div>
         )}
 
-        {/* 2. stock */}
+        {/* 2. collateral */}
         {step > 1 && stepDone[1] ? <Summary i={1} text={<span className="row" style={{ gap: 8 }}><TokenLogo symbol={sym} size={18} /> {sym} · best market at {pct(market!.borrowApy)} · liquidation line {(market!.lltv * 100).toFixed(0)}%</span>} /> : step >= 1 && (
           <div className="wz-step">
             <span className="wz-num">2</span>
             <div>
-              <h3>Choose the stock to borrow against</h3>
-              <p>You deposit this token as collateral and borrow USDG against it. The cheapest Morpho market with real liquidity is picked for you.</p>
+              <h3>Choose the collateral to borrow against</h3>
+              <p>You deposit this token as collateral and borrow USDC against it. The cheapest Morpho market with real liquidity is picked for you.</p>
               <div className="mk-head" style={{ marginTop: 14 }}>
                 <label className="mk-search"><input placeholder="Search a ticker…" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Search" /><kbd>{groups.length}</kbd></label>
-                <div className="seg"><button className={stocksOnly ? "on" : ""} onClick={() => setStocksOnly(true)}>Stocks</button><button className={!stocksOnly ? "on" : ""} onClick={() => setStocksOnly(false)}>All collateral</button></div>
+                <div className="seg"><button className={stocksOnly ? "on" : ""} onClick={() => setStocksOnly(true)}>BTC & ETH</button><button className={!stocksOnly ? "on" : ""} onClick={() => setStocksOnly(false)}>All collateral</button></div>
               </div>
               <div className="wz-stocks">
                 {groups.slice(0, q ? 40 : 12).map((g) => {
@@ -208,7 +210,7 @@ function DeployInner() {
               </div>
               {market && (
                 <div className="note" style={{ marginTop: 12 }}>
-                  <b>{sym}</b>: borrow at <b className="green">{pct(market.borrowApy)}</b> a year, {usd(market.liquidityUsd)} USDG available, Morpho liquidates above {(market.lltv * 100).toFixed(0)}% loan-to-value.
+                  <b>{sym}</b>: borrow at <b className="green">{pct(market.borrowApy)}</b> a year, {usd(market.liquidityUsd)} USDC available, Morpho liquidates above {(market.lltv * 100).toFixed(0)}% loan-to-value.
                   {market.liquidityUsd < 100 && <> <span className="amber">Almost nothing to lend right now; you can create the vault and borrow once someone supplies.</span></>}
                   <div style={{ marginTop: 8 }}><button className="btn xs" onClick={() => setAdvancedMarket((a) => !a)}>{advancedMarket ? "Hide" : "Choose a different market of this pair"}</button></div>
                 </div>
@@ -258,7 +260,7 @@ function DeployInner() {
               </div>
               {example && (
                 <div className="note good" style={{ marginTop: 14 }}>
-                  With <b>10 {sym}</b> at today's price of {usd(px!, 2)}: you can borrow up to <b>{usd(example.borrow)} USDG</b>. If {sym} falls to <b>{usd(example.protectAt, 2)}</b> the loan starts repaying itself. Morpho would only liquidate at <b>{usd(example.liqAt, 2)}</b>.
+                  With <b>{exampleUnits} {sym}</b> at today's price of {usd(px!, 2)}: you can borrow up to <b>{usd(example.borrow)} USDC</b>. If {sym} falls to <b>{usd(example.protectAt, 2)}</b> the loan starts repaying itself. Morpho would only liquidate at <b>{usd(example.liqAt, 2)}</b>.
                 </div>
               )}
               <div style={{ marginTop: 12 }}><button className="btn xs" onClick={() => setFineTune((f) => !f)}>{fineTune ? "Hide fine-tuning" : "Fine-tune the numbers"}</button></div>
@@ -289,7 +291,7 @@ function DeployInner() {
               {opMode === "hosted" ? (
                 <div className="hosted">
                   <div className="hosted-head"><b>PAYOFF runs it for you</b><span className="pill a">recommended</span></div>
-                  <p>Our program checks your loan every minute, around the clock: puts the USDG into the pool, collects the fees, pays them onto the loan, and moves the loan if a cheaper market shows up.</p>
+                  <p>Our program checks your loan every minute, around the clock: puts the USDC into the pool, collects the fees, pays them onto the loan, and moves the loan if a cheaper market shows up.</p>
                   <ul className="wz-list">
                     <li>Its key can only <b>work</b> the loan. It cannot send anything out of your vault. Only your wallet can.</li>
                     <li>You can switch it off, or swap in your own key, any time on the vault page.</li>
@@ -342,7 +344,7 @@ function DeployInner() {
               {!vault && <p>One signature from your wallet. Your loan lives in a small contract only you own, with the limits above written into it.</p>}
               {!vault && market && group && operator && (
                 <div className="card soft" style={{ marginTop: 12 }}>
-                  <div className="kv"><span>Collateral</span><b className="row" style={{ gap: 8 }}><TokenLogo symbol={sym} size={18} /> {sym} → borrow USDG at {pct(market.borrowApy)}</b></div>
+                  <div className="kv"><span>Collateral</span><b className="row" style={{ gap: 8 }}><TokenLogo symbol={sym} size={18} /> {sym} → borrow USDC at {pct(market.borrowApy)}</b></div>
                   <div className="kv"><span>Safety</span><b>borrow up to {policy.maxLtvBps / 100}% · protect at {policy.triggerLtvBps / 100}% · liquidation line {(market.lltv * 100).toFixed(0)}%</b></div>
                   <div className="kv"><span>Auto-repay</span><b className="mono">{opMode === "hosted" ? "by PAYOFF · " : ""}{operator}</b></div>
                   <div className="kv"><span>Fees</span><b>0% to borrow · 2.5% of harvested fees · 10% of realised profit</b></div>

@@ -17,7 +17,7 @@ export const GET = handler("health", async () => {
 
   const core: Array<[string, () => string]> = [
     ["MORPHO_ADDRESS", ADDR.morpho], ["UNISWAP_V3_POSITION_MANAGER", ADDR.positionManager], ["UNISWAP_V3_SWAP_ROUTER", ADDR.swapRouter],
-    ["UNISWAP_V3_FACTORY", ADDR.uniFactory], ["MULTICALL3_ADDRESS", ADDR.multicall3], ["USDG_ADDRESS", ADDR.usdg],
+    ["UNISWAP_V3_FACTORY", ADDR.uniFactory], ["MULTICALL3_ADDRESS", ADDR.multicall3], ["USDC_ADDRESS", ADDR.usdc],
   ];
   const addrs: Array<[string, string]> = [];
   for (const [name, get] of core) {

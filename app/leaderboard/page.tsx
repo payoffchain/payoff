@@ -20,7 +20,7 @@ export default function Leaderboard() {
       <main className="wrap" style={{ padding: "48px 24px 80px" }}>
         <span className="eyebrow">Leaderboard</span>
         <h2>Whose loan is paying itself down fastest.</h2>
-        <p className="lede">Every vault the factory has made, ranked by USDG repaid out of trading fees. On-chain numbers only; addresses only. Vaults the team runs with its own money are marked <span className="pill a">team showcase</span>.</p>
+        <p className="lede">Every vault the factory has made, ranked by USDC repaid out of trading fees. On-chain numbers only; addresses only. Vaults the team runs with its own money are marked <span className="pill a">team showcase</span>.</p>
         <div className="stats" style={{ marginTop: 28 }}>
           <div className="stat"><span className="lbl">Vaults</span><span className="big">{t.vaults}</span></div>
           <div className="stat"><span className="lbl">Repaid from fees</span><span className="big green">{usd(t.repaidFromFeesUsd, 2)}</span></div>
@@ -38,7 +38,7 @@ export default function Leaderboard() {
                   <tr key={e.address}>
                     <td>{e.rank}</td>
                     <td><Link href={`/vault/${e.address}`} className="mono" style={{ textDecoration: "underline" }}>{short(e.address)}</Link> {e.showcase && <span className="pill a" title="Run by the PAYOFF team with its own funds so the mechanics can be watched live. Not an independent user.">team showcase</span>}<div className="faint" style={{ fontSize: 11 }}>owner {short(e.owner)}</div></td>
-                    <td><Tok symbol={e.collateral.symbol} /> <span className="faint">/ USDG</span></td>
+                    <td><Tok symbol={e.collateral.symbol} /> <span className="faint">/ USDC</span></td>
                     <td className="r green">{usd(e.totalRepaidFromFees, 2)}</td>
                     <td className="r">{e.repaidPct === null ? "—" : (e.repaidPct * 100).toFixed(1) + "%"}</td>
                     <td className="r">{usd(e.totalHarvested, 2)}</td>

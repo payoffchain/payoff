@@ -16,7 +16,7 @@ const NEXT_WORDS: Record<string, string> = {
   refinance: "move the loan to a cheaper market",
   harvest: "collect the pool fees and pay them onto the loan",
   close: "close a pool position and pay the loan down",
-  open: "put the idle USDG into the pool",
+  open: "put the idle USDC into the pool",
 };
 
 type Lp = { tokenId: string; fee: number; tickLower: number; tickUpper: number; inRange: boolean; priceLower: number | null; priceUpper: number | null; currentPrice: number | null; amountCollateral: number; amountLoan: number; valueUsd: number | null; uncollected: { collateral: number; loan: number; usd: number | null } | null; costBasis: number };
@@ -99,9 +99,9 @@ export default function VaultPage() {
   const next = (() => {
     const sym = v.collateral.symbol;
     if (p.collateral === 0 && v.balances.collateral === 0) return { n: "1 of 3", t: `Put your ${sym} in`, d: `Nothing is in the vault yet. Deposit ${sym} and it goes into Morpho under your vault's name; only your wallet can take it back out.`, cta: isOwner ? { label: `Deposit ${sym}`, go: () => jump("f-deposit") } : null };
-    if (p.debt === 0) return { n: "2 of 3", t: "Borrow USDG against it", d: `${amount(p.collateral)} ${sym} is in. You can borrow up to ${maxBorrow === null ? "your ceiling" : usd(Math.max(0, maxBorrow), 2)}; a little under it leaves room for a bad day.`, cta: can ? { label: "Borrow USDG", go: () => jump("f-borrow") } : null };
-    if (v.paused) return { n: "3 of 3", t: "Auto-repay is off", d: "The loan is open but nothing is working on it. Turn auto-repay on and the USDG goes into the pool, fees get collected, and the debt starts going down.", cta: isOwner ? { label: "Turn auto-repay on", go: () => send({ action: "setPaused", paused: false }) } : null };
-    if (v.lp.length === 0 && v.balances.loan > 0) return { n: "3 of 3", t: "USDG is waiting to be put to work", d: `${amount(v.balances.loan, 2)} USDG sits in the vault. Auto-repay puts it into the ${sym}/USDG pool on its next run; nothing for you to do.`, cta: null };
+    if (p.debt === 0) return { n: "2 of 3", t: "Borrow USDC against it", d: `${amount(p.collateral)} ${sym} is in. You can borrow up to ${maxBorrow === null ? "your ceiling" : usd(Math.max(0, maxBorrow), 2)}; a little under it leaves room for a bad day.`, cta: can ? { label: "Borrow USDC", go: () => jump("f-borrow") } : null };
+    if (v.paused) return { n: "3 of 3", t: "Auto-repay is off", d: "The loan is open but nothing is working on it. Turn auto-repay on and the USDC goes into the pool, fees get collected, and the debt starts going down.", cta: isOwner ? { label: "Turn auto-repay on", go: () => send({ action: "setPaused", paused: false }) } : null };
+    if (v.lp.length === 0 && v.balances.loan > 0) return { n: "3 of 3", t: "USDC is waiting to be put to work", d: `${amount(v.balances.loan, 2)} USDC sits in the vault. Auto-repay puts it into the ${sym}/USDC pool on its next run; nothing for you to do.`, cta: null };
     if (v.lp.length > 0) return { n: "earning", t: "Your loan is paying itself down", d: `${v.lp.length} pool position${v.lp.length === 1 ? "" : "s"} open. Every swap in the pool pays a fee; each collection lands on the loan. Repaid so far: ${usd(v.stats.totalRepaidFromFees, 2)}.`, cta: null };
     return null;
   })();
@@ -279,7 +279,7 @@ export default function VaultPage() {
             </div>
             <div>
               <h3>Markets the loan may move to</h3>
-              <p className="faint" style={{ fontSize: 13, marginTop: 6 }}>Same stock only. The debt moves when an allowed market is cheaper by at least the savings threshold, has the liquidity, and keeps LTV inside the ceiling.</p>
+              <p className="faint" style={{ fontSize: 13, marginTop: 6 }}>Same collateral only. The debt moves when an allowed market is cheaper by at least the savings threshold, has the liquidity, and keeps LTV inside the ceiling.</p>
               <div className="tblwrap" style={{ marginTop: 10 }}>
                 <table className="tbl" style={{ fontSize: 12 }}>
                   <thead><tr><th>Market</th><th className="r">LLTV</th><th className="r">Borrow APY</th><th className="r">Available</th><th className="r">Allowed</th></tr></thead>

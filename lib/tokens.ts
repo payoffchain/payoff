@@ -39,7 +39,7 @@ export async function decimalsOf(token: string): Promise<number> {
   } catch (err) {
     // decimals() is optional in ERC20, so a contract that reverts or returns nothing
     // gets the near-universal default. A network failure is NOT that case: caching 18
-    // for USDG (6) after one RPC blip would corrupt every amount this process computes
+    // for USDC (6) after one RPC blip would corrupt every amount this process computes
     // for its whole life. Let the request fail instead.
     const code = (err as { code?: string } | null)?.code;
     if (code === "CALL_EXCEPTION" || code === "BAD_DATA") {

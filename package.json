@@ -16,8 +16,8 @@
     "test:fork": "cross-env TS_NODE_PROJECT=tsconfig.hardhat.json FORK=1 hardhat test test/fork/*.ts",
     "sync-abis": "node scripts/sync-abis.mjs",
     "typecheck": "tsc --noEmit && cross-env TS_NODE_PROJECT=tsconfig.hardhat.json tsc -p tsconfig.hardhat.json --noEmit",
-    "deploy:contracts": "cross-env TS_NODE_PROJECT=tsconfig.hardhat.json hardhat run scripts/deploy.ts --network robinhood",
-    "verify": "cross-env TS_NODE_PROJECT=tsconfig.hardhat.json hardhat verify --network robinhood",
+    "deploy:contracts": "cross-env TS_NODE_PROJECT=tsconfig.hardhat.json hardhat run scripts/deploy.ts --network arc",
+    "verify": "cross-env TS_NODE_PROJECT=tsconfig.hardhat.json hardhat verify --network arc",
     "agent": "node agent/index.mjs",
     "sync-markets": "node scripts/sync-markets.mjs"
   },

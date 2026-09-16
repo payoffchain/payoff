@@ -7,7 +7,7 @@ import { ApiError } from "../http";
 /**
  * The rate board and the "could you borrow cheaper?" maths.
  *
- * On Robinhood Chain one collateral usually has several Morpho markets against USDG,
+ * On Arc one collateral usually has several Morpho markets against USDC,
  * created at different LLTVs (39/63/77/86%) and often by different curators. Each has its
  * own utilisation, so each has its own borrow rate. A borrower in one can move to another
  * of the same pair — that is the whole refinancing product — as long as the new market has
@@ -71,9 +71,9 @@ function toRow(m: MarketMeta, s: MarketState | undefined): RateRow {
   };
 }
 
-/** Rows for every USDG market, grouped by collateral, cheapest first inside a group. */
+/** Rows for every USDC market, grouped by collateral, cheapest first inside a group. */
 export async function rateBoard(opts: { live?: boolean; minLiquidityUsd?: number } = {}) {
-  const markets = allMarkets({ loanToken: ADDR.usdg() });
+  const markets = allMarkets({ loanToken: ADDR.usdc() });
   let states = new Map<string, MarketState>();
   let cachedAt: number | null = null;
   let stale = false;
@@ -101,14 +101,19 @@ export async function rateBoard(opts: { live?: boolean; minLiquidityUsd?: number
   const out: RateGroup[] = [];
   for (const g of groups.values()) {
     // An oracle that disagrees with the rest of its group by more than half is broken
-    // (one WETH market on Robinhood Chain reports 1e12): its row is kept, flagged, and
+    // (one WETH market on Robinhood Chain reported 1e12): its row is kept, flagged, and
     // never offered as best.
     const prices = g.rows.map((r) => r.collateralPrice).filter((p): p is number => p !== null && p > 0).sort((a, b) => a - b);
     const median = prices.length ? prices[Math.floor(prices.length / 2)] : null;
     for (const r of g.rows) {
       r.oracleSuspect = median !== null && r.collateralPrice !== null && prices.length > 1 && Math.abs(r.collateralPrice / median - 1) > 0.5;
     }
-    g.rows.sort((a, b) => (a.borrowApy ?? Infinity) - (b.borrowApy ?? Infinity));
+    // cheapest first; within a basis point of each other, the deeper market wins (a
+    // borrower would rather have room than a hundredth of a percent)
+    g.rows.sort((a, b) => {
+      const da = a.borrowApy ?? Infinity, db = b.borrowApy ?? Infinity;
+      return Math.abs(da - db) < 0.0001 ? b.liquidityUsd - a.liquidityUsd : da - db;
+    });
     g.best = g.rows.find((r) => r.borrowApy !== null && r.liquidityUsd >= minLiq && !r.oracleSuspect) ?? null;
     out.push(g);
   }
@@ -146,7 +151,7 @@ export type Opportunity = {
 };
 
 /**
- * For a position of `debt` USDG against `collateral` units in market `fromId`: the
+ * For a position of `debt` USDC against `collateral` units in market `fromId`: the
  * cheaper markets of the same pair that could take it, best first.
  */
 export async function opportunitiesFor(args: { fromId: string; debtUsd: number; collateralUnits: number; minSavingsBps?: number; marginBps?: number }): Promise<{ from: RateRow; opportunities: Opportunity[] }> {

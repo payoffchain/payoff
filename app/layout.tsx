@@ -12,17 +12,17 @@ import { APP, SITE } from "./components/brand";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE),
-  title: { default: `${APP} — self-repaying loans on Robinhood Chain`, template: `%s — ${APP}` },
+  title: { default: `${APP} — self-repaying loans on Arc`, template: `%s — ${APP}` },
   description:
-    "Borrow USDG against tokenized stocks on Morpho, and let the loan pay itself: the USDG earns Uniswap V3 trading fees that go straight onto your debt. Non-custodial: only you can take money out.",
+    "Borrow USDC against your BTC and ETH on Morpho, and let the loan pay itself: the USDC earns Uniswap V3 trading fees that go straight onto your debt. Non-custodial: only you can take money out.",
   openGraph: {
     type: "website",
     siteName: APP,
     title: `${APP} — Your loan pays itself down`,
-    description: "Self-repaying loans on Robinhood Chain: borrow USDG against tokenized stocks; trading fees pay the debt down.",
+    description: "Self-repaying loans on Arc: borrow USDC against BTC and ETH; trading fees pay the debt down.",
     url: SITE,
   },
-  twitter: { card: "summary_large_image", title: `${APP} — Your loan pays itself down`, description: "Self-repaying loans on Robinhood Chain." },
+  twitter: { card: "summary_large_image", title: `${APP} — Your loan pays itself down`, description: "Self-repaying loans on Arc." },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
