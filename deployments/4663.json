@@ -1,24 +1,28 @@
 {
   "chainId": 4663,
   "network": "robinhood",
-  "deployedAt": "2026-09-11T04:57:34.176Z",
-  "deployer": "0x197A6aCC1b2Ff1262fd05A52c3ef3a600Ee8f3eb",
-  "block": 59990910,
+  "deployedAt": "2026-09-18T10:39:28.132Z",
+  "deployer": "0xbb4E876854207De035a45f52c957cF3fEC3bEdd2",
+  "block": 66159959,
   "addresses": {
-    "PAYOFF_FACTORY_ADDRESS": "0xB560cB7440Dd61d51758e731f3D85ac00A571f58",
-    "PAYOFF_VAULT_IMPLEMENTATION": "0x542CCfCce6204DcE023f4534d64F0C8973fd8e88",
+    "PAYOFF_FACTORY_ADDRESS": "0xBbe366a496637aa72Fc98edAA8dC9fe7Fd3b9132",
+    "PAYOFF_VAULT_IMPLEMENTATION": "0x8d9b9fBDF65b1AFCed5c5f275093e0884d816D61",
     "morpho": "0x9D53d5E3bd5E8d4Cbfa6DB1ca238AEA02E651010",
     "positionManager": "0x73991a25C818Bf1f1128dEAaB1492D45638DE0D3",
     "swapRouter": "0xcaf681a66d020601342297493863e78c959e5cb2",
     "uniswapFactory": "0x1f7d7550b1b028f7571e69a784071f0205fd2efa",
-    "treasury": "0x8b8e3AafD5aB41150C19bcfe0523Fce38eCCb0C9",
+    "treasury": "0x62e974a3EA812e8f0FCd1830E9f9B452F2625538",
     "harvestFeeBps": 250,
     "performanceFeeBps": 1000
   },
-  "treasuryChangedAt": "2026-09-12T08:05:00Z",
-  "treasuryChangeTx": "0x69e020cfa221585f61447cdef3e5a9b1c404ecc477fb98d271701e4a2545a0fb",
-  "owner": "0xe197885619f2506A049b2BDB7d4a7d051b3D2FB6",
-  "ownerChangedAt": "2026-09-12T08:20:00Z",
-  "ownerChangeTx": "0xef41f73c68aa881bf211807bdefdc51aae92695fb0ecf16c05ed117005630b46",
-  "note": "deployer 0x197A... only deployed; owner, treasury and operator are PAYOFF-only wallets"
+  "owner": "0xbb4E876854207De035a45f52c957cF3fEC3bEdd2",
+  "hostedOperator": "0xcF4d9f70d861E9010D26cEC63310bD966eCA32Eb",
+  "note": "v2: operator fee-tier allow-list, open cooldown, owner exit without the oracle. Owner, treasury and operator are PAYOFF-only wallets made for this deployment.",
+  "previous": {
+    "PAYOFF_FACTORY_ADDRESS": "0xB560cB7440Dd61d51758e731f3D85ac00A571f58",
+    "PAYOFF_VAULT_IMPLEMENTATION": "0x542CCfCce6204DcE023f4534d64F0C8973fd8e88",
+    "block": 59990910,
+    "retiredAt": "2026-09-18",
+    "note": "v1, one empty paused vault; createVault had no fee-tier argument"
+  }
 }
