@@ -1,7 +1,7 @@
 /** One place to rename the product. */
 export const APP = process.env.NEXT_PUBLIC_APP_NAME ?? "PAYOFF";
 export const TAGLINE = "Self-repaying loans on Robinhood Chain";
-export const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://payoffchain.tech";
+export const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://usepayoff.xyz";
 export const SITE_HOST = SITE.replace(/^https?:\/\//, "");
 export const CHAIN_NAME = process.env.NEXT_PUBLIC_CHAIN_NAME ?? "Robinhood Chain";
 export const CHAIN_ID = Number(process.env.NEXT_PUBLIC_CHAIN_ID ?? 4663);

@@ -40,10 +40,9 @@ const nextConfig = {
   async redirects() {
     return [
       { source: "/deploy", destination: "/borrow", permanent: true },
-      // the old preview host forwards to the real domain (API paths included, since the
-      // runner and any old bookmark should land on one canonical origin)
-      { source: "/:path*", has: [{ type: "host", value: "payoff-pi.vercel.app" }], destination: "https://payoffchain.tech/:path*", permanent: true },
-      { source: "/:path*", has: [{ type: "host", value: "www.payoffchain.tech" }], destination: "https://payoffchain.tech/:path*", permanent: true },
+      // www forwards to the apex (API paths included, since the runner and any old
+      // bookmark should land on one canonical origin)
+      { source: "/:path*", has: [{ type: "host", value: "www.usepayoff.xyz" }], destination: "https://usepayoff.xyz/:path*", permanent: true },
     ];
   },
   async headers() {
