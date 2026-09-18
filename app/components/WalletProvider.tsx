@@ -61,11 +61,14 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
   const [chainId, setChainId] = useState<number | null>(null);
   const [connecting, setConnecting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [linked, setLinked] = useState(false);
 
   // Reflect wallet-side changes. Without these listeners the UI silently shows a stale
   // account after the user switches in MetaMask — and they'd sign from the wrong one.
+  // `linked` flips on a first connect, so the listeners attach then too and not only
+  // after a reload; without them a network switch in the wallet never reaches the UI.
   useEffect(() => {
-    if (!wasOn() || isOff()) return; // never connected here (or chose to disconnect): leave the wallet alone
+    if (!(linked || wasOn()) || isOff()) return; // never connected here (or chose to disconnect): leave the wallet alone
     const e = eth();
     if (!e) return;
     const onAccounts = (accs: string[]) => { if (!isOff()) setAddress(accs[0] ?? null); };
@@ -95,24 +98,23 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
         e.removeListener?.("chainChanged", onChain);
       } catch { /* ignore */ }
     };
-  }, []);
+  }, [linked]);
 
   /**
-   * The chain id as the wallet reports it right now. `chainId` state is null when the
-   * mount-time eth_chainId failed (some wallets answer late), so before refusing to
-   * sign for "wrong network" ask again rather than trust a value we never got.
+   * The chain id as the wallet reports it right now. Always asked fresh before signing:
+   * the state can be stale (a missed chainChanged event, a wallet that answers late), and
+   * a transaction sent on the wrong network is not something to risk on a cached value.
    */
   const currentChainId = useCallback(async (e: any): Promise<number | null> => {
-    if (chainId !== null) return chainId;
-    if (typeof e?.request !== "function") return null;
+    if (typeof e?.request !== "function") return chainId;
     try {
       const cid: string = await e.request({ method: "eth_chainId" });
       const n = parseInt(cid, 16);
-      if (!Number.isFinite(n)) return null;
+      if (!Number.isFinite(n)) return chainId;
       setChainId(n);
       return n;
     } catch {
-      return null;
+      return chainId;
     }
   }, [chainId]);
 
@@ -128,6 +130,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
       const accs: string[] = await e.request({ method: "eth_requestAccounts" });
       setOff(false);
       setOn(true);
+      setLinked(true);
       setAddress(accs[0] ?? null);
       const cid: string = await e.request({ method: "eth_chainId" });
       setChainId(parseInt(cid, 16));
@@ -146,6 +149,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
     // user revokes it in the wallet itself.
     setOff(true);
     setOn(false);
+    setLinked(false);
     setAddress(null);
     setError(null);
     const e = eth();

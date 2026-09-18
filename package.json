@@ -13,7 +13,7 @@
     "test": "cross-env TS_NODE_PROJECT=tsconfig.hardhat.json hardhat test",
     "test:ts": "vitest run",
     "test:all": "npm test && npm run test:ts",
-    "test:fork": "cross-env TS_NODE_PROJECT=tsconfig.hardhat.json FORK=1 hardhat test test/fork/*.ts",
+    "test:fork": "cross-env TS_NODE_PROJECT=tsconfig.hardhat.json FORK=1 hardhat test test/fork/vault.fork.ts",
     "sync-abis": "node scripts/sync-abis.mjs",
     "typecheck": "tsc --noEmit && cross-env TS_NODE_PROJECT=tsconfig.hardhat.json tsc -p tsconfig.hardhat.json --noEmit",
     "deploy:contracts": "cross-env TS_NODE_PROJECT=tsconfig.hardhat.json hardhat run scripts/deploy.ts --network robinhood",

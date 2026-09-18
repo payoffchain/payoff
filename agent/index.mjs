@@ -182,7 +182,10 @@ async function verifyVault(vault) {
     if (operator && op.toLowerCase() !== operator.toLowerCase()) { out.why = `vault operator is ${op}, this key is ${operator}`; state.verified[vault] = out; return out; }
     out.ok = true;
   } catch (err) {
+    // A read error is not a verdict: do not cache it, or one RPC hiccup would leave the
+    // vault refused (and unprotected) for an hour. Ask again next tick.
     out.why = `could not read the vault: ${err?.shortMessage ?? err?.message}`;
+    return out;
   }
   state.verified[vault] = out;
   return out;
