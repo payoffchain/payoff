@@ -139,6 +139,8 @@ export async function buildBorrow(vault: string, amount: string): Promise<Built>
 export async function buildRepay(vault: string, amount: string | null): Promise<Built> {
   const v = await ctx(vault);
   const raw = amount ? parseDecimal(amount, v.loanDec, "amount") : 0n;
+  // On chain, 0 means "everything the vault holds". Only an omitted amount may mean that.
+  if (amount && raw === 0n) throw new ApiError(400, "amount must be positive; leave it out to repay as much as the vault holds");
   return { tx: { to: v.address, data: vaultIface.encodeFunctionData("repay", [raw]), value: "0", description: amount ? `Repay ${amount} ${v.loanSymbol}` : `Repay as much as the vault holds` }, approvals: [] };
 }
 
@@ -154,6 +156,7 @@ export async function buildWithdrawToken(vault: string, token: string, amount: s
   const meta = tokenMeta(token);
   const dec = meta?.decimals ?? (amount ? await decimalsOf(token) : 18);
   const raw = amount ? parseDecimal(amount, dec, "amount") : 0n;
+  if (amount && raw === 0n) throw new ApiError(400, "amount must be positive; leave it out to withdraw the whole balance");
   return { tx: { to: v.address, data: vaultIface.encodeFunctionData("withdrawToken", [token, raw]), value: "0", description: `Withdraw ${amount ?? "all"} ${meta?.symbol ?? "tokens"} to the owner` }, approvals: [] };
 }
 
@@ -224,7 +227,8 @@ export async function buildOpenLp(vault: string, args: { amount: string; fee: nu
   const swapShare = args.swapShare ?? 0.5;
   if (!(swapShare >= 0 && swapShare <= 1)) throw new ApiError(400, "swapShare must be 0..1");
   const swapAmount = (loanAmount * BigInt(Math.round(swapShare * 10_000))) / 10_000n;
-  const slippage = args.slippageBps ?? 100;
+  const policyBand = Number((await new ethers.Contract(v.address, vaultIface, getProvider()).policy())[3]);
+  const slippage = Math.min(args.slippageBps ?? policyBand, policyBand);
   // The vault floors every swap at oracle * (1 - maxSlippageBps). A pool whose fee tier
   // alone eats that band can never fill above the floor, so refuse it here with a
   // reason instead of handing the runner a transaction that reverts every tick.

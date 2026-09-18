@@ -39,6 +39,8 @@
  *   AGENT_PLAN_QUERY     query string appended to /plan, e.g. minDeployUsd=10&rangeWidthPct=3
  *   AGENT_PLAN_MAX_AGE_S refuse a plan older than this, default 45
  *   AGENT_STUCK_MIN      replace a pending transaction after this many minutes, default 3
+ *   AGENT_MAX_GAS        refuse to sign anything estimated above this much gas, default 8000000
+ *   AGENT_MAX_FEE_GWEI   never bid above this max fee per gas, default 5
  *   HOST / PORT          /health and /decisions; default 127.0.0.1:3001
  *   ANTHROPIC_API_KEY    optional: a Claude review of each plan (advisory only, see brain.mjs)
  */
@@ -84,6 +86,8 @@ const cfg = {
   planQuery: (process.env.AGENT_PLAN_QUERY ?? "").replace(/^[?]/, ""),
   planMaxAgeS: num("AGENT_PLAN_MAX_AGE_S", 45, { min: 5 }),
   stuckMin: num("AGENT_STUCK_MIN", 3, { min: 1 }),
+  maxGas: BigInt(num("AGENT_MAX_GAS", 8_000_000, { min: 100_000 })),
+  maxFeeWei: ethers.parseUnits(String(num("AGENT_MAX_FEE_GWEI", 5, { min: 0.000001, integer: false })), "gwei"),
   host: process.env.HOST ?? "127.0.0.1",
   port: num("PORT", 3001, { min: 1 }),
 };
@@ -98,6 +102,10 @@ if (!cfg.apiUrl) fail("PAYOFF_API_URL is required");
 if (!cfg.dryRun && !cfg.privateKey) fail("AGENT_PRIVATE_KEY is required when AGENT_DRY_RUN=false");
 for (const v of cfg.vaults) if (!ethers.isAddress(v)) fail(`AGENT_VAULTS entry is not an address: ${v}`);
 if (cfg.factory && !ethers.isAddress(cfg.factory)) fail("PAYOFF_FACTORY_ADDRESS is not an address");
+// Vaults discovered through the API are only as trustworthy as the API. Without the
+// factory to check them against, a lying site could list any contract that names this
+// key as its operator and have it burn gas there.
+if (!cfg.dryRun && !cfg.factory && cfg.vaults.length === 0) fail("set PAYOFF_FACTORY_ADDRESS (or list AGENT_VAULTS): the runner will not sign for vaults it cannot check against the factory");
 try { ethers.parseEther(cfg.minEth); } catch { fail(`AGENT_MIN_ETH is not a number: ${cfg.minEth}`); }
 
 const provider = new ethers.JsonRpcProvider(cfg.rpcUrl, cfg.chainId, { staticNetwork: true, batchMaxCount: 10 });
@@ -129,6 +137,7 @@ const cooldown = new Map(); // `${vault}:${kind}` -> until (ms): after an on-cha
 function log(...a) {
   console.log(new Date().toISOString(), ...a);
 }
+const jsonSafe = (_k, v) => (typeof v === "bigint" ? v.toString() : v);
 function record(d) {
   state.decisions.unshift({ at: new Date().toISOString(), ...d });
   if (state.decisions.length > 200) state.decisions.length = 200;
@@ -222,11 +231,17 @@ async function settlePending() {
   const ageMin = (Date.now() - p.sentAt) / 60_000;
   if (ageMin < cfg.stuckMin) { log(`waiting on pending nonce ${p.nonce} (${ageMin.toFixed(1)} min)`, p.hash ?? ""); return false; }
   try {
+    // A replacement must outbid the transaction it replaces, not just the market: bump
+    // whichever is higher, what was sent or what the chain asks now.
     const fee = await provider.getFeeData();
-    const bump = (x) => (x ? (x * 125n) / 100n : undefined);
-    const cancel = await wallet.sendTransaction({ to: wallet.address, value: 0n, nonce: p.nonce, maxFeePerGas: bump(fee.maxFeePerGas), maxPriorityFeePerGas: bump(fee.maxPriorityFeePerGas), gasPrice: fee.maxFeePerGas ? undefined : bump(fee.gasPrice) });
+    const big = (a, b) => (a === undefined || a === null ? b : b === undefined || b === null ? a : a > b ? a : b);
+    const bump = (x) => (x ? (x * 125n) / 100n + 1n : undefined);
+    const fees = fee.maxFeePerGas
+      ? { maxFeePerGas: bump(big(fee.maxFeePerGas, p.maxFeePerGas)), maxPriorityFeePerGas: bump(big(fee.maxPriorityFeePerGas, p.maxPriorityFeePerGas)) }
+      : { gasPrice: bump(big(fee.gasPrice, p.gasPrice)) };
+    const cancel = await wallet.sendTransaction({ to: wallet.address, value: 0n, nonce: p.nonce, ...fees });
     log(`replacing stuck nonce ${p.nonce} with ${cancel.hash}`);
-    state.pending = { hash: cancel.hash, nonce: p.nonce, sentAt: Date.now(), vault: p.vault, kind: "cancel" };
+    state.pending = { hash: cancel.hash, nonce: p.nonce, sentAt: Date.now(), vault: p.vault, kind: "cancel", ...fees };
   } catch (err) {
     log("replacement failed:", err?.shortMessage ?? err?.message);
   }
@@ -261,8 +276,22 @@ async function execute(vault, action) {
   }
   if (cfg.dryRun || !wallet) return { status: "dry-run" };
 
-  const sent = await wallet.sendTransaction({ to: tx.to, data: tx.data, value: 0n });
-  state.pending = { hash: sent.hash, nonce: sent.nonce, sentAt: Date.now(), vault, kind: action.kind };
+  // Bounded gas: the estimate with headroom, never above AGENT_MAX_GAS, at a fee never
+  // above AGENT_MAX_FEE_GWEI. A contract that eats a block of gas is not one to sign for.
+  let gasLimit;
+  try {
+    const est = await provider.estimateGas({ to: tx.to, data: tx.data, from });
+    if (est > cfg.maxGas) return { status: "rejected", error: `estimated gas ${est} is above AGENT_MAX_GAS ${cfg.maxGas}` };
+    gasLimit = (est * 130n) / 100n > cfg.maxGas ? cfg.maxGas : (est * 130n) / 100n;
+  } catch (err) {
+    return { status: "would-revert", error: err?.shortMessage ?? err?.reason ?? err?.message ?? String(err) };
+  }
+  const fd = await provider.getFeeData();
+  const price = fd.maxFeePerGas ?? fd.gasPrice;
+  if (price && price > cfg.maxFeeWei) return { status: "skipped", error: `gas price ${ethers.formatUnits(price, "gwei")} gwei is above AGENT_MAX_FEE_GWEI` };
+
+  const sent = await wallet.sendTransaction({ to: tx.to, data: tx.data, value: 0n, gasLimit });
+  state.pending = { hash: sent.hash, nonce: sent.nonce, sentAt: Date.now(), vault, kind: action.kind, maxFeePerGas: sent.maxFeePerGas, maxPriorityFeePerGas: sent.maxPriorityFeePerGas, gasPrice: sent.gasPrice };
   recent.set(key, { at: Date.now(), status: "sent" });
   let rc;
   try {
@@ -326,9 +355,11 @@ async function tick() {
       log(vault, "nothing to do:", (plan.skipped ?? []).map((s) => `${s.rule}: ${s.why}`).join("; "));
       continue;
     }
+    // Liquidation protection is never held up by a review: the model cannot veto it
+    // anyway, and its answer can take longer than the position has.
     let advice = null;
-    if (hasModel()) {
-      try { advice = await review(plan); } catch (err) { advice = { veto: [], error: err.message }; }
+    if (hasModel() && !plan.actions.some((a) => a?.kind === "protect")) {
+      try { advice = await review(plan); } catch (err) { advice = { veto: [], error: err.message }; log(vault, "review failed, plan runs as-is:", err.message); }
     }
     const results = [];
     let executed = 0;
@@ -401,8 +432,11 @@ async function main() {
     const url = new URL(req.url, "http://x");
     res.setHeader("content-type", "application/json");
     res.setHeader("access-control-allow-origin", "*"); // read-only status, safe to show on the site
-    if (url.pathname === "/health") return res.end(JSON.stringify({ ok: state.consecutiveFailures < 5 && !state.lowGas, ...state, decisions: undefined }));
-    if (url.pathname === "/decisions") return res.end(JSON.stringify(state.decisions.slice(0, Number(url.searchParams.get("limit") ?? 50))));
+    if (url.pathname === "/health") return res.end(JSON.stringify({ ok: state.consecutiveFailures < 5 && !state.lowGas, ...state, decisions: undefined }, jsonSafe));
+    if (url.pathname === "/decisions") {
+      const limit = Number(url.searchParams.get("limit") ?? 50);
+      return res.end(JSON.stringify(state.decisions.slice(0, Number.isInteger(limit) && limit > 0 ? Math.min(limit, 200) : 50), jsonSafe));
+    }
     res.statusCode = 404;
     res.end(JSON.stringify({ error: "not found" }));
   }).listen(cfg.port, cfg.host, () => log(`agent runner on ${cfg.host}:${cfg.port} (${cfg.dryRun ? "DRY RUN" : "LIVE"}) operator=${operator ?? "none"} api=${cfg.apiUrl} model=${hasModel() ? "on" : "off"}`));

@@ -85,11 +85,17 @@ export async function listVaults(owner?: string): Promise<{ vaults: string[]; co
   return { vaults: [...v], count };
 }
 
+/**
+ * Whether the factory made this vault. A failed read is not a "no": telling the owner of
+ * a real vault that it "is not a Payoff vault" because the RPC hiccuped reads as lost
+ * funds. It is a 503, and a missing factory address stays the config error it is.
+ */
 export async function isVault(address: string): Promise<boolean> {
+  const f = factoryContract();
   try {
-    return await factoryContract().isVault(address);
+    return await f.isVault(address);
   } catch {
-    return false;
+    throw new ApiError(503, "the chain could not be read just now; try again in a moment");
   }
 }
 

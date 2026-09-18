@@ -47,7 +47,12 @@ const nextConfig = {
     ];
   },
   async headers() {
-    return [{ source: "/(.*)", headers: securityHeaders }];
+    return [
+      { source: "/(.*)", headers: securityHeaders },
+      // Logos are fetched from other hosts and re-served from this origin: opened on
+      // their own they must be inert, whatever the bytes turn out to be.
+      { source: "/api/logo/:symbol*", headers: [{ key: "Content-Security-Policy", value: "default-src 'none'; style-src 'unsafe-inline'; sandbox" }] },
+    ];
   },
 };
 
