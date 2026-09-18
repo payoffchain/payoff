@@ -42,8 +42,8 @@ interface IPayoffFactory {
 ///
 /// @dev PRICES ARE POLICED BY THE MARKET ORACLE. Every swap gets a floor derived from
 ///      the Morpho market's oracle less the policy's slippage ceiling, and every mint
-///      (and every owner-initiated burn) first checks the pool's spot price against the
-///      same oracle. An operator can pass minOut = 0; the vault tightens it. When the
+///      (and every burn, except the owner closing without a swap) first checks the
+///      pool's spot price against the same oracle. An operator can pass minOut = 0; the vault tightens it. When the
 ///      oracle cannot be read the vault FAILS CLOSED: no swap, no mint, no collateral
 ///      sale; only repaying from idle balance still works. Without that a leaked key
 ///      could sandwich the vault through a pool it controls.
@@ -64,6 +64,8 @@ contract PayoffVault is IERC721Receiver, IMorphoFlashLoanCallback, ReentrancyGua
     uint256 internal constant Q96 = 2 ** 96;
     uint256 public constant MAX_HARVEST_FEE_BPS = 500;
     uint256 public constant MAX_PERFORMANCE_FEE_BPS = 2000;
+    uint256 public constant DEFAULT_OPEN_COOLDOWN = 6 hours;
+    uint256 public constant MAX_OPEN_COOLDOWN = 7 days;
 
     struct Policy {
         uint256 maxLtvBps;      // no borrow/refinance may leave LTV above this
@@ -91,6 +93,16 @@ contract PayoffVault is IERC721Receiver, IMorphoFlashLoanCallback, ReentrancyGua
     bool internal initialized;
 
     mapping(bytes32 => bool) public allowedMarkets;
+    /// @dev Uniswap fee tiers the OPERATOR may open liquidity in or sell collateral
+    ///      through. Anyone can create the pair's pool at an unused tier and be its only
+    ///      liquidity; a leaked key would route the vault through that pool at the edge of
+    ///      the slippage band. The owner names the tiers; the owner's own calls are free.
+    mapping(uint24 => bool) public allowedFees;
+    /// @dev Seconds between two operator-initiated opens. Every open/close round trip can
+    ///      cost up to the slippage band, so the number of round trips is what bounds the
+    ///      damage of a bad operator; the owner sees it coming and pauses.
+    uint256 public openCooldown;
+    uint256 public lastOperatorOpen;
     LpPosition[] internal positions;
     mapping(uint256 => uint256) internal positionIndex; // tokenId => index + 1
 
@@ -110,6 +122,8 @@ contract PayoffVault is IERC721Receiver, IMorphoFlashLoanCallback, ReentrancyGua
     event OperatorSet(address indexed operator);
     event PolicySet(uint256 maxLtvBps, uint256 triggerLtvBps, uint256 repayBps, uint256 maxSlippageBps);
     event MarketAllowed(bytes32 indexed id, bool allowed);
+    event FeeAllowed(uint24 indexed fee, bool allowed);
+    event OpenCooldownSet(uint256 cooldown);
     event Paused(bool paused);
     event CollateralDeposited(address indexed from, uint256 amount);
     event CollateralWithdrawn(address indexed to, uint256 amount);
@@ -131,6 +145,9 @@ contract PayoffVault is IERC721Receiver, IMorphoFlashLoanCallback, ReentrancyGua
     error ZeroAddress();
     error BadPolicy();
     error MarketNotAllowed();
+    error FeeNotAllowed(uint24 fee);
+    error OpenCooldownActive(uint256 readyAt);
+    error BadCooldown();
     error WrongPair();
     error LtvTooHigh(uint256 ltvBps, uint256 maxBps);
     error NotAtTrigger(uint256 ltvBps, uint256 triggerBps);
@@ -172,7 +189,8 @@ contract PayoffVault is IERC721Receiver, IMorphoFlashLoanCallback, ReentrancyGua
         address owner_,
         address operator_,
         MarketParams calldata initialMarket,
-        Policy calldata policy_
+        Policy calldata policy_,
+        uint24[] calldata lpFees
     ) external {
         if (initialized) revert AlreadyInitialized();
         initialized = true;
@@ -189,6 +207,11 @@ contract PayoffVault is IERC721Receiver, IMorphoFlashLoanCallback, ReentrancyGua
         market = initialMarket;
         _setPolicy(policy_);
         createdAt = block.timestamp;
+        openCooldown = DEFAULT_OPEN_COOLDOWN;
+        for (uint256 i = 0; i < lpFees.length; i++) {
+            allowedFees[lpFees[i]] = true;
+            emit FeeAllowed(lpFees[i], true);
+        }
         emit MarketAllowed(id, true);
         emit Initialized(owner_, operator_, collateralToken, loanToken, id);
     }
@@ -245,6 +268,19 @@ contract PayoffVault is IERC721Receiver, IMorphoFlashLoanCallback, ReentrancyGua
         bytes32 id = marketId(params);
         allowedMarkets[id] = allowed;
         emit MarketAllowed(id, allowed);
+    }
+
+    /// @notice Allow or forbid a Uniswap fee tier for the operator.
+    function setFeeAllowed(uint24 fee, bool allowed) external onlyOwner {
+        allowedFees[fee] = allowed;
+        emit FeeAllowed(fee, allowed);
+    }
+
+    /// @notice Seconds the operator must wait between two opens. Zero removes the limit.
+    function setOpenCooldown(uint256 cooldown) external onlyOwner {
+        if (cooldown > MAX_OPEN_COOLDOWN) revert BadCooldown();
+        openCooldown = cooldown;
+        emit OpenCooldownSet(cooldown);
     }
 
     function setPaused(bool paused_) external onlyOwner {
@@ -423,6 +459,12 @@ contract PayoffVault is IERC721Receiver, IMorphoFlashLoanCallback, ReentrancyGua
     /// @notice Put loan token to work in the pair's Uniswap V3 pool.
     function openLp(OpenParams calldata p) external onlyAuthorized nonReentrant checkDeadline(p.deadline) returns (uint256 tokenId) {
         if (p.loanAmount == 0 || p.swapAmount > p.loanAmount) revert NothingToDo();
+        if (msg.sender != owner) {
+            if (!allowedFees[p.fee]) revert FeeNotAllowed(p.fee);
+            uint256 readyAt = lastOperatorOpen + openCooldown;
+            if (lastOperatorOpen != 0 && block.timestamp < readyAt) revert OpenCooldownActive(readyAt);
+            lastOperatorOpen = block.timestamp;
+        }
         _checkPoolPrice(p.fee);
         uint256 collateralLeg;
         if (p.swapAmount > 0) {
@@ -491,7 +533,12 @@ contract PayoffVault is IERC721Receiver, IMorphoFlashLoanCallback, ReentrancyGua
     function closeLp(uint256 tokenId, uint256 amount0Min, uint256 amount1Min, bool swapToLoan, uint256 swapMinOut, uint256 deadline)
         external onlyAuthorized nonReentrant checkDeadline(deadline) returns (uint256 loanOut, uint256 repaid)
     {
-        (loanOut, repaid) = _close(tokenId, amount0Min, amount1Min, swapToLoan, swapMinOut, deadline, true);
+        // The owner's way out never depends on the oracle: closing without a swap only
+        // returns the two legs to the vault, floored by the owner's own amount0Min /
+        // amount1Min. Equity oracles pause overnight and an oracle can die for good; the
+        // position must not be locked in with it.
+        bool checkSpot = swapToLoan || msg.sender != owner;
+        (loanOut, repaid) = _close(tokenId, amount0Min, amount1Min, swapToLoan, swapMinOut, deadline, checkSpot);
     }
 
     /// @dev checkSpot compares the pool to the oracle before burning. protect() passes
@@ -557,6 +604,7 @@ contract PayoffVault is IERC721Receiver, IMorphoFlashLoanCallback, ReentrancyGua
 
         uint256 sold;
         if (repaid < target && maxCollateralToSell > 0) {
+            if (msg.sender != owner && !allowedFees[swapFee]) revert FeeNotAllowed(swapFee);
             // The collateral cannot leave Morpho while it backs the debt, so the repayment
             // is flash-borrowed, the collateral is freed and sold, and the sale pays the
             // flash loan back — one transaction. The amount sold is bounded by what the

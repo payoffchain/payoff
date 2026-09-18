@@ -6,11 +6,12 @@ import { ADDR } from "@/lib/chain";
 
 export const runtime = "nodejs";
 
-/** POST /api/tx/create { marketId, operator, policy? } -> factory.createVault calldata */
+/** POST /api/tx/create { marketId, operator, policy?, lpFees? } -> factory.createVault calldata */
 const body = z.object({
   marketId: z.string().regex(/^0x[0-9a-fA-F]{64}$/),
   operator: addressSchema,
   policy: z.object({ maxLtvBps: z.number().int().min(0).max(10_000), triggerLtvBps: z.number().int().min(0).max(10_000), repayBps: z.number().int().min(0).max(10_000), maxSlippageBps: z.number().int().min(0).max(10_000) }).optional(),
+  lpFees: z.array(z.number().int()).max(4).optional(),
 });
 
 export const POST = handler("create", async (req) => {

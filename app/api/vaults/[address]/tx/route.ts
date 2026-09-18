@@ -27,6 +27,8 @@ const body = z.discriminatedUnion("action", [
   z.object({ action: z.literal("setPolicy"), policy: policySchema }),
   z.object({ action: z.literal("setPaused"), paused: z.boolean() }),
   z.object({ action: z.literal("setMarketAllowed"), marketId, allowed: z.boolean() }),
+  z.object({ action: z.literal("setFeeAllowed"), fee: z.number().int(), allowed: z.boolean() }),
+  z.object({ action: z.literal("setOpenCooldown"), seconds: z.number().int().min(0) }),
   z.object({ action: z.literal("refinance"), marketId }),
   z.object({ action: z.literal("openLp"), amount: decimalStringSchema, fee: z.number().int(), widthPct: z.number().min(0).max(500), swapShare: z.number().min(0).max(1).optional(), slippageBps: z.number().int().min(0).max(2000).optional() }),
   z.object({ action: z.literal("harvest"), tokenId }),
@@ -53,6 +55,8 @@ export const POST = handler("vault-tx", async (req) => {
     case "setPolicy": built = await tx.buildSetPolicy(vault, b.policy); break;
     case "setPaused": built = await tx.buildSetPaused(vault, b.paused); break;
     case "setMarketAllowed": built = await tx.buildSetMarketAllowed(vault, b.marketId, b.allowed); break;
+    case "setFeeAllowed": built = await tx.buildSetFeeAllowed(vault, b.fee, b.allowed); break;
+    case "setOpenCooldown": built = await tx.buildSetOpenCooldown(vault, b.seconds); break;
     case "refinance": built = await tx.buildRefinance(vault, b.marketId); break;
     case "openLp": built = await tx.buildOpenLp(vault, { amount: b.amount, fee: b.fee, widthPct: b.widthPct, swapShare: b.swapShare, slippageBps: b.slippageBps }); break;
     case "harvest": built = await tx.buildHarvest(vault, b.tokenId); break;

@@ -43,23 +43,56 @@ export function validPolicy(p: PolicyInput, lltvWad?: string | bigint) {
   }
 }
 
-/** createVault(operator, initialMarket, policy) on the factory. */
-export async function buildCreateVault(args: { marketId: string; operator: string; policy?: PolicyInput }): Promise<Built> {
+/** Uniswap V3 fee tiers a vault can name for its operator. */
+export const FEE_TIERS = [100, 500, 3000, 10000] as const;
+
+/**
+ * Tiers the vault lets its operator use. null = a vault from before the allow-list
+ * existed (the call reverts), which has no restriction to respect.
+ */
+export async function allowedFeesOf(vault: string): Promise<number[] | null> {
+  const c = new ethers.Contract(vault, vaultIface, getProvider());
+  try {
+    const flags: boolean[] = await Promise.all(FEE_TIERS.map((f) => c.allowedFees(f)));
+    return FEE_TIERS.filter((_, i) => flags[i]);
+  } catch {
+    return null;
+  }
+}
+
+/** createVault(operator, initialMarket, policy, lpFees) on the factory. */
+export async function buildCreateVault(args: { marketId: string; operator: string; policy?: PolicyInput; lpFees?: number[] }): Promise<Built> {
   const m = await resolveMarket(args.marketId);
   if (!m) throw new ApiError(404, "unknown market");
   if (!ethers.isAddress(args.operator)) throw new ApiError(400, "operator is not an address");
   const policy = args.policy ?? DEFAULT_POLICY;
   validPolicy(policy, m.params.lltv);
   const p = m.params;
+  // Tiers the operator may use. By default: the pair's pools that exist, hold liquidity
+  // and whose fee fits inside the slippage band. An empty tier is exactly what a leaked
+  // operator key would want, so it is never offered; the owner can add tiers later.
+  let lpFees = args.lpFees;
+  if (!lpFees) {
+    const pools = await poolsForPair(p.collateralToken, p.loanToken, m.collateral.decimals, m.loan.decimals);
+    lpFees = pools.filter((x) => x.price !== null && (x.tvlUsd ?? 0) > 0 && x.fee / 100 < policy.maxSlippageBps).map((x) => x.fee);
+  }
+  if (lpFees.some((f) => !(FEE_TIERS as readonly number[]).includes(f))) throw new ApiError(400, `lpFees must be among ${FEE_TIERS.join(", ")}`);
+  lpFees = [...new Set(lpFees)];
   const data = factoryIface.encodeFunctionData("createVault", [
     args.operator,
     [p.loanToken, p.collateralToken, p.oracle, p.irm, p.lltv],
     [policy.maxLtvBps, policy.triggerLtvBps, policy.repayBps, policy.maxSlippageBps],
+    lpFees,
   ]);
   return {
     tx: { to: ADDR.factory(), data, value: "0", description: `Create a ${m.collateral.symbol}/${m.loan.symbol} vault (LLTV ${(Number(p.lltv) / 1e16).toFixed(0)}%)` },
     approvals: [],
-    notes: ["The vault address is emitted as VaultCreated(vault, owner, operator, ...); read it from the receipt."],
+    notes: [
+      "The vault address is emitted as VaultCreated(vault, owner, operator, ...); read it from the receipt.",
+      lpFees.length
+        ? `The agent may use the ${lpFees.map((f) => f / 10_000 + "%").join(", ")} pool${lpFees.length > 1 ? "s" : ""}; change this in the vault's settings.`
+        : "No pool of this pair holds liquidity yet, so the agent starts with no fee tier allowed; allow one in the vault's settings.",
+    ],
   };
 }
 
@@ -231,7 +264,9 @@ export async function buildCloseLp(vault: string, tokenId: string, args: { swapT
     tx: { to: v.address, data, value: "0", description: args.swapToLoan ? `Close position #${tokenId} into ${v.loanSymbol} and repay` : `Close position #${tokenId}, keep both legs in the vault` },
     approvals: [],
     deadline,
-    notes: ["Burn floors are 0: the vault refuses to burn while the pool price is off the market oracle."],
+    notes: [args.swapToLoan
+      ? "Burn floors are 0: the vault refuses to burn while the pool price is off the market oracle."
+      : "Without a swap the owner can close at any time, even while the oracle is paused or the pool is off it; both legs stay in the vault."],
   };
 }
 
@@ -257,8 +292,9 @@ export async function buildProtect(vault: string, args: { tokenIds?: string[]; m
   // a thin tier would slip past the oracle floor and the whole protection would revert.
   let fee = args.fee ?? 0;
   if (!fee) {
-    const pools = await poolsForPair(v.collateralToken, v.loanToken, v.collDec, v.loanDec);
-    fee = pools.filter((p) => p.price !== null).sort((a, b) => (b.tvlUsd ?? 0) - (a.tvlUsd ?? 0))[0]?.fee ?? 3000;
+    // ...among the tiers the vault allows its operator, or the sale reverts.
+    const [pools, allowed] = await Promise.all([poolsForPair(v.collateralToken, v.loanToken, v.collDec, v.loanDec), allowedFeesOf(v.address)]);
+    fee = pools.filter((p) => p.price !== null && (allowed === null || allowed.includes(p.fee))).sort((a, b) => (b.tvlUsd ?? 0) - (a.tvlUsd ?? 0))[0]?.fee ?? allowed?.[0] ?? 3000;
   }
   const data = vaultIface.encodeFunctionData("protect", [tokenIds, sell, fee, deadline]);
   return {
@@ -267,6 +303,20 @@ export async function buildProtect(vault: string, args: { tokenIds?: string[]; m
     deadline,
     notes: [`positions to close: ${tokenIds.join(", ") || "none"}; collateral to sell if needed: ${ethers.formatUnits(sell, v.collDec)} ${v.collSymbol} through the ${fee / 10_000}% pool`],
   };
+}
+
+export async function buildSetFeeAllowed(vault: string, fee: number, allowed: boolean): Promise<Built> {
+  const v = await ctx(vault);
+  if (!(FEE_TIERS as readonly number[]).includes(fee)) throw new ApiError(400, `fee must be one of ${FEE_TIERS.join(", ")}`);
+  return { tx: { to: v.address, data: vaultIface.encodeFunctionData("setFeeAllowed", [fee, allowed]), value: "0", description: `${allowed ? "Allow" : "Forbid"} the ${fee / 10_000}% pool for the agent` }, approvals: [] };
+}
+
+export const MAX_OPEN_COOLDOWN_SECONDS = 7 * 24 * 3600;
+
+export async function buildSetOpenCooldown(vault: string, seconds: number): Promise<Built> {
+  const v = await ctx(vault);
+  if (!Number.isInteger(seconds) || seconds < 0 || seconds > MAX_OPEN_COOLDOWN_SECONDS) throw new ApiError(400, `seconds must be 0..${MAX_OPEN_COOLDOWN_SECONDS}`);
+  return { tx: { to: v.address, data: vaultIface.encodeFunctionData("setOpenCooldown", [seconds]), value: "0", description: seconds ? `The agent waits ${(seconds / 3600).toFixed(1)} h between two new positions` : "Remove the agent's wait between new positions" }, approvals: [] };
 }
 
 export async function buildProposeOwner(vault: string, newOwner: string): Promise<Built> {

@@ -48,7 +48,7 @@ async function main() {
   const factoryAddr = await factory.getAddress();
 
   const policy = { maxLtvBps: 2000n, triggerLtvBps: 3000n, repayBps: 2500n, maxSlippageBps: 100n };
-  const tx = await factory.connect(owner).createVault(operator.address, mA, policy);
+  const tx = await factory.connect(owner).createVault(operator.address, mA, policy, [500]);
   const r = await tx.wait();
   const ev = r!.logs.map((l) => { try { return factory.interface.parseLog(l as any); } catch { return null; } }).find((e) => e?.name === "VaultCreated");
   const vault = await ethers.getContractAt("PayoffVault", ev!.args.vault);

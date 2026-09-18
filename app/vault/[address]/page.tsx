@@ -29,6 +29,7 @@ type Vault = {
   balances: { loan: number; collateral: number };
   stats: { totalBorrowed: number; totalRepaid: number; totalRepaidFromFees: number; totalHarvested: number; totalProtocolFees: number; refinanceCount: number };
   lp: Lp[]; lpValueUsd: number | null; netValueUsd: number | null; allowedMarkets: string[];
+  lpLimits: { allowedFees: number[] | null; openCooldown: number; lastOperatorOpen: number; operatorOpenReadyAt: number | null };
 };
 type PlanAction = { kind: string; reason: string; valueUsd: number | null; args: { tokenId?: string; marketId?: string; fee?: number }; built: { tx: { description: string }; notes?: string[] } };
 type Plan = { at: string; actions: PlanAction[]; skipped: Array<{ rule: string; why: string }>; settings: Record<string, unknown> };
@@ -270,6 +271,29 @@ export default function VaultPage() {
                 <div className="kv"><span>Current</span><b>{v.operator}</b></div>
                 {isOwner && <AddressForm label="New operator" busy={tx.busy} onSubmit={(a) => send({ action: "setOperator", operator: a })} />}
               </div>
+              {v.lpLimits.allowedFees !== null && (
+                <>
+                  <h3 style={{ marginTop: 28 }}>What the agent may do with liquidity</h3>
+                  <div className="card" style={{ marginTop: 10 }}>
+                    <p className="mute" style={{ marginTop: 0 }}>The agent can only open positions, or sell collateral, in the pools you allow here. Your own actions are never limited.</p>
+                    {[100, 500, 3000, 10000].map((fee) => {
+                      const on = v.lpLimits.allowedFees!.includes(fee);
+                      return (
+                        <div className="kv" key={fee}>
+                          <span>{fee / 10_000}% pool</span>
+                          <b>{on ? "allowed" : "not allowed"} {isOwner && <button className="btn xs" disabled={tx.busy} onClick={() => send({ action: "setFeeAllowed", fee, allowed: !on })}>{on ? "Forbid" : "Allow"}</button>}</b>
+                        </div>
+                      );
+                    })}
+                    <div className="kv"><span>Wait between two new positions</span><b>{v.lpLimits.openCooldown ? `${(v.lpLimits.openCooldown / 3600).toFixed(1)} h` : "none"}</b></div>
+                    {isOwner && (
+                      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 8 }}>
+                        {[1, 6, 24].map((h) => <button key={h} className="btn xs" disabled={tx.busy || v.lpLimits.openCooldown === h * 3600} onClick={() => send({ action: "setOpenCooldown", seconds: h * 3600 })}>{h} h</button>)}
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
               <h3 style={{ marginTop: 28 }}>Ownership</h3>
               <div className="card" style={{ marginTop: 10 }}>
                 <div className="kv"><span>Owner</span><b>{v.owner}</b></div>

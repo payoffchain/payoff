@@ -271,6 +271,11 @@
         "internalType": "struct PayoffVault.Policy",
         "name": "policy",
         "type": "tuple"
+      },
+      {
+        "internalType": "uint24[]",
+        "name": "lpFees",
+        "type": "uint24[]"
       }
     ],
     "name": "createVault",

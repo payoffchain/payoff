@@ -71,11 +71,12 @@ contract PayoffVaultFactory is Ownable2Step {
     }
 
     /// @notice Create a vault. The caller becomes its owner.
-    function createVault(address operator, MarketParams calldata initialMarket, PayoffVault.Policy calldata policy)
+    /// @param lpFees Uniswap fee tiers the operator may use; the owner can change them later.
+    function createVault(address operator, MarketParams calldata initialMarket, PayoffVault.Policy calldata policy, uint24[] calldata lpFees)
         external returns (address vault)
     {
         vault = Clones.clone(implementation);
-        PayoffVault(vault).initialize(address(this), msg.sender, operator, initialMarket, policy);
+        PayoffVault(vault).initialize(address(this), msg.sender, operator, initialMarket, policy, lpFees);
         allVaults.push(vault);
         vaultsOf[msg.sender].push(vault);
         isVault[vault] = true;

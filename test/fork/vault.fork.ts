@@ -61,7 +61,7 @@ const POOL_ABI = ["function slot0() view returns (uint160 sqrtPriceX96,int24 tic
 
     // 4. create the vault: borrow to 20%, protect at 30% (below market B's 38.5% LLTV)
     const policy = { maxLtvBps: 2000n, triggerLtvBps: 3000n, repayBps: 2500n, maxSlippageBps: 100n };
-    const tx = await factory.connect(user).createVault(operator.address, mA, policy);
+    const tx = await factory.connect(user).createVault(operator.address, mA, policy, [500]);
     const rc = await tx.wait();
     const ev = rc!.logs.map((l) => { try { return factory.interface.parseLog(l as any); } catch { return null; } }).find((e) => e?.name === "VaultCreated");
     const vault = await ethers.getContractAt("PayoffVault", ev!.args.vault);

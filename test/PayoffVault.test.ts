@@ -73,7 +73,7 @@ async function deployFixture() {
   );
 
   const policy = { maxLtvBps: 5000n, triggerLtvBps: 5500n, repayBps: 2500n, maxSlippageBps: 100n };
-  const tx = await factory.connect(user).createVault(operator.address, marketA, policy);
+  const tx = await factory.connect(user).createVault(operator.address, marketA, policy, [3000]);
   const rc = await tx.wait();
   const ev = rc!.logs.map((l) => { try { return factory.interface.parseLog(l as any); } catch { return null; } }).find((e) => e?.name === "VaultCreated");
   const vault = await ethers.getContractAt("PayoffVault", ev!.args.vault);
@@ -108,15 +108,15 @@ describe("PayoffVaultFactory", () => {
 
   it("cannot initialize a vault twice", async () => {
     const { vault, factory, user, operator, marketA, policy } = await loadFixture(deployFixture);
-    await expect(vault.initialize(await factory.getAddress(), user.address, operator.address, marketA, policy)).to.be.revertedWithCustomError(vault, "AlreadyInitialized");
+    await expect(vault.initialize(await factory.getAddress(), user.address, operator.address, marketA, policy, [3000])).to.be.revertedWithCustomError(vault, "AlreadyInitialized");
   });
 
   it("rejects a bad policy", async () => {
     const { factory, operator, marketA } = await loadFixture(deployFixture);
     const bad = { maxLtvBps: 9600n, triggerLtvBps: 9700n, repayBps: 2500n, maxSlippageBps: 100n };
-    await expect(factory.createVault(operator.address, marketA, bad)).to.be.reverted;
+    await expect(factory.createVault(operator.address, marketA, bad, [3000])).to.be.reverted;
     const bad2 = { maxLtvBps: 5000n, triggerLtvBps: 4000n, repayBps: 2500n, maxSlippageBps: 100n };
-    await expect(factory.createVault(operator.address, marketA, bad2)).to.be.reverted;
+    await expect(factory.createVault(operator.address, marketA, bad2, [3000])).to.be.reverted;
   });
 });
 
@@ -475,7 +475,7 @@ describe("PayoffVault: audit hardening", () => {
     const f = await loadFixture(deployFixture);
     // marketA lltv 63%: a trigger of 63% or more is useless
     const useless = { maxLtvBps: 5000n, triggerLtvBps: 6300n, repayBps: 2500n, maxSlippageBps: 100n };
-    await expect(f.factory.createVault(f.operator.address, f.marketA, useless)).to.be.revertedWithCustomError(f.vault, "PolicyAboveLltv");
+    await expect(f.factory.createVault(f.operator.address, f.marketA, useless, [3000])).to.be.revertedWithCustomError(f.vault, "PolicyAboveLltv");
     await expect(f.vault.connect(f.user).setPolicy(useless)).to.be.revertedWithCustomError(f.vault, "PolicyAboveLltv");
     // a 39% market cannot be allow-listed under a 55% trigger
     const irmC = await (await ethers.getContractFactory("MockIrm")).deploy(3n);
@@ -516,5 +516,88 @@ describe("PayoffVault: audit hardening", () => {
       fee: 3000, tickLower: -887220, tickUpper: 887220, loanAmount: USDG(900), swapAmount: USDG(450), swapMinOut: 0,
       amount0Min: 0, amount1Min: 0, deadline: await f.deadline(),
     })).to.be.revertedWithCustomError(f.vault, "PoolPriceOffOracle");
+  });
+});
+
+describe("PayoffVault: operator limits and the owner's way out", () => {
+  async function funded() {
+    const f = await loadFixture(deployFixture);
+    await f.vault.connect(f.user).depositCollateral(NVDA(10));
+    await f.vault.connect(f.operator).borrow(USDG(900));
+    return f;
+  }
+  const open = async (f: Awaited<ReturnType<typeof funded>>, fee: number, amount: bigint) => ({
+    fee, tickLower: -887220, tickUpper: 887220, loanAmount: amount, swapAmount: 0, swapMinOut: 0,
+    amount0Min: 0, amount1Min: 0, deadline: await f.deadline(),
+  });
+  /** a second pool of the pair, at the oracle price, in a tier the owner never named */
+  async function strayPool(f: Awaited<ReturnType<typeof funded>>, fee: number) {
+    const nvda = await f.nvda.getAddress(), usdg = await f.usdg.getAddress();
+    await f.uniFactory.create(nvda, usdg, fee, await f.pool.sqrtP());
+  }
+
+  it("the operator may only open in a fee tier the owner allowed; the owner is free", async () => {
+    const f = await funded();
+    expect(await f.vault.allowedFees(3000)).to.eq(true);
+    expect(await f.vault.allowedFees(10000)).to.eq(false);
+    await strayPool(f, 10000);
+    await expect(f.vault.connect(f.operator).openLp(await open(f, 10000, USDG(100)))).to.be.revertedWithCustomError(f.vault, "FeeNotAllowed");
+    await f.vault.connect(f.user).openLp(await open(f, 10000, USDG(100)));
+    await expect(f.vault.connect(f.operator).setFeeAllowed(10000, true)).to.be.revertedWithCustomError(f.vault, "NotOwner");
+    await expect(f.vault.connect(f.user).setFeeAllowed(10000, true)).to.emit(f.vault, "FeeAllowed").withArgs(10000, true);
+    await f.vault.connect(f.operator).openLp(await open(f, 10000, USDG(100)));
+    await f.vault.connect(f.user).setFeeAllowed(3000, false);
+    await time.increase(7 * 3600);
+    await expect(f.vault.connect(f.operator).openLp(await open(f, 3000, USDG(100)))).to.be.revertedWithCustomError(f.vault, "FeeNotAllowed");
+  });
+
+  it("the operator waits out the cooldown between opens; the owner does not, and sets it", async () => {
+    const f = await funded();
+    expect(await f.vault.openCooldown()).to.eq(6n * 3600n);
+    await f.vault.connect(f.operator).openLp(await open(f, 3000, USDG(100)));
+    await expect(f.vault.connect(f.operator).openLp(await open(f, 3000, USDG(100)))).to.be.revertedWithCustomError(f.vault, "OpenCooldownActive");
+    // the owner's own opens are not limited and do not reset the operator's clock
+    await f.vault.connect(f.user).openLp(await open(f, 3000, USDG(100)));
+    await time.increase(6 * 3600);
+    await f.vault.connect(f.operator).openLp(await open(f, 3000, USDG(100)));
+    await expect(f.vault.connect(f.operator).setOpenCooldown(0)).to.be.revertedWithCustomError(f.vault, "NotOwner");
+    await expect(f.vault.connect(f.user).setOpenCooldown(8 * 24 * 3600)).to.be.revertedWithCustomError(f.vault, "BadCooldown");
+    await f.vault.connect(f.user).setOpenCooldown(0);
+    await f.vault.connect(f.operator).openLp(await open(f, 3000, USDG(100)));
+  });
+
+  it("the operator cannot sell collateral in protect() through a tier the owner did not allow", async () => {
+    const f = await funded();
+    await f.vault.connect(f.user).withdrawToken(await f.usdg.getAddress(), 0);
+    const newPrice = PRICE36(150n);
+    await f.oracle.set(newPrice);
+    await f.router.setPrice(newPrice);
+    await expect(f.vault.connect(f.operator).protect([], NVDA(1.5), 10000, await f.deadline())).to.be.revertedWithCustomError(f.vault, "FeeNotAllowed");
+    await f.vault.connect(f.operator).protect([], NVDA(1.5), 3000, await f.deadline());
+  });
+
+  it("the owner can always close without a swap: oracle dead or pool off the oracle", async () => {
+    const f = await funded();
+    await f.vault.connect(f.operator).openLp(await open(f, 3000, USDG(900)));
+    const [id] = await f.vault.openPositions();
+    await f.oracle.setBroken(true);
+    // the operator stays locked out, and so does any close that swaps
+    await expect(f.vault.connect(f.operator).closeLp(id, 0, 0, false, 0, await f.deadline())).to.be.revertedWithCustomError(f.vault, "OracleUnavailable");
+    await expect(f.vault.connect(f.user).closeLp(id, 0, 0, true, 0, await f.deadline())).to.be.revertedWithCustomError(f.vault, "OracleUnavailable");
+    await expect(f.vault.connect(f.user).closeLp(id, 0, 0, false, 0, await f.deadline())).to.emit(f.vault, "LpClosed");
+    expect((await f.vault.openPositions()).length).to.eq(0);
+    expect(await f.usdg.balanceOf(await f.vault.getAddress())).to.eq(USDG(900));
+    // and the legs can leave
+    await f.vault.connect(f.user).withdrawToken(await f.usdg.getAddress(), 0);
+    expect(await f.usdg.balanceOf(await f.vault.getAddress())).to.eq(0n);
+  });
+
+  it("with the pool off the oracle the operator cannot burn, the owner can", async () => {
+    const f = await funded();
+    await f.vault.connect(f.operator).openLp(await open(f, 3000, USDG(900)));
+    const [id] = await f.vault.openPositions();
+    await f.pool.setSqrtPrice((await f.pool.sqrtP()) * 102n / 100n);
+    await expect(f.vault.connect(f.operator).closeLp(id, 0, 0, false, 0, await f.deadline())).to.be.revertedWithCustomError(f.vault, "PoolPriceOffOracle");
+    await f.vault.connect(f.user).closeLp(id, 0, 0, false, 0, await f.deadline());
   });
 });

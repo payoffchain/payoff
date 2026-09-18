@@ -28,6 +28,11 @@
   },
   {
     "inputs": [],
+    "name": "BadCooldown",
+    "type": "error"
+  },
+  {
+    "inputs": [],
     "name": "BadPolicy",
     "type": "error"
   },
@@ -39,6 +44,17 @@
   {
     "inputs": [],
     "name": "FailedInnerCall",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint24",
+        "name": "fee",
+        "type": "uint24"
+      }
+    ],
+    "name": "FeeNotAllowed",
     "type": "error"
   },
   {
@@ -116,6 +132,17 @@
   {
     "inputs": [],
     "name": "NothingToDo",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "readyAt",
+        "type": "uint256"
+      }
+    ],
+    "name": "OpenCooldownActive",
     "type": "error"
   },
   {
@@ -263,6 +290,25 @@
       }
     ],
     "name": "CollateralWithdrawn",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint24",
+        "name": "fee",
+        "type": "uint24"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "allowed",
+        "type": "bool"
+      }
+    ],
+    "name": "FeeAllowed",
     "type": "event"
   },
   {
@@ -491,6 +537,19 @@
       }
     ],
     "name": "MarketAllowed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "cooldown",
+        "type": "uint256"
+      }
+    ],
+    "name": "OpenCooldownSet",
     "type": "event"
   },
   {
@@ -739,7 +798,33 @@
   },
   {
     "inputs": [],
+    "name": "DEFAULT_OPEN_COOLDOWN",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "MAX_HARVEST_FEE_BPS",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "MAX_OPEN_COOLDOWN",
     "outputs": [
       {
         "internalType": "uint256",
@@ -768,6 +853,25 @@
     "name": "acceptOwnership",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint24",
+        "name": "",
+        "type": "uint24"
+      }
+    ],
+    "name": "allowedFees",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -1099,11 +1203,29 @@
         "internalType": "struct PayoffVault.Policy",
         "name": "policy_",
         "type": "tuple"
+      },
+      {
+        "internalType": "uint24[]",
+        "name": "lpFees",
+        "type": "uint24[]"
       }
     ],
     "name": "initialize",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "lastOperatorOpen",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -1261,6 +1383,19 @@
     "name": "onMorphoFlashLoan",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "openCooldown",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -1640,6 +1775,24 @@
   {
     "inputs": [
       {
+        "internalType": "uint24",
+        "name": "fee",
+        "type": "uint24"
+      },
+      {
+        "internalType": "bool",
+        "name": "allowed",
+        "type": "bool"
+      }
+    ],
+    "name": "setFeeAllowed",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "components": [
           {
             "internalType": "address",
@@ -1678,6 +1831,19 @@
       }
     ],
     "name": "setMarketAllowed",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "cooldown",
+        "type": "uint256"
+      }
+    ],
+    "name": "setOpenCooldown",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

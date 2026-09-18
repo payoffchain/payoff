@@ -40,6 +40,11 @@ export type VaultSummary = {
   /** everything the vault holds, $ */
   netValueUsd: number | null;
   allowedMarkets: string[];
+  /**
+   * What the vault lets its operator do with liquidity. allowedFees null = a vault from
+   * before these limits existed. operatorOpenReadyAt is a unix time, null when it may open now.
+   */
+  lpLimits: { allowedFees: number[] | null; openCooldown: number; lastOperatorOpen: number; operatorOpenReadyAt: number | null };
 };
 
 export type LpPositionView = {
@@ -61,6 +66,7 @@ export type LpPositionView = {
   pool: string | null;
 };
 
+const LP_FEE_TIERS = [100, 500, 3000, 10000];
 const POLICY_KEYS = ["maxLtvBps", "triggerLtvBps", "repayBps", "maxSlippageBps"] as const;
 
 function n(x: bigint, dec: number) {
@@ -154,6 +160,9 @@ export async function vaultSummary(address: string): Promise<VaultSummary> {
     { target: collateralToken, callData: erc20Iface.encodeFunctionData("balanceOf", [address]) },
     ...pair.map((m) => ({ target: address, callData: vaultIface.encodeFunctionData("allowedMarkets", [m.id]) })),
     ...openIds.map((id) => ({ target: address, callData: vaultIface.encodeFunctionData("positionInfo", [id]) })),
+    ...LP_FEE_TIERS.map((f) => ({ target: address, callData: vaultIface.encodeFunctionData("allowedFees", [f]) })),
+    { target: address, callData: vaultIface.encodeFunctionData("openCooldown") },
+    { target: address, callData: vaultIface.encodeFunctionData("lastOperatorOpen") },
   ];
   const ex = await multicall(extra);
   const loanBal = BigInt(decode(erc20Iface, "balanceOf", ex[0])?.[0] ?? 0);
@@ -164,6 +173,19 @@ export async function vaultSummary(address: string): Promise<VaultSummary> {
     const info = decode(vaultIface, "positionInfo", ex[2 + pair.length + i]);
     if (info) costBasis.set(id.toString(), n(BigInt(info[0][2]), loanDec));
   });
+
+  // operator limits; every one of these reads fails on a vault that predates them
+  const lim = 2 + pair.length + openIds.length;
+  const feeFlags = LP_FEE_TIERS.map((_, i) => decode(vaultIface, "allowedFees", ex[lim + i])?.[0]);
+  const legacy = feeFlags.some((x) => x === undefined || x === null);
+  const openCooldown = Number(decode(vaultIface, "openCooldown", ex[lim + LP_FEE_TIERS.length])?.[0] ?? 0);
+  const lastOperatorOpen = Number(decode(vaultIface, "lastOperatorOpen", ex[lim + LP_FEE_TIERS.length + 1])?.[0] ?? 0);
+  const readyAt = lastOperatorOpen ? lastOperatorOpen + openCooldown : 0;
+  const lpLimits: VaultSummary["lpLimits"] = {
+    allowedFees: legacy ? null : LP_FEE_TIERS.filter((_, i) => feeFlags[i] === true),
+    openCooldown, lastOperatorOpen,
+    operatorOpenReadyAt: readyAt > Date.now() / 1000 ? readyAt : null,
+  };
 
   // LP positions
   const lp = await lpViews(address, openIds, collateralToken, loanToken, collDec, loanDec, price, costBasis);
@@ -200,6 +222,7 @@ export async function vaultSummary(address: string): Promise<VaultSummary> {
     lpValueUsd,
     netValueUsd,
     allowedMarkets,
+    lpLimits,
   };
 }
 

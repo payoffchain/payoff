@@ -164,7 +164,9 @@ export async function planFor(vaultAddress: string, overrides: Partial<PlanSetti
   if (v.balances.loan >= s.minDeployUsd && !v.paused) {
     // A tier whose fee is not below the policy's slippage band can never fill above the
     // vault's oracle floor; the tx builder refuses it, so do not rank it either.
-    const candidates = pools.filter((p) => p.price !== null && (p.tvlUsd ?? 0) > 0 && p.fee / 100 < v.policy.maxSlippageBps);
+    // ...nor a tier the owner has not allowed the operator: the vault refuses that too.
+    const allowedFees = v.lpLimits.allowedFees;
+    const candidates = pools.filter((p) => p.price !== null && (p.tvlUsd ?? 0) > 0 && p.fee / 100 < v.policy.maxSlippageBps && (allowedFees === null || allowedFees.includes(p.fee)));
     let pick = s.preferredFee ? candidates.find((p) => p.fee === s.preferredFee) ?? null : null;
     let reason = "";
     if (!pick) {
@@ -183,7 +185,11 @@ export async function planFor(vaultAddress: string, overrides: Partial<PlanSetti
       });
       if (!pick && candidates.length) { pick = candidates.sort((a, b) => (b.tvlUsd ?? 0) - (a.tvlUsd ?? 0))[0]; reason = "deepest pool"; }
     } else reason = `preferred tier ${pick.fee / 10_000}%`;
-    if (pick) {
+    if (pick && v.lpLimits.operatorOpenReadyAt) {
+      // The vault spaces the operator's opens out so a bad key cannot grind the balance
+      // away in round trips; the owner can still open by hand in the meantime.
+      skipped.push({ rule: "deploy", why: `${v.balances.loan.toFixed(2)} ${v.loan.symbol} idle, but the vault lets the agent open its next position only after ${new Date(v.lpLimits.operatorOpenReadyAt * 1000).toISOString().slice(0, 16).replace("T", " ")} UTC (cooldown ${(v.lpLimits.openCooldown / 3600).toFixed(1)} h)` });
+    } else if (pick) {
       const gate = priceGate(pick.fee);
       if (gate) {
         skipped.push({ rule: "deploy", why: `${v.balances.loan.toFixed(2)} ${v.loan.symbol} idle, but ${gate}` });
@@ -191,7 +197,7 @@ export async function planFor(vaultAddress: string, overrides: Partial<PlanSetti
         const built = await buildOpenLp(v.address, { amount: v.balances.loan.toFixed(v.loan.decimals), fee: pick.fee, widthPct: s.rangeWidthPct, slippageBps: v.policy.maxSlippageBps });
         actions.push({ kind: "open", args: { fee: pick.fee }, reason: `${v.balances.loan.toFixed(2)} ${v.loan.symbol} idle in the vault → ${pick.fee / 10_000}% pool (${reason}), ±${s.rangeWidthPct}% range`, built, valueUsd: null });
       }
-    } else skipped.push({ rule: "deploy", why: "no pool for the pair" });
+    } else skipped.push({ rule: "deploy", why: allowedFees !== null && allowedFees.length === 0 ? "the owner has not allowed the agent any fee tier" : "no usable pool among the tiers the owner allowed" });
   } else skipped.push({ rule: "deploy", why: v.paused ? "vault paused" : `idle ${v.loan.symbol} ${v.balances.loan.toFixed(2)} below $${s.minDeployUsd}` });
 
   return finish();
