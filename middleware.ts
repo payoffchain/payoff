@@ -31,6 +31,8 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
+  // Node.js runtime: the Vercel project deploys as a service, which has no Edge runtime
+  runtime: "nodejs",
   // pages only: the API, Next internals and static files stay open
   matcher: ["/((?!api/|_next/|icon\\.png|apple-icon\\.png|mark\\.png|mark-64\\.png|logo\\.png|favicon\\.ico|robots\\.txt).*)"],
 };

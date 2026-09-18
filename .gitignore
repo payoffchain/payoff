@@ -20,3 +20,5 @@ deployments/fork.json
 .env*
 .railway/
 .next-dev/
+
+.vercel-old-account/
