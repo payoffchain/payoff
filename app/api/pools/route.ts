@@ -14,7 +14,7 @@ const q = z.object({ collateral: addressSchema, loan: addressSchema.optional(), 
 
 export const GET = handler("pools", async (req) => {
   const p = readQuery(req, q);
-  const loan = p.loan ?? ADDR.usdc();
+  const loan = p.loan ?? ADDR.usdg();
   const cm = tokenMeta(p.collateral);
   const lm = tokenMeta(loan);
   if (!cm || !lm) throw new ApiError(400, "unknown token; the pair must be in the market snapshot or the stock registry");

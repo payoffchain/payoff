@@ -143,7 +143,7 @@ export async function planFor(vaultAddress: string, overrides: Partial<PlanSetti
     if (s.outOfRangeExit && !p.inRange && p.currentPrice !== null && p.priceUpper !== null && p.priceLower !== null) {
       if (p.currentPrice >= p.priceUpper) {
         // Above the range the position is entirely loan token and earns nothing: closing
-        // costs no market exposure, and the idle USDC is redeployed by rule 5.
+        // costs no market exposure, and the idle USDG is redeployed by rule 5.
         if (gate) { skipped.push({ rule: `close #${p.tokenId}`, why: `above range, but ${gate}` }); continue; }
         const built = await buildCloseLp(v.address, p.tokenId, { swapToLoan: true });
         actions.push({ kind: "close", args: { tokenId: p.tokenId }, reason: `position #${p.tokenId} is above its range (${p.currentPrice.toFixed(2)} > ${p.priceUpper.toFixed(2)}) and holds only ${v.loan.symbol}: close and redeploy`, built, valueUsd: null });

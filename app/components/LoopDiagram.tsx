@@ -1,16 +1,16 @@
 "use client";
 
 /**
- * The self-repaying loop, animated: collateral sits in a Morpho vault, USDC is borrowed
- * against them, the USDC earns fees in a Uniswap V3 pool, and the fees flow back onto
+ * The self-repaying loop, animated: stock tokens sit in a Morpho vault, USDG is borrowed
+ * against them, the USDG earns fees in a Uniswap V3 pool, and the fees flow back onto
  * the debt, which shrinks. Pure SVG + CSS; nothing to load.
  *
  * Layout (viewBox 560×420):
- *   [cirBTC in Morpho]  ──borrow──▶  [USDC borrowed]
+ *   [NVDA in Morpho]  ──borrow──▶  [USDG borrowed]
  *                                        │ deploy
- *   [DEBT ▮▮▮▯▯]  ◀── harvest → repay ── [cirBTC/USDC pool]
+ *   [DEBT ▮▮▮▯▯]  ◀── harvest → repay ── [NVDA/USDG pool]
  */
-export default function LoopDiagram({ symbol = "cirBTC" }: { symbol?: string }) {
+export default function LoopDiagram({ symbol = "NVDA" }: { symbol?: string }) {
   return (
     <div className="loop" aria-hidden>
       <svg viewBox="0 0 560 420" width="100%" height="100%">
@@ -48,17 +48,17 @@ export default function LoopDiagram({ symbol = "cirBTC" }: { symbol?: string }) 
           <text x="95" y="126" className="t-xs">your vault</text>
         </g>
 
-        {/* node: USDC borrowed */}
+        {/* node: USDG borrowed */}
         <g className="node float-b">
           <rect x="280" y="60" width="240" height="72" rx="16" />
-          <text x="400" y="90" className="t-l">USDC borrowed</text>
+          <text x="400" y="90" className="t-l">USDG borrowed</text>
           <text x="400" y="112" className="t-s">up to your LTV ceiling</text>
         </g>
 
         {/* node: Uniswap pool */}
         <g className="node float-c">
           <rect x="280" y="250" width="240" height="82" rx="16" />
-          <text x="400" y="278" className="t-l">{symbol}/USDC pool</text>
+          <text x="400" y="278" className="t-l">{symbol}/USDG pool</text>
           <text x="400" y="298" className="t-s">Uniswap V3 · a fee on every swap</text>
           <text x="400" y="318" className="t-xs green">earning</text>
         </g>

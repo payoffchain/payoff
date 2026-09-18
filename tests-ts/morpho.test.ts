@@ -12,8 +12,7 @@ describe("morpho helpers", () => {
       expect(marketIdOf({ loanToken: m.loanToken, collateralToken: m.collateralToken, oracle: m.oracle, irm: m.irm, lltv: m.lltv }).toLowerCase()).toBe(m.id.toLowerCase());
       checked++;
     }
-    // Arc is days old: a handful of markets today, more as curators arrive
-    expect(checked).toBeGreaterThan(5);
+    expect(checked).toBeGreaterThan(100);
   });
 
   it("turns a per-second rate into an APY with continuous compounding", () => {
@@ -30,26 +29,26 @@ describe("morpho helpers", () => {
     expect(sharesToAssetsUp(900_000_000_000_000n, 900_000_000n, 900_000_000_000_000n)).toBe(900_000_000n);
   });
 
-  it("groups USDC markets by pair and finds them by id", () => {
+  it("groups USDG markets by pair and finds them by id", () => {
     const all = allMarkets();
-    expect(all.length).toBeGreaterThan(3);
-    expect(all.every((m) => m.loan.symbol === "USDC")).toBe(true);
-    const btc = all.find((m) => m.collateral.symbol === "cirBTC")!;
-    const pair = marketsForPair(btc.params.collateralToken, btc.params.loanToken);
-    expect(pair.length).toBeGreaterThan(1);
-    expect(pair.every((m) => m.collateral.symbol === "cirBTC")).toBe(true);
-    expect(marketById(btc.id)?.id).toBe(btc.id);
+    expect(all.length).toBeGreaterThan(50);
+    expect(all.every((m) => m.loan.symbol === "USDG")).toBe(true);
+    const nvda = all.find((m) => m.collateral.symbol === "NVDA")!;
+    const pair = marketsForPair(nvda.params.collateralToken, nvda.params.loanToken);
+    expect(pair.length).toBeGreaterThan(3);
+    expect(pair.every((m) => m.collateral.symbol === "NVDA")).toBe(true);
+    expect(marketById(nvda.id)?.id).toBe(nvda.id);
     expect(marketById("0x" + "0".repeat(64))).toBeNull();
   });
 
-  it("knows featured collateral from the registry and other tokens from the snapshot", () => {
-    const btc = tokenMeta("0x171A4217b86A807A64eB94757Db6849fb4bDbAA0");
-    expect(btc?.symbol).toBe("cirBTC");
-    expect(btc?.isStock).toBe(true);
-    expect(btc?.decimals).toBe(8);
-    const usdc = tokenMeta("0x3600000000000000000000000000000000000000");
-    expect(usdc?.symbol).toBe("USDC");
-    expect(usdc?.decimals).toBe(6);
+  it("knows stock tokens from the registry and other collateral from the snapshot", () => {
+    const nvda = tokenMeta("0xd0601CE157Db5bdC3162BbaC2a2C8aF5320D9EEC");
+    expect(nvda?.symbol).toBe("NVDA");
+    expect(nvda?.isStock).toBe(true);
+    expect(nvda?.decimals).toBe(18);
+    const usdg = tokenMeta("0x5fc5360d0400a0fd4f2af552add042d716f1d168");
+    expect(usdg?.symbol).toBe("USDG");
+    expect(usdg?.decimals).toBe(6);
     expect(tokenMeta("0x0000000000000000000000000000000000000001")).toBeNull();
   });
 });

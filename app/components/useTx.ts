@@ -59,7 +59,7 @@ export function useTx() {
   const run = useCallback(async (url: string, body: unknown, opts: { onHash?: (hash: string) => void } = {}): Promise<string | null> => {
     if (inFlight.current) return null;
     if (!w.address) { setState((s) => ({ ...s, error: "Connect a wallet first" })); return null; }
-    if (w.wrongChain) { setState((s) => ({ ...s, error: "Switch to Arc first" })); return null; }
+    if (w.wrongChain) { setState((s) => ({ ...s, error: "Switch to Robinhood Chain first" })); return null; }
     inFlight.current = true;
     setState({ ...IDLE, busy: true, step: "Building transaction…" });
     try {

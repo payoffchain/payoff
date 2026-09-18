@@ -10,14 +10,14 @@ import { usd } from "./format";
 
 /**
  * The two signatures that make a freshly opened vault into a loan, right where the
- * vault was created: put the collateral in, then borrow against it. Same API calls as the
+ * vault was created: put the stock in, then borrow against it. Same API calls as the
  * vault page; this only saves the trip there. The borrow amount defaults to a bit
  * under the ceiling so a small price dip does not put the loan straight at its limit.
  */
 
 const ERC20 = ["function balanceOf(address) view returns (uint256)", "function decimals() view returns (uint8)"];
 
-export default function FundLoan({ vault, symbol, token, price, maxLtvBps, loanSymbol = "USDC" }: { vault: string; symbol: string; token: string; price: number | null; maxLtvBps: number; loanSymbol?: string }) {
+export default function FundLoan({ vault, symbol, token, price, maxLtvBps, loanSymbol = "USDG" }: { vault: string; symbol: string; token: string; price: number | null; maxLtvBps: number; loanSymbol?: string }) {
   const w = useWallet();
   const tx = useTx();
   const [phase, setPhase] = useState<"deposit" | "borrow" | "done">("deposit");
@@ -27,7 +27,7 @@ export default function FundLoan({ vault, symbol, token, price, maxLtvBps, loanS
   const [share, setShare] = useState(80); // % of the ceiling to borrow
   const [borrowed, setBorrowed] = useState<string | null>(null);
 
-  // wallet balance of the collateral, so the amount box can offer "all"
+  // wallet balance of the stock, so the amount box can offer "all"
   useEffect(() => {
     let dead = false;
     (async () => {
@@ -72,13 +72,13 @@ export default function FundLoan({ vault, symbol, token, price, maxLtvBps, loanS
               <label>Amount of {symbol}</label>
               <input inputMode="decimal" placeholder="0.0" value={amt} onChange={(e) => setAmt(e.target.value.trim())} />
               <span className="hint">
-                {bal === null ? (w.address ? "reading your balance…" : "connect a wallet") : bal === "unknown" ? "balance could not be read (is the wallet on Arc?)" : <>you have {bal.amount.toLocaleString("en-US", { maximumFractionDigits: 6 })} {symbol}{bal.amount > 0 && <> · <button type="button" className="linkbtn" onClick={() => setAmt(String(bal.amount))}>use all</button></>}</>}
+                {bal === null ? (w.address ? "reading your balance…" : "connect a wallet") : bal === "unknown" ? "balance could not be read (is the wallet on Robinhood Chain?)" : <>you have {bal.amount.toLocaleString("en-US", { maximumFractionDigits: 6 })} {symbol}{bal.amount > 0 && <> · <button type="button" className="linkbtn" onClick={() => setAmt(String(bal.amount))}>use all</button></>}</>}
                 {price !== null && amountOk ? ` · worth ${usd(Number(amt) * price)}` : ""}
               </span>
             </div>
             <button className="btn green" disabled={!amountOk || tx.busy} onClick={deposit}>{tx.busy ? tx.step : `Deposit ${symbol}`}</button>
           </div>
-          {have !== null && have.amount === 0 && <p className="note" style={{ marginTop: 10 }}>This wallet holds no {symbol}. Bridge or buy some on Arc first, or <Link href={`/vault/${vault}`} style={{ textDecoration: "underline" }}>open the vault page</Link> and come back later.</p>}
+          {have !== null && have.amount === 0 && <p className="note" style={{ marginTop: 10 }}>This wallet holds no {symbol}. Buy some on Robinhood Chain first, or <Link href={`/vault/${vault}`} style={{ textDecoration: "underline" }}>open the vault page</Link> and come back later.</p>}
         </>
       )}
 

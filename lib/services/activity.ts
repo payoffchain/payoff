@@ -31,7 +31,7 @@ export async function vaultActivity(vault: string, opts: { limit?: number; fromB
   const created = await vaultCreationBlock(vault);
   // Newest first, inside a window and a time budget. An older vault gets its recent
   // history quickly and `partial: true`, never a timeout.
-  const window = Math.round(BLOCKS_PER_DAY * Math.min(90, Math.max(1, opts.days ?? 7)));
+  const window = Math.round(BLOCKS_PER_DAY * Math.min(90, Math.max(1, opts.days ?? 30)));
   const floor = Math.max(0, created ?? 0, toBlock - window);
   const fromBlock = Math.max(floor, opts.fromBlock ?? 0);
   const { logs, scannedFrom, partial } = await getLogsRecent({ address: vault }, fromBlock, toBlock, { budgetMs: 25_000 });

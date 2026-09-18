@@ -8,7 +8,7 @@ export const runtime = "nodejs";
 export const maxDuration = 60;
 
 /**
- * GET /api/markets                -> every USDC market on Morpho, grouped by collateral, live rates
+ * GET /api/markets                -> every USDG market on Morpho, grouped by collateral, live rates
  * GET /api/markets?stocks=1       -> only tokenized-stock collateral
  * GET /api/markets?minLiquidity=  -> what counts as a usable market for "best"
  */

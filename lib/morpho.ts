@@ -3,7 +3,7 @@ import { ADDR, cached, decode, multicall, type Call } from "./chain";
 import snapshot from "./morpho-markets.json";
 
 /**
- * Morpho Blue on Arc.
+ * Morpho Blue on Robinhood Chain.
  *
  * Market PARAMS (tokens, oracle, irm, lltv) never change once a market exists, so they
  * come from a snapshot that scripts/sync-markets.mjs refreshes from the Morpho API. Market
@@ -86,9 +86,9 @@ export function snapshotInfo() {
   return { fetchedAt: snapshot.fetchedAt, count: snapshot.count, morpho: snapshot.morpho, chainId: snapshot.chainId };
 }
 
-/** All snapshot markets whose loan token is the numeraire (USDC by default). */
+/** All snapshot markets whose loan token is the numeraire (USDG by default). */
 export function allMarkets(opts: { loanToken?: string } = {}): MarketMeta[] {
-  const loan = (opts.loanToken ?? ADDR.usdc()).toLowerCase();
+  const loan = (opts.loanToken ?? ADDR.usdg()).toLowerCase();
   return (snapshot.markets as SnapshotMarket[]).filter((m) => m.loanToken.toLowerCase() === loan && m.oracle).map(fromSnapshot);
 }
 

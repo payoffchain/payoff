@@ -41,7 +41,7 @@ export const ago = (unix: number | null | undefined) => {
   return `${Math.floor(s / 86400)}d ago`;
 };
 
-export const EXPLORER = (process.env.NEXT_PUBLIC_EXPLORER_URL ?? "https://explorer.arc.io").replace(/\/$/, "");
+export const EXPLORER = (process.env.NEXT_PUBLIC_EXPLORER_URL ?? "https://robinhoodchain.blockscout.com").replace(/\/$/, "");
 export const txUrl = (hash: string) => `${EXPLORER}/tx/${hash}`;
 export const addrUrl = (a: string) => `${EXPLORER}/address/${a}`;
 

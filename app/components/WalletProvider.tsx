@@ -16,7 +16,7 @@ import { ethers } from "ethers";
  * in the security audit; see README section 3.
  */
 
-const CHAIN_ID = Number(process.env.NEXT_PUBLIC_CHAIN_ID ?? 5042);
+const CHAIN_ID = Number(process.env.NEXT_PUBLIC_CHAIN_ID ?? 4663);
 const CHAIN_ID_HEX = "0x" + CHAIN_ID.toString(16);
 
 type Ctx = {
@@ -168,7 +168,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
         // missing instead. NEXT_PUBLIC_RPC_URL is a build-time value on Vercel.
         const rpcUrl = process.env.NEXT_PUBLIC_RPC_URL;
         if (!rpcUrl) {
-          setError(`This deployment has no RPC configured for the wallet; add Arc (${CHAIN_ID}) to your wallet manually, then switch to it.`);
+          setError(`This deployment has no RPC configured for the wallet; add Robinhood Chain (${CHAIN_ID}) to your wallet manually, then switch to it.`);
           return;
         }
         try {
@@ -176,9 +176,9 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
           method: "wallet_addEthereumChain",
           params: [{
             chainId: CHAIN_ID_HEX,
-            chainName: process.env.NEXT_PUBLIC_CHAIN_NAME ?? "Arc",
+            chainName: process.env.NEXT_PUBLIC_CHAIN_NAME ?? "Robinhood Chain",
             rpcUrls: [rpcUrl],
-            nativeCurrency: { name: "USD Coin", symbol: "USDC", decimals: 18 },
+            nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
           }],
         });
         } catch (err2: any) {
