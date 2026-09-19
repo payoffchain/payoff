@@ -46,16 +46,16 @@ export default function Dashboard() {
                     <span className="row">{v.paused ? <span className="pill a">auto-repay off</span> : <span className="pill g">auto-repay on</span>}</span>
                   </div>
                   <div className="grid g3" style={{ marginTop: 16, gap: 12 }}>
-                    <div className="card soft" style={{ padding: 12 }}><span className="lbl">Collateral</span><span className="med">{usd(v.collateralUsd)}</span><span className="faint" style={{ fontSize: 11 }}>{v.collateral_.toLocaleString("en-US", { maximumFractionDigits: 4 })} {v.collateral.symbol}</span></div>
-                    <div className="card soft" style={{ padding: 12 }}><span className="lbl">Debt</span><span className="med">{usd(v.debt, 2)}</span><span className="faint" style={{ fontSize: 11 }}>LTV {bps(v.ltvBps)}</span></div>
-                    <div className="card soft" style={{ padding: 12 }}><span className="lbl">Repaid from fees</span><span className="med green">{usd(v.totalRepaidFromFees, 2)}</span><span className="faint" style={{ fontSize: 11 }}>{v.openPositions} position{v.openPositions === 1 ? "" : "s"} · {v.refinanceCount} hop{v.refinanceCount === 1 ? "" : "s"}</span></div>
+                    <div className="card soft vstat" style={{ padding: 12 }}><span className="lbl">Collateral</span><span className="med">{usd(v.collateralUsd)}</span><span className="faint" style={{ fontSize: 11 }}>{v.collateral_.toLocaleString("en-US", { maximumFractionDigits: 4 })} {v.collateral.symbol}</span></div>
+                    <div className="card soft vstat" style={{ padding: 12 }}><span className="lbl">Debt</span><span className="med">{usd(v.debt, 2)}</span><span className="faint" style={{ fontSize: 11 }}>LTV {bps(v.ltvBps)}</span></div>
+                    <div className="card soft vstat" style={{ padding: 12 }}><span className="lbl">Repaid from fees</span><span className="med green">{usd(v.totalRepaidFromFees, 2)}</span><span className="faint" style={{ fontSize: 11 }}>{v.openPositions} position{v.openPositions === 1 ? "" : "s"} · {v.refinanceCount} hop{v.refinanceCount === 1 ? "" : "s"}</span></div>
                   </div>
                   <div style={{ marginTop: 14 }}><LtvBar ltv={v.ltvBps === null ? null : v.ltvBps / 10_000} max={v.policy.maxLtvBps / 10_000} trigger={v.policy.triggerLtvBps / 10_000} lltv={v.lltv} /></div>
                   <div className="faint mono" style={{ fontSize: 11, marginTop: 10 }}>created {ago(v.createdAt)} · operator {short(v.operator)}</div>
                 </Link>
               ))}
               {vaults.length === 0 && !r.loading && (
-                <div style={{ gridColumn: "1 / -1" }}><Empty>No vaults for {short(w.address)} yet. <span className="row" style={{ justifyContent: "center", marginTop: 16 }}><Link className="btn green" href="/borrow">Deploy an agent</Link></span></Empty></div>
+                <div style={{ gridColumn: "1 / -1" }}><Empty>No vaults for {short(w.address)} yet. <span className="row" style={{ justifyContent: "center", marginTop: 16 }}><Link className="btn green" href="/borrow">Open a loan</Link></span></Empty></div>
               )}
             </div>
           </>

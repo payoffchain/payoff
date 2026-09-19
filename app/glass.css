@@ -222,3 +222,10 @@ html,body{overflow-x:hidden}
 .sim-grid .card .faint,.sim-big .faint{font-size:12px;line-height:1.45}
 .sim-whatif input[type=range]{width:100%;accent-color:var(--ice);margin-top:10px}
 .sim-whatif b.bad{color:var(--red)} .sim-whatif b.warn{color:var(--amber)}
+
+/* dashboard vault card: label, value and note stack instead of running into each other */
+.vstat{display:flex;flex-direction:column;gap:4px;min-width:0}
+.vstat .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+.vstat .med{font-family:var(--mono);font-size:17px;font-weight:500;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vstat .faint{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:700px){.vault-card .grid.g3{grid-template-columns:1fr}}
