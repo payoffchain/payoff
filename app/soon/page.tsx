@@ -6,7 +6,7 @@ export const metadata: Metadata = { title: "Soon", robots: { index: false, follo
 /** The holding page shown while the site is locked (SITE_LOCKED=1). Says nothing about the product. */
 export default function Soon() {
   return (
-    <main className="soon">
+    <main className="soon-page">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src="/mark.png" alt={APP} width={96} height={96} />
       <h1>{APP}</h1>
