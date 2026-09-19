@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>PAYOFF token notice (glass)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#1c2a4a;--mute:#6f7fa3;--ice:#6f8df5;--ice2:#9db3ff;--sans:'Outfit',sans-serif;--mono:'IBM Plex Mono',monospace}
+  *{box-sizing:border-box;margin:0}
+  html,body{width:1200px;height:675px;overflow:hidden}
+  body{position:relative;font-family:var(--sans);color:var(--ink);
+    background:
+      linear-gradient(115deg,rgba(255,255,255,.95) 0%,rgba(255,255,255,.55) 34%,rgba(255,255,255,0) 52%),
+      radial-gradient(60% 80% at 92% 18%,#cfe0ff 0%,rgba(207,224,255,0) 60%),
+      linear-gradient(180deg,#eef3fc 0%,#e3ebfa 45%,#d5e0f6 100%)}
+  /* soft window light: diagonal shafts */
+  .shaft{position:absolute;top:-120px;width:150px;height:1000px;transform:rotate(24deg);background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.75),rgba(255,255,255,0));filter:blur(14px)}
+  .s1{left:120px;opacity:.9}.s2{left:330px;width:90px;opacity:.6}.s3{left:-40px;width:220px;opacity:.7}
+  /* window with sky, right edge */
+  .window{position:absolute;right:0;top:0;width:210px;height:430px;background:linear-gradient(180deg,#9fc3f7 0%,#c6dcfb 55%,#eef4ff 100%);box-shadow:inset 18px 0 30px -10px rgba(255,255,255,.9)}
+  .cloud{position:absolute;border-radius:50%;background:radial-gradient(closest-side,rgba(255,255,255,.98),rgba(255,255,255,0));filter:blur(3px)}
+  .c1{right:-20px;top:60px;width:200px;height:90px}.c2{right:40px;top:120px;width:170px;height:70px}.c3{right:-40px;top:230px;width:230px;height:100px;opacity:.8}
+  .pillar{position:absolute;top:0;height:430px;background:linear-gradient(90deg,#f7faff,#dfe8f8 45%,#f4f8ff);box-shadow:0 0 30px rgba(140,165,220,.25)}
+  .p1{right:210px;width:54px}.p2{right:300px;width:150px;background:linear-gradient(90deg,rgba(255,255,255,.75),rgba(225,234,250,.55));backdrop-filter:blur(6px)}
+  .p2 span{position:absolute;left:0;right:0;top:48px;text-align:center;font-size:10px;letter-spacing:.42em;line-height:2.1;color:#93a3c6;font-weight:400}
+  /* marble ledge */
+  .ledge{position:absolute;left:470px;right:-40px;top:430px;height:74px;border-radius:6px;
+    background:linear-gradient(180deg,#ffffff 0%,#f1f5fc 38%,#dfe7f5 100%);
+    box-shadow:0 30px 50px -18px rgba(90,115,175,.45),inset 0 2px 0 #fff}
+  .ledge::after{content:"";position:absolute;inset:0;border-radius:6px;opacity:.5;
+    background:linear-gradient(100deg,transparent 20%,rgba(160,178,215,.35) 21%,transparent 23%,transparent 58%,rgba(160,178,215,.28) 59%,transparent 62%)}
+  .floor{position:absolute;left:0;right:0;top:504px;bottom:0;background:linear-gradient(180deg,#e9effa,#f6f9ff 60%,#ffffff)}
+  /* frosted glass blocks */
+  .glass{position:absolute;border-radius:14px;
+    background:linear-gradient(145deg,rgba(255,255,255,.72),rgba(215,228,252,.38) 55%,rgba(190,208,246,.5));
+    border:1px solid rgba(255,255,255,.95);
+    box-shadow:inset 0 0 0 1px rgba(170,190,235,.25),inset 10px 10px 24px rgba(255,255,255,.75),inset -12px -14px 26px rgba(140,165,225,.28),0 26px 34px -16px rgba(80,105,170,.5);
+    backdrop-filter:blur(10px)}
+  .glass::before{content:"";position:absolute;left:8px;right:8px;top:6px;height:34%;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,.85),rgba(255,255,255,0))}
+  .glass::after{content:"";position:absolute;left:10%;right:10%;bottom:-16px;height:16px;border-radius:50%;background:radial-gradient(closest-side,rgba(90,115,180,.35),transparent);filter:blur(4px)}
+  .blk{top:268px;width:150px;height:166px;padding:18px 14px;text-align:center}
+  .b1{left:520px}.b2{left:700px}.b3{left:880px}
+  .blk small{position:relative;display:block;font-size:11px;letter-spacing:.24em;font-weight:500;color:#2a3a63}
+  .blk b{position:relative;display:block;margin-top:34px;font-weight:500;font-size:24px;letter-spacing:-.01em;color:var(--ink)}
+  .blk b.sm{font-size:17px;line-height:1.25;margin-top:28px}
+  .blk i{position:relative;display:block;margin-top:8px;font-style:normal;font-size:11px;letter-spacing:.12em;color:var(--mute)}
+  .arrow{position:absolute;top:340px;font-size:20px;color:var(--ice)}
+  .a1{left:678px}.a2{left:858px}
+  /* the plaque with the address, leaning on the floor */
+  .plaque{left:470px;top:528px;width:690px;height:104px;padding:18px 26px;border-radius:16px}
+  .plaque small{position:relative;display:flex;justify-content:space-between;font-size:10.5px;letter-spacing:.3em;font-weight:500;color:#51628c}
+  .ca{position:relative;margin-top:12px;font-family:var(--mono);font-weight:600;font-size:23.5px;letter-spacing:.01em;color:var(--ink);white-space:nowrap}
+  .ca em{font-style:normal;color:var(--ice)}
+  /* left column */
+  .brand{position:absolute;left:60px;top:52px;display:flex;align-items:center;gap:4px}
+  .brand img{width:66px;height:66px;border-radius:18px;box-shadow:0 14px 26px -12px rgba(80,105,170,.6)}
+  .brand span{font-size:44px;font-weight:300;letter-spacing:-.02em;color:#2a3a63}
+  h1{position:absolute;left:60px;top:168px;width:430px;font-weight:300;font-size:60px;line-height:1.08;letter-spacing:-.025em;color:var(--ink)}
+  h1 b{font-weight:500}
+  h1 span{color:var(--ice)}
+  .lede{position:absolute;left:62px;top:330px;width:380px;font-size:19.5px;line-height:1.55;font-weight:300;color:var(--mute)}
+  .lede b{font-weight:500;color:var(--ink)}
+  .foot{position:absolute;left:62px;bottom:44px;font-size:10.5px;letter-spacing:.34em;line-height:2;font-weight:400;color:#7d8db3}
+  .foot b{display:block;font-weight:500;color:#d2654a}
+</style>
+</head>
+<body>
+  <div class="window"><div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div></div>
+  <div class="pillar p1"></div><div class="pillar p2"><span>MORE<br>THAN<br>A LOAN</span></div>
+  <div class="shaft s3"></div><div class="shaft s1"></div><div class="shaft s2"></div>
+  <div class="floor"></div>
+  <div class="ledge"></div>
+
+  <div class="glass blk b1"><small>TICKER</small><b id="tick">$PAYOFF</b><i>THE ONLY ONE</i></div>
+  <div class="arrow a1">→</div>
+  <div class="glass blk b2"><small>CHAIN</small><b class="sm">Robinhood<br>Chain</b><i>ID 4663</i></div>
+  <div class="arrow a2">→</div>
+  <div class="glass blk b3"><small>STATUS</small><b>Live</b><i id="via">CONTRACT BELOW</i></div>
+
+  <div class="glass plaque"><small><span>CONTRACT ADDRESS</span><span>COPY IT FROM THE POST</span></small><div class="ca" id="ca">0x0000000000000000000000000000000000000000</div></div>
+
+  <div class="brand"><img src="../public/mark.png" alt=""><span>ayoff</span></div>
+  <h1 id="h1"><b id="tick2">$PAYOFF</b><br>is <span>live.</span></h1>
+  <p class="lede" id="lede">One contract address on <b>Robinhood Chain</b>. This one, and only this one.</p>
+  <div class="foot">SAME ADDRESS AT THE BOTTOM OF PAYOFFCHAIN.TECH<b>ANYTHING ELSE UNDER OUR NAME IS FAKE</b></div>
+  <script>
+    // ?ca=0x…&ticker=$PAYOFF&via=pons  (+ h1 / lede overrides)
+    const q = new URLSearchParams(location.search);
+    if (q.get("ticker")) for (const id of ["tick", "tick2"]) document.getElementById(id).textContent = q.get("ticker");
+    const ca = q.get("ca");
+    if (ca) document.getElementById("ca").innerHTML = "<em>" + ca.slice(0, 6) + "</em>" + ca.slice(6, -4) + "<em>" + ca.slice(-4) + "</em>";
+    if (q.get("via")) document.getElementById("via").textContent = "VIA " + q.get("via").toUpperCase();
+    for (const k of ["h1", "lede"]) if (q.get(k)) document.getElementById(k).innerHTML = q.get(k);
+  </script>
+</body>
+</html>
