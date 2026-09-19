@@ -158,7 +158,9 @@ export function handler(scope: string, fn: Handler, limit = scope === "mcp" ? MC
 /** Edge cache TTL in seconds per route scope; 0 disables. Default 20. */
 // The plan is what the runner signs: it must never be served from the edge after the
 // state it was built on has changed. Vault detail is what a user watches after signing.
-const CACHE_TTL: Record<string, number> = { health: 10, plan: 0, vault: 5, targets: 10, activity: 10, "vault-tx": 0, create: 0, mcp: 0, execute: 0 };
+// A pool-volume read is a log scan, the heaviest thing this API asks of the RPC: once per
+// ten minutes per region is plenty for a number that is an hourly average anyway.
+const CACHE_TTL: Record<string, number> = { pools: 600, leaderboard: 60, health: 10, plan: 0, vault: 5, targets: 10, activity: 10, "vault-tx": 0, create: 0, mcp: 0, execute: 0 };
 
 export function errorResponse(scope: string, err: unknown): NextResponse {
   if (err instanceof ApiError) {
