@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { ADDR, BLOCKS_PER_DAY, cached, decode, getLogsChunked, getProvider, multicall, type Call } from "./chain";
+import { ADDR, BLOCKS_PER_DAY, cached, decode, getLogsChunked, getLogsRecent, getProvider, multicall, type Call } from "./chain";
 
 /**
  * Uniswap V3 on Robinhood Chain: pool discovery for a pair, tick maths for range
@@ -199,7 +199,11 @@ export type PoolVolume = {
   feeApr: number | null;
   fromBlock: number;
   toBlock: number;
+  /** true when the time budget ran out: `hours` is then the window actually read */
+  partial?: boolean;
 };
+
+const VOLUME_BUDGET_MS = Number(process.env.POOL_VOLUME_BUDGET_MS ?? 12_000);
 
 /**
  * Swap volume over the last `hours` from the pool's Swap events, and the fee yield it
@@ -226,7 +230,15 @@ async function readPoolVolume(pool: PoolInfo, loanIsToken0: boolean, loanDec: nu
     const toBlock = await provider.getBlockNumber();
     const fromBlock = Math.max(0, toBlock - Math.round((BLOCKS_PER_DAY * hours) / 24));
     const topic = poolIface.getEvent("Swap")!.topicHash;
-    const logs = await getLogsChunked({ address: pool.address, topics: [topic] }, fromBlock, toBlock);
+    // Newest first, inside a time budget. A busy pool over a slow RPC used to run the
+    // whole halving ladder and take the route (and the RPC, for every other request)
+    // down with it. What the budget reaches is what gets measured: the window shrinks
+    // to the blocks actually read, and the yield is annualized from that.
+    const scan = await getLogsRecent({ address: pool.address, topics: [topic] }, fromBlock, toBlock, { budgetMs: VOLUME_BUDGET_MS, chunk: 25_000 });
+    const logs = scan.logs;
+    const covered = toBlock - scan.scannedFrom + 1;
+    if (covered <= 0) throw new Error("no block of the window could be read");
+    if (scan.partial) hours = Math.max(covered / (BLOCKS_PER_DAY / 24), 1 / 60);
     let volume = 0n;
     for (const l of logs) {
       const ev = poolIface.parseLog({ topics: l.topics as string[], data: l.data });
@@ -237,7 +249,7 @@ async function readPoolVolume(pool: PoolInfo, loanIsToken0: boolean, loanDec: nu
     const volumeLoan = Number(ethers.formatUnits(volume, loanDec));
     const feesLoan = (volumeLoan * pool.fee) / 1e6;
     const feeApr = tvlUsd && tvlUsd > 0 ? (feesLoan * (24 / hours) * 365) / tvlUsd : null;
-    return { hours, swaps: logs.length, volumeLoan, feesLoan, feeApr, fromBlock, toBlock } as PoolVolume;
+    return { hours, swaps: logs.length, volumeLoan, feesLoan, feeApr, fromBlock: scan.scannedFrom, toBlock, partial: scan.partial } as PoolVolume;
   }
 }
 

@@ -20,11 +20,9 @@ export const GET = handler("pools", async (req) => {
   if (!cm || !lm) throw new ApiError(400, "unknown token; the pair must be in the market snapshot or the stock registry");
   const hours = Math.min(24, Math.max(1, Number(p.hours ?? 3)));
   const pools = await poolsForPair(p.collateral, loan, cm.decimals, lm.decimals);
-  const out = [];
-  for (const pool of pools) {
-    const vol = await poolVolume(pool, pool.token0.toLowerCase() === loan.toLowerCase(), lm.decimals, hours, pool.tvlUsd);
-    out.push({ ...pool, volume: vol });
-  }
+  // side by side: each scan is bounded by its own time budget, so the route is too
+  const vols = await Promise.all(pools.map((pool) => poolVolume(pool, pool.token0.toLowerCase() === loan.toLowerCase(), lm.decimals, hours, pool.tvlUsd)));
+  const out = pools.map((pool, i) => ({ ...pool, volume: vols[i] }));
   out.sort((a, b) => (b.volume?.feeApr ?? -1) - (a.volume?.feeApr ?? -1));
   return NextResponse.json({ collateral: { address: cm.address, symbol: cm.symbol, decimals: cm.decimals }, loan: { address: lm.address, symbol: lm.symbol, decimals: lm.decimals }, hours, pools: out, note: "Fee APR is pool-wide: volume × fee tier over the window, annualised, over the pool's token balances. A concentrated position in range earns more per dollar; out of range it earns nothing." });
 });
