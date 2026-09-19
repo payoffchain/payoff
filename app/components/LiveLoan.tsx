@@ -23,7 +23,7 @@ type Vault = {
 type Entry = { time: number | null; tx: string; type: string; args: Record<string, string> };
 
 const usd = (n: number, d = 2) => "$" + n.toLocaleString("en-US", { minimumFractionDigits: d, maximumFractionDigits: d });
-const hhmm = (t: number) => new Date(t * 1000).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+const hhmm = (t: number) => new Date(t * 1000).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false });
 
 export default function LiveLoan(props: { symbol?: string; price?: number; apy?: number }) {
   const [v, setV] = useState<Vault | null>(null);

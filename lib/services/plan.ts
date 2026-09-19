@@ -188,7 +188,7 @@ export async function planFor(vaultAddress: string, overrides: Partial<PlanSetti
     if (pick && v.lpLimits.operatorOpenReadyAt) {
       // The vault spaces the operator's opens out so a bad key cannot grind the balance
       // away in round trips; the owner can still open by hand in the meantime.
-      skipped.push({ rule: "deploy", why: `${v.balances.loan.toFixed(2)} ${v.loan.symbol} idle, but the vault lets the agent open its next position only after ${new Date(v.lpLimits.operatorOpenReadyAt * 1000).toISOString().slice(0, 16).replace("T", " ")} UTC (cooldown ${(v.lpLimits.openCooldown / 3600).toFixed(1)} h)` });
+      skipped.push({ rule: "deploy", why: `${v.balances.loan.toFixed(2)} ${v.loan.symbol} idle, but the vault lets auto-repay open its next position only after ${new Date(v.lpLimits.operatorOpenReadyAt * 1000).toISOString().slice(0, 16).replace("T", " ")} UTC (cooldown ${(v.lpLimits.openCooldown / 3600).toFixed(1)} h)` });
     } else if (pick) {
       const gate = priceGate(pick.fee);
       if (gate) {
@@ -197,7 +197,7 @@ export async function planFor(vaultAddress: string, overrides: Partial<PlanSetti
         const built = await buildOpenLp(v.address, { amount: v.balances.loan.toFixed(v.loan.decimals), fee: pick.fee, widthPct: s.rangeWidthPct, slippageBps: v.policy.maxSlippageBps });
         actions.push({ kind: "open", args: { fee: pick.fee }, reason: `${v.balances.loan.toFixed(2)} ${v.loan.symbol} idle in the vault → ${pick.fee / 10_000}% pool (${reason}), ±${s.rangeWidthPct}% range`, built, valueUsd: null });
       }
-    } else skipped.push({ rule: "deploy", why: allowedFees !== null && allowedFees.length === 0 ? "the owner has not allowed the agent any fee tier" : "no usable pool among the tiers the owner allowed" });
+    } else skipped.push({ rule: "deploy", why: allowedFees !== null && allowedFees.length === 0 ? "no pool is allowed for auto-repay yet; allow one in the vault's settings" : "no usable pool among the ones you allowed" });
   } else skipped.push({ rule: "deploy", why: v.paused ? "vault paused" : `idle ${v.loan.symbol} ${v.balances.loan.toFixed(2)} below $${s.minDeployUsd}` });
 
   return finish();

@@ -90,8 +90,8 @@ export async function buildCreateVault(args: { marketId: string; operator: strin
     notes: [
       "The vault address is emitted as VaultCreated(vault, owner, operator, ...); read it from the receipt.",
       lpFees.length
-        ? `The agent may use the ${lpFees.map((f) => f / 10_000 + "%").join(", ")} pool${lpFees.length > 1 ? "s" : ""}; change this in the vault's settings.`
-        : "No pool of this pair holds liquidity yet, so the agent starts with no fee tier allowed; allow one in the vault's settings.",
+        ? `Auto-repay may use the ${lpFees.map((f) => f / 10_000 + "%").join(", ")} pool${lpFees.length > 1 ? "s" : ""}; change this in the vault's settings.`
+        : "No pool of this pair holds liquidity yet, so auto-repay starts with no pool allowed; allow one in the vault's settings.",
     ],
   };
 }
@@ -176,7 +176,7 @@ export async function buildSetPolicy(vault: string, policy: PolicyInput): Promis
 
 export async function buildSetPaused(vault: string, paused: boolean): Promise<Built> {
   const v = await ctx(vault);
-  return { tx: { to: v.address, data: vaultIface.encodeFunctionData("setPaused", [paused]), value: "0", description: paused ? "Turn the agent off" : "Turn the agent on" }, approvals: [] };
+  return { tx: { to: v.address, data: vaultIface.encodeFunctionData("setPaused", [paused]), value: "0", description: paused ? "Turn auto-repay off" : "Turn auto-repay on" }, approvals: [] };
 }
 
 export async function buildSetMarketAllowed(vault: string, marketId: string, allowed: boolean): Promise<Built> {
@@ -312,7 +312,7 @@ export async function buildProtect(vault: string, args: { tokenIds?: string[]; m
 export async function buildSetFeeAllowed(vault: string, fee: number, allowed: boolean): Promise<Built> {
   const v = await ctx(vault);
   if (!(FEE_TIERS as readonly number[]).includes(fee)) throw new ApiError(400, `fee must be one of ${FEE_TIERS.join(", ")}`);
-  return { tx: { to: v.address, data: vaultIface.encodeFunctionData("setFeeAllowed", [fee, allowed]), value: "0", description: `${allowed ? "Allow" : "Forbid"} the ${fee / 10_000}% pool for the agent` }, approvals: [] };
+  return { tx: { to: v.address, data: vaultIface.encodeFunctionData("setFeeAllowed", [fee, allowed]), value: "0", description: `${allowed ? "Allow" : "Forbid"} the ${fee / 10_000}% pool for auto-repay` }, approvals: [] };
 }
 
 export const MAX_OPEN_COOLDOWN_SECONDS = 7 * 24 * 3600;
@@ -320,7 +320,7 @@ export const MAX_OPEN_COOLDOWN_SECONDS = 7 * 24 * 3600;
 export async function buildSetOpenCooldown(vault: string, seconds: number): Promise<Built> {
   const v = await ctx(vault);
   if (!Number.isInteger(seconds) || seconds < 0 || seconds > MAX_OPEN_COOLDOWN_SECONDS) throw new ApiError(400, `seconds must be 0..${MAX_OPEN_COOLDOWN_SECONDS}`);
-  return { tx: { to: v.address, data: vaultIface.encodeFunctionData("setOpenCooldown", [seconds]), value: "0", description: seconds ? `The agent waits ${(seconds / 3600).toFixed(1)} h between two new positions` : "Remove the agent's wait between new positions" }, approvals: [] };
+  return { tx: { to: v.address, data: vaultIface.encodeFunctionData("setOpenCooldown", [seconds]), value: "0", description: seconds ? `Auto-repay waits ${(seconds / 3600).toFixed(1)} h between two new positions` : "Remove auto-repay's wait between new positions" }, approvals: [] };
 }
 
 export async function buildProposeOwner(vault: string, newOwner: string): Promise<Built> {
