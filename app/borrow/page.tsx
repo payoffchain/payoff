@@ -13,6 +13,7 @@ import { usd } from "../components/format";
 import { CHAIN_NAME, FACTORY, HOSTED_OPERATOR, SITE } from "../components/brand";
 import HostedStatus from "../components/HostedStatus";
 import FactoryAbi from "@/lib/abis/PayoffVaultFactory.json";
+import { readProvider } from "../components/walletShared";
 import FundLoan from "../components/FundLoan";
 
 /**
@@ -123,8 +124,7 @@ function DeployInner() {
     const hash = await tx.run("/api/tx/create", { marketId, operator, policy: { maxLtvBps: policy.maxLtvBps, triggerLtvBps: policy.triggerLtvBps, repayBps: policy.repayBps, maxSlippageBps: policy.maxSlippageBps } });
     if (!hash) return;
     try {
-      const provider = new ethers.BrowserProvider((window as any).ethereum);
-      const rc = await provider.waitForTransaction(hash, 1, 120_000);
+      const rc = await readProvider().waitForTransaction(hash, 1, 120_000);
       const iface = new ethers.Interface(FactoryAbi);
       for (const l of rc?.logs ?? []) {
         try { const ev = iface.parseLog(l as any); if (ev?.name === "VaultCreated") { setVault(ev.args.vault); break; } } catch { /* other log */ }

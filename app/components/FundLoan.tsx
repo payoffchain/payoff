@@ -6,6 +6,7 @@ import { ethers } from "ethers";
 import { useTx } from "./useTx";
 import { useWallet } from "./WalletProvider";
 import { TxLink } from "./ui";
+import { readProvider } from "./walletShared";
 import { usd } from "./format";
 
 /**
@@ -32,8 +33,8 @@ export default function FundLoan({ vault, symbol, token, price, maxLtvBps, loanS
     let dead = false;
     (async () => {
       try {
-        if (!w.address || !(window as any).ethereum) return;
-        const p = new ethers.BrowserProvider((window as any).ethereum);
+        if (!w.address) return;
+        const p = readProvider();
         const c = new ethers.Contract(token, ERC20, p);
         const [raw, dec] = await Promise.all([c.balanceOf(w.address), c.decimals()]);
         if (!dead) setBal({ amount: Number(ethers.formatUnits(raw, dec)), decimals: Number(dec) });

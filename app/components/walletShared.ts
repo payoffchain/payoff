@@ -36,6 +36,17 @@ export const useWallet = () => {
 
 export type Eip1193 = { request: (a: { method: string; params?: unknown[] }) => Promise<any>; on?: (e: string, f: (...a: any[]) => void) => void; removeListener?: (e: string, f: (...a: any[]) => void) => void };
 
+let reader: ethers.JsonRpcProvider | null = null;
+/**
+ * Read-only view of the chain for the pages (receipts, balances), through this site's own
+ * /api/rpc. It does not depend on which wallet the user has: a wallet made at sign-in has
+ * no window.ethereum to read through.
+ */
+export function readProvider(): ethers.JsonRpcProvider {
+  if (!reader) reader = new ethers.JsonRpcProvider(`${window.location.origin}/api/rpc`, CHAIN_ID, { staticNetwork: true, batchMaxCount: 5 });
+  return reader;
+}
+
 /**
  * The chain id as the signer reports it right now. Always asked fresh before signing:
  * state can be stale (a missed chainChanged event, a wallet that answers late), and a

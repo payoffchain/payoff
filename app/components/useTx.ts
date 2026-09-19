@@ -3,6 +3,7 @@
 import { useCallback, useRef, useState } from "react";
 import { ethers } from "ethers";
 import { useWallet } from "./WalletProvider";
+import { readProvider } from "./walletShared";
 import { walletErrorMessage } from "@/lib/wallet-errors";
 
 /**
@@ -66,8 +67,8 @@ export function useTx() {
       const built = await preview(url, body);
       setState((s) => ({ ...s, built }));
       if (built.deadline && built.deadline < Math.floor(Date.now() / 1000) + 120) throw new Error("This transaction's deadline is about to pass; try again.");
-      const eth = (window as any).ethereum;
-      const provider = eth ? new ethers.BrowserProvider(eth) : null;
+      // receipts are read through the site, whatever wallet signs
+      const provider = readProvider();
       for (const a of built.approvals) {
         setState((s) => ({ ...s, step: `Approve ${a.symbol}…` }));
         const ah = await w.approve(a.token, a.spender, BigInt(a.amount));
