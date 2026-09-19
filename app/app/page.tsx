@@ -26,7 +26,7 @@ export default function Dashboard() {
         <h2>Your vaults.</h2>
         {!w.address ? (
           <div style={{ marginTop: 28 }}>
-            <Empty>{w.mode === "privy" ? "Log in to see your loans, or open your first one." : "Connect the wallet that owns your loans, or open your first one."} <span className="row" style={{ justifyContent: "center", marginTop: 16 }}><button className="btn primary" onClick={w.connect}>{w.mode === "privy" ? "Log in" : "Connect wallet"}</button><Link className="btn" href="/borrow">Open a loan</Link></span></Empty>
+            <Empty>Connect the wallet that owns your loans, or open your first one. <span className="row" style={{ justifyContent: "center", marginTop: 16 }}><button className="btn primary" onClick={w.connect}>Connect wallet</button><Link className="btn" href="/borrow">Open a loan</Link></span></Empty>
           </div>
         ) : !FACTORY ? (
           <div style={{ marginTop: 28 }}><Empty>The vault factory is not deployed on this site yet. Set NEXT_PUBLIC_PAYOFF_FACTORY_ADDRESS after running the deploy script.</Empty></div>
