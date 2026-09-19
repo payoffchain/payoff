@@ -203,7 +203,10 @@ export type PoolVolume = {
   partial?: boolean;
 };
 
-const VOLUME_BUDGET_MS = Number(process.env.POOL_VOLUME_BUDGET_MS ?? 12_000);
+// Sized for a shared public RPC: a small first read always lands, and whatever else the
+// budget reaches widens the window. A dedicated RPC can raise both.
+const VOLUME_BUDGET_MS = Number(process.env.POOL_VOLUME_BUDGET_MS ?? 6_000);
+const VOLUME_CHUNK_BLOCKS = Number(process.env.POOL_VOLUME_CHUNK_BLOCKS ?? 8_000);
 
 /**
  * Swap volume over the last `hours` from the pool's Swap events, and the fee yield it
@@ -234,7 +237,7 @@ async function readPoolVolume(pool: PoolInfo, loanIsToken0: boolean, loanDec: nu
     // whole halving ladder and take the route (and the RPC, for every other request)
     // down with it. What the budget reaches is what gets measured: the window shrinks
     // to the blocks actually read, and the yield is annualized from that.
-    const scan = await getLogsRecent({ address: pool.address, topics: [topic] }, fromBlock, toBlock, { budgetMs: VOLUME_BUDGET_MS, chunk: 25_000 });
+    const scan = await getLogsRecent({ address: pool.address, topics: [topic] }, fromBlock, toBlock, { budgetMs: VOLUME_BUDGET_MS, chunk: VOLUME_CHUNK_BLOCKS });
     const logs = scan.logs;
     const covered = toBlock - scan.scannedFrom + 1;
     if (covered <= 0) throw new Error("no block of the window could be read");
