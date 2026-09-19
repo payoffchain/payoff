@@ -173,7 +173,7 @@ function DeployInner() {
               <h3>Connect the wallet that will own the vault</h3>
               <p>This is the only address the vault will ever pay out to. Use a wallet you control, on {CHAIN_NAME}.</p>
               <div className="row" style={{ marginTop: 14 }}>
-                {!w.address && <button className="btn green" onClick={w.connect} disabled={w.connecting}>{w.connecting ? "Connecting…" : "Connect wallet"}</button>}
+                {!w.address && <button className="btn green" onClick={w.connect} disabled={w.connecting}>{w.connecting ? "Loading…" : w.mode === "privy" ? "Log in or connect a wallet" : "Connect wallet"}</button>}
                 {w.address && w.wrongChain && <button className="btn coral" onClick={w.switchChain}>Switch to {CHAIN_NAME}</button>}
                 {w.address && !w.wrongChain && <span className="pill g">{w.address}</span>}
               </div>

@@ -41,7 +41,7 @@ export default function Nav() {
   };
   const disconnect = () => { setMenu(false); w.disconnect(); };
   const isOn = (href: string) => path === href || (href !== "/" && !!path?.startsWith(href + "/"));
-  const label = w.wrongChain ? "Wrong network" : w.address ? short(w.address) : w.connecting ? "Connecting…" : "Connect wallet";
+  const label = w.wrongChain ? "Wrong network" : w.address ? short(w.address) : w.connecting ? "Loading…" : w.mode === "privy" ? "Log in" : "Connect wallet";
   const connected = !!w.address && !w.wrongChain;
   const action = w.wrongChain ? w.switchChain : connected ? () => setMenu((m) => !m) : w.connect;
   return (

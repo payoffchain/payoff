@@ -19,10 +19,16 @@ const securityHeaders = [
       "form-action 'self'",
       // Next.js injects inline scripts for hydration; 'unsafe-inline' for styles covers
       // the style props the pages use. Tighten with nonces if you move to strict CSP.
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+      // challenges.cloudflare.com: the bot check on Privy's sign-in
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
-      "img-src 'self' data:",
+      // blob: and the WalletConnect explorer: wallet icons in the sign-in dialog
+      "img-src 'self' data: blob: https://explorer-api.walletconnect.com",
+      // Privy's sign-in and the wallet it makes run in an iframe from auth.privy.io
+      "frame-src https://auth.privy.io https://verify.walletconnect.com https://verify.walletconnect.org https://challenges.cloudflare.com",
+      "child-src https://auth.privy.io https://verify.walletconnect.com https://verify.walletconnect.org",
+      "worker-src 'self'",
       // The wallet provider talks to the chain through the wallet, but ethers'
       // BrowserProvider and any NEXT_PUBLIC_RPC_URL reads go straight from the page.
       "connect-src 'self' https: wss:",
@@ -37,6 +43,11 @@ const nextConfig = {
   outputFileTracingRoot: __dirname,
   reactStrictMode: true,
   poweredByHeader: false,
+  webpack(config) {
+    // optional peers of @privy-io/react-auth that this app never loads
+    config.resolve.alias["@farcaster/mini-app-solana"] = false;
+    return config;
+  },
   async redirects() {
     return [
       { source: "/deploy", destination: "/borrow", permanent: true },

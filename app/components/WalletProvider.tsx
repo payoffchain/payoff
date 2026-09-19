@@ -1,43 +1,27 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useState } from "react";
-import { ethers } from "ethers";
+import { useCallback, useEffect, useState } from "react";
+import dynamic from "next/dynamic";
+import { CHAIN_ID, CHAIN_ID_HEX, CHAIN_NAME, PRIVY_APP_ID, RPC_URL, WalletCtx, freshChainId, useSigner, useWallet, type Ctx, type Eip1193 } from "./walletShared";
 
 /**
- * Minimal wallet connection over EIP-1193 (window.ethereum), no extra dependencies.
+ * Wallet connection. The pattern throughout this app: API routes return UNSIGNED
+ * calldata ({ to, data }), and this provider hands that to the user's wallet to sign.
+ * The server never holds a key and never broadcasts on anyone's behalf.
  *
- * The pattern throughout this app: API routes return UNSIGNED calldata ({ to, data }),
- * and this provider hands that to the user's wallet to sign. The server never holds a
- * key and never broadcasts on anyone's behalf.
- *
- * That last sentence is now true without qualification. It was written while
- * /api/execute still had a relayer mode that broadcast trades from a server-held key —
- * so the comment described the intent rather than the code. The relayer path was removed
- * in the security audit; see README section 3.
+ * Two ways in, one interface (useWallet):
+ *  - Privy, when NEXT_PUBLIC_PRIVY_APP_ID is set: email / Google / X sign-in with a wallet
+ *    made for the user, or any external wallet (MetaMask, Rabby, WalletConnect…).
+ *  - Plain EIP-1193 (window.ethereum) otherwise, with no extra service involved.
+ * Either way the signer is an EIP-1193 provider, and every signature first asks that
+ * provider which network it is on.
  */
 
-const CHAIN_ID = Number(process.env.NEXT_PUBLIC_CHAIN_ID ?? 4663);
-const CHAIN_ID_HEX = "0x" + CHAIN_ID.toString(16);
+export { useWallet };
 
-type Ctx = {
-  address: string | null;
-  chainId: number | null;
-  connecting: boolean;
-  wrongChain: boolean;
-  error: string | null;
-  connect: () => Promise<void>;
-  disconnect: () => void;
-  switchChain: () => Promise<void>;
-  send: (tx: { to: string; data: string; value?: string }) => Promise<string>;
-  approve: (token: string, spender: string, amount: bigint) => Promise<string | null>;
-};
+const PrivyBridge = dynamic(() => import("./PrivyBridge"), { ssr: false });
 
-const WalletCtx = createContext<Ctx | null>(null);
-export const useWallet = () => {
-  const c = useContext(WalletCtx);
-  if (!c) throw new Error("useWallet must be used inside <WalletProvider>");
-  return c;
-};
+// --- window.ethereum ---------------------------------------------------------------
 
 /** Set when the user chose "Disconnect". The wallet still authorizes the site (EIP-1193
  *  has no real disconnect), so without this flag a reload would silently reconnect. */
@@ -51,113 +35,55 @@ const setOn = (v: boolean) => { try { v ? localStorage.setItem(ON_KEY, "1") : lo
 const isOff = () => { try { return localStorage.getItem(OFF_KEY) === "1"; } catch { return false; } };
 const setOff = (v: boolean) => { try { v ? localStorage.setItem(OFF_KEY, "1") : localStorage.removeItem(OFF_KEY); } catch { /* private mode */ } };
 
-function eth(): any | null {
+function eth(): Eip1193 | null {
   if (typeof window === "undefined") return null;
   return (window as any).ethereum ?? null;
 }
 
-export function WalletProvider({ children }: { children: React.ReactNode }) {
+function InjectedWallet({ children }: { children: React.ReactNode }) {
   const [address, setAddress] = useState<string | null>(null);
   const [chainId, setChainId] = useState<number | null>(null);
   const [connecting, setConnecting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [linked, setLinked] = useState(false);
 
-  // Reflect wallet-side changes. Without these listeners the UI silently shows a stale
-  // account after the user switches in MetaMask — and they'd sign from the wrong one.
-  // `linked` flips on a first connect, so the listeners attach then too and not only
-  // after a reload; without them a network switch in the wallet never reaches the UI.
+  // Reflect wallet-side changes. `linked` flips on a first connect, so the listeners
+  // attach then too and not only after a reload.
   useEffect(() => {
     if (!(linked || wasOn()) || isOff()) return; // never connected here (or chose to disconnect): leave the wallet alone
     const e = eth();
     if (!e) return;
     const onAccounts = (accs: string[]) => { if (!isOff()) setAddress(accs[0] ?? null); };
     const onChain = (cid: string) => setChainId(parseInt(cid, 16));
-    try {
-      e.on?.("accountsChanged", onAccounts);
-      e.on?.("chainChanged", onChain);
-    } catch { /* odd injected provider; listeners are best-effort */ }
-
-    // restore an already-authorized session without prompting. Everything here is
-    // wrapped so a non-conforming injected provider (a synchronous throw, a request
-    // that is not a function) cannot take the root provider down.
+    try { e.on?.("accountsChanged", onAccounts); e.on?.("chainChanged", onChain); } catch { /* odd injected provider; listeners are best-effort */ }
     if (typeof e.request === "function") {
-      if (!isOff()) Promise.resolve()
-        .then(() => e.request({ method: "eth_accounts" }))
-        .then((accs: string[]) => { if (accs?.[0]) setAddress(accs[0]); })
-        .catch(() => {});
-      Promise.resolve()
-        .then(() => e.request({ method: "eth_chainId" }))
-        .then((cid: string) => { const n = parseInt(cid, 16); if (Number.isFinite(n)) setChainId(n); })
-        .catch(() => {});
+      if (!isOff()) Promise.resolve().then(() => e.request({ method: "eth_accounts" })).then((accs: string[]) => { if (accs?.[0]) setAddress(accs[0]); }).catch(() => {});
+      freshChainId(e, null).then((n) => { if (n !== null) setChainId(n); });
     }
-
-    return () => {
-      try {
-        e.removeListener?.("accountsChanged", onAccounts);
-        e.removeListener?.("chainChanged", onChain);
-      } catch { /* ignore */ }
-    };
+    return () => { try { e.removeListener?.("accountsChanged", onAccounts); e.removeListener?.("chainChanged", onChain); } catch { /* ignore */ } };
   }, [linked]);
-
-  /**
-   * The chain id as the wallet reports it right now. Always asked fresh before signing:
-   * the state can be stale (a missed chainChanged event, a wallet that answers late), and
-   * a transaction sent on the wrong network is not something to risk on a cached value.
-   */
-  const currentChainId = useCallback(async (e: any): Promise<number | null> => {
-    if (typeof e?.request !== "function") return chainId;
-    try {
-      const cid: string = await e.request({ method: "eth_chainId" });
-      const n = parseInt(cid, 16);
-      if (!Number.isFinite(n)) return chainId;
-      setChainId(n);
-      return n;
-    } catch {
-      return chainId;
-    }
-  }, [chainId]);
 
   const connect = useCallback(async () => {
     const e = eth();
-    if (!e) {
-      setError("No wallet found. Install MetaMask or another EIP-1193 wallet.");
-      return;
-    }
+    if (!e) { setError("No wallet found. Install MetaMask or another EIP-1193 wallet."); return; }
     setConnecting(true);
     setError(null);
     try {
       const accs: string[] = await e.request({ method: "eth_requestAccounts" });
-      setOff(false);
-      setOn(true);
-      setLinked(true);
+      setOff(false); setOn(true); setLinked(true);
       setAddress(accs[0] ?? null);
-      const cid: string = await e.request({ method: "eth_chainId" });
-      setChainId(parseInt(cid, 16));
+      setChainId(await freshChainId(e, null));
     } catch (err: any) {
-      // 4001 = user rejected. Not an error worth shouting about.
-      setError(err?.code === 4001 ? null : (err?.message ?? "connection failed"));
+      setError(err?.code === 4001 ? null : (err?.message ?? "connection failed")); // 4001 = user rejected
     } finally {
       setConnecting(false);
     }
   }, []);
 
   const disconnect = useCallback(() => {
-    // EIP-1193 has no real disconnect. Clear local state, remember the choice so a reload
-    // does not reconnect, and ask the wallet to drop the permission where it supports
-    // that (MetaMask does); elsewhere the wallet keeps the site authorized until the
-    // user revokes it in the wallet itself.
-    setOff(true);
-    setOn(false);
-    setLinked(false);
-    setAddress(null);
-    setError(null);
+    setOff(true); setOn(false); setLinked(false); setAddress(null); setError(null);
     const e = eth();
-    if (typeof e?.request === "function") {
-      Promise.resolve()
-        .then(() => e.request({ method: "wallet_revokePermissions", params: [{ eth_accounts: {} }] }))
-        .catch(() => {});
-    }
+    if (typeof e?.request === "function") Promise.resolve().then(() => e.request({ method: "wallet_revokePermissions", params: [{ eth_accounts: {} }] })).catch(() => {});
   }, []);
 
   const switchChain = useCallback(async () => {
@@ -166,76 +92,40 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
     try {
       await e.request({ method: "wallet_switchEthereumChain", params: [{ chainId: CHAIN_ID_HEX }] });
     } catch (err: any) {
-      // 4902 = chain unknown to the wallet; offer to add it.
-      if (err?.code === 4902) {
-        // Wallets reject an empty rpcUrls entry with an opaque error; say what is
-        // missing instead. NEXT_PUBLIC_RPC_URL is a build-time value on Vercel.
-        const rpcUrl = process.env.NEXT_PUBLIC_RPC_URL;
-        if (!rpcUrl) {
-          setError(`This deployment has no RPC configured for the wallet; add Robinhood Chain (${CHAIN_ID}) to your wallet manually, then switch to it.`);
-          return;
-        }
+      if (err?.code === 4902) { // chain unknown to the wallet; offer to add it
         try {
-        await e.request({
-          method: "wallet_addEthereumChain",
-          params: [{
-            chainId: CHAIN_ID_HEX,
-            chainName: process.env.NEXT_PUBLIC_CHAIN_NAME ?? "Robinhood Chain",
-            rpcUrls: [rpcUrl],
-            nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
-          }],
-        });
-        } catch (err2: any) {
-          if (err2?.code !== 4001) setError(err2?.message ?? "could not add the network");
-        }
-      } else if (err?.code !== 4001) {
-        setError(err?.message ?? "could not switch network");
-      }
+          await e.request({ method: "wallet_addEthereumChain", params: [{ chainId: CHAIN_ID_HEX, chainName: CHAIN_NAME, rpcUrls: [RPC_URL], nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 } }] });
+        } catch (err2: any) { if (err2?.code !== 4001) setError(err2?.message ?? "could not add the network"); }
+      } else if (err?.code !== 4001) setError(err?.message ?? "could not switch network");
     }
+    const n = await freshChainId(e, null);
+    if (n !== null) setChainId(n);
   }, []);
 
-  /** Sign and broadcast calldata returned by an API route. */
-  const send = useCallback(async (tx: { to: string; data: string; value?: string }) => {
-    const e = eth();
-    if (!e || !address) throw new Error("wallet not connected");
-    const cid = await currentChainId(e);
-    if (cid !== CHAIN_ID) throw new Error(`wrong network — switch to chain ${CHAIN_ID} first`);
-    return await e.request({
-      method: "eth_sendTransaction",
-      params: [{ from: address, to: tx.to, data: tx.data, value: tx.value ?? "0x0" }],
-    });
-  }, [address, currentChainId]);
-
-  /**
-   * ERC20 approve, skipped when the allowance already covers `amount`.
-   * Staking and LP entry both move tokens the contract does not yet control, so an
-   * approve has to land before the real call — this is the step people forget.
-   */
-  const approve = useCallback(async (token: string, spender: string, amount: bigint) => {
-    const e = eth();
-    if (!e || !address) throw new Error("wallet not connected");
-    const cid = await currentChainId(e);
-    if (cid !== CHAIN_ID) throw new Error(`wrong network — switch to chain ${CHAIN_ID} first`);
-    const provider = new ethers.BrowserProvider(e);
-    const erc20 = new ethers.Contract(token, [
-      "function allowance(address,address) view returns (uint256)",
-      "function approve(address,uint256) returns (bool)",
-    ], provider);
-
-    const current: bigint = await erc20.allowance(address, spender);
-    if (current >= amount) return null;
-
-    const iface = new ethers.Interface(["function approve(address,uint256)"]);
-    return await send({ to: token, data: iface.encodeFunctionData("approve", [spender, amount]) });
-  }, [address, send, currentChainId]);
-
+  const getSigner = useCallback(async () => eth(), []);
+  const { send, approve } = useSigner(address, getSigner, chainId, setChainId);
   return (
-    <WalletCtx.Provider value={{
-      address, chainId, connecting,
-      wrongChain: address !== null && chainId !== null && chainId !== CHAIN_ID,
-      error, connect, disconnect, switchChain, send, approve,
-    }}>
+    <WalletCtx.Provider value={{ address, chainId, connecting, mode: "injected", wrongChain: address !== null && chainId !== null && chainId !== CHAIN_ID, error, connect, disconnect, switchChain, send, approve }}>
       {children}
+    </WalletCtx.Provider>
+  );
+}
+
+/** What pages see until the sign-in module has loaded: nobody connected, button busy. */
+const LOADING: Ctx = {
+  address: null, chainId: null, connecting: true, wrongChain: false, error: null, mode: "privy",
+  connect: async () => {}, disconnect: () => {}, switchChain: async () => {},
+  send: async () => { throw new Error("wallet not connected"); },
+  approve: async () => { throw new Error("wallet not connected"); },
+};
+
+export function WalletProvider({ children }: { children: React.ReactNode }) {
+  const [ctx, setCtx] = useState<Ctx>(LOADING);
+  if (!PRIVY_APP_ID) return <InjectedWallet>{children}</InjectedWallet>;
+  return (
+    <WalletCtx.Provider value={ctx}>
+      {children}
+      <PrivyBridge onCtx={setCtx} />
     </WalletCtx.Provider>
   );
 }
