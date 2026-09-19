@@ -181,7 +181,7 @@ export async function planFor(vaultAddress: string, overrides: Partial<PlanSetti
         if (!vol) return;
         const share = v.balances.loan / ((p.tvlUsd ?? 0) + v.balances.loan);
         const usdDay = vol.feesLoan * (24 / vol.hours) * share;
-        if (usdDay > bestUsdDay) { bestUsdDay = usdDay; pick = p; reason = `≈ ${usdDay.toFixed(2)}/day for this deposit at the last hour's pace (${Math.round(share * 100)}% of a ${Math.round(p.tvlUsd ?? 0).toLocaleString("en-US")} TVL pool)`; }
+        if (usdDay > bestUsdDay) { bestUsdDay = usdDay; pick = p; reason = `≈ $${usdDay.toFixed(2)}/day for this deposit at the recent pace (${share < 0.01 ? "under 1" : Math.round(share * 100)}% of a $${Math.round(p.tvlUsd ?? 0).toLocaleString("en-US")} pool)`; }
       });
       if (!pick && candidates.length) { pick = candidates.sort((a, b) => (b.tvlUsd ?? 0) - (a.tvlUsd ?? 0))[0]; reason = "deepest pool"; }
     } else reason = `preferred tier ${pick.fee / 10_000}%`;
