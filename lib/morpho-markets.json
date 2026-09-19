@@ -3,7 +3,7 @@
   "source": "https://blue-api.morpho.org/graphql",
   "fetchedAt": "2026-09-19T16:31:25.030Z",
   "morpho": "0x9D53d5E3bd5E8d4Cbfa6DB1ca238AEA02E651010",
-  "count": 198,
+  "count": 199,
   "markets": [
     {
       "id": "0xfb89cd660644af485ed5eb7dc4fe20623a7934537258c95635ac9a3a87d787fd",
@@ -5744,6 +5744,35 @@
         "supplyUsd": 562.7539660220756,
         "borrowUsd": 0,
         "liquidityUsd": 562.7539660220756,
+        "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0x7d4313cf1b0ede39395a2c7495dc1b1b47370caf51f70571d927f22e715e5f58",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0x4e62068525Ab11FE768e29dfD00ef909B9803016",
+      "oracle": "0x7c38823d907bd3E78ECDAB44eE0362FD0be2d7dA",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "385000000000000000",
+      "listed": false,
+      "createdAt": 1788974187,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "LULU",
+        "decimals": 18,
+        "name": "Lululemon • Robinhood Token"
+      },
+      "state": {
+        "borrowApy": 0.0034088631623573487,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 124.98346143923303,
+        "borrowUsd": 0,
+        "liquidityUsd": 124.98346143923303,
         "collateralUsd": 0
       }
     }
