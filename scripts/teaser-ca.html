@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>PAYOFF token notice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@700;800&family=Archivo:wght@400;500&family=IBM+Plex+Mono:wght@400;500;600&family=Pixelify+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--ice:#5b78f2;--ink:#1f2748;--mute:#556087;--faint:#8a95b8;--red:#e8623f;--mono:'IBM Plex Mono',monospace;--disp:'Bricolage Grotesque',sans-serif;--body:'Archivo',sans-serif}
+  *{box-sizing:border-box;margin:0}
+  html,body{width:1200px;height:675px;overflow:hidden;background:#f4f7fd}
+  body{position:relative;font-family:var(--body);color:var(--ink);
+    background:
+      radial-gradient(55% 60% at 80% 40%,rgba(140,168,255,.45),transparent 70%),
+      radial-gradient(40% 40% at 5% 100%,rgba(190,206,255,.5),transparent 60%),
+      repeating-linear-gradient(0deg,rgba(88,110,180,.06) 0 1px,transparent 1px 40px),
+      repeating-linear-gradient(90deg,rgba(88,110,180,.06) 0 1px,transparent 1px 40px),
+      linear-gradient(135deg,#f7f9fe,#e9eef9)}
+  .brand{position:absolute;left:56px;top:44px;display:flex;align-items:center;gap:12px}
+  .brand img{width:64px;height:64px;border-radius:16px;border:1px solid rgba(255,255,255,.9);box-shadow:0 14px 28px -12px rgba(60,80,150,.45)}
+  .brand b{font-family:var(--disp);font-weight:800;font-size:30px;letter-spacing:.02em}
+  .sub{position:absolute;left:56px;top:128px;font-family:var(--mono);font-size:12px;letter-spacing:.24em;color:var(--faint)}
+  h1{position:absolute;left:52px;top:206px;font-family:var(--disp);font-weight:800;font-size:76px;line-height:1.0;letter-spacing:-.03em;width:660px;white-space:nowrap}
+  h1 span{color:var(--ice)}
+  .lede{position:absolute;left:56px;top:392px;font-size:22px;line-height:1.45;color:var(--mute);width:580px}
+  .stamp{position:absolute;left:56px;top:560px;padding:12px 22px;border:1px dashed rgba(91,120,242,.55);background:rgba(255,255,255,.6);border-radius:999px;font-family:'Pixelify Sans',var(--mono);font-size:15px;letter-spacing:.18em;color:var(--ice)}
+  .ticket{position:absolute;left:720px;top:88px;width:420px;height:520px;padding:26px 22px 18px;background:rgba(255,255,255,.78);border:1px solid rgba(88,110,180,.2);border-radius:14px;box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 30px 60px -24px rgba(60,80,150,.45);transform:rotate(-1.5deg);font-family:var(--mono);font-size:12px}
+  .ticket::after{content:"";position:absolute;top:-1px;right:28px;width:44px;height:14px;background:#f4f7fd;border:1px solid rgba(88,110,180,.25);border-top:0;border-radius:0 0 8px 8px}
+  .th{display:flex;justify-content:space-between;font-size:11px;letter-spacing:.14em;color:var(--faint);padding-bottom:10px;border-bottom:1px solid rgba(88,110,180,.2)}
+  .rows div{display:grid;grid-template-columns:110px 1fr;gap:10px;align-items:baseline;padding:14px 0;border-bottom:1px solid rgba(88,110,180,.14)}
+  .rows span{font-size:10px;letter-spacing:.14em;color:var(--faint)}
+  .rows b{font-weight:500;font-size:15px;text-align:right}
+  .fh{display:flex;justify-content:space-between;font-size:10px;letter-spacing:.14em;color:var(--faint);margin:22px 0 10px}
+  .ca{padding:16px 14px;border:1px dashed rgba(91,120,242,.55);border-radius:12px;background:#eef2fe;font-size:19px;font-weight:600;line-height:1.5;letter-spacing:.02em;color:var(--ink);word-break:break-all;text-align:center}
+  .ca i{font-style:normal;color:var(--ice)}
+  .check{margin-top:16px;font-size:12.5px;line-height:1.6;color:var(--faint);text-align:center}
+  .check b{font-weight:500;color:var(--ink)}
+  .tf{position:absolute;left:22px;right:22px;bottom:16px;padding-top:10px;border-top:1px solid rgba(88,110,180,.2);font-size:9.5px;letter-spacing:.14em;color:var(--red);text-align:center}
+  [hidden]{display:none!important}
+</style>
+</head>
+<body>
+  <div class="brand"><img src="../public/mark.png" alt=""><b>PAYOFF</b></div>
+  <div class="sub">SELF-REPAYING LOANS · ROBINHOOD CHAIN</div>
+  <h1 id="h1"><span id="tick">$PAYOFF</span><br>is live.</h1>
+  <p class="lede" id="lede">one contract address. this one, and only this one.</p>
+  <div class="stamp" id="stamp">CA LIVE</div>
+
+  <div class="ticket">
+    <div class="th"><span>PAYOFF · TOKEN NOTICE</span><span>NO. 0003</span></div>
+    <div class="rows">
+      <div><span>TICKER</span><b id="tick2">$PAYOFF</b></div>
+      <div><span>CHAIN</span><b>Robinhood Chain · 4663</b></div>
+      <div id="viaRow" hidden><span>LAUNCHED VIA</span><b id="via"></b></div>
+    </div>
+    <div class="fh"><span>CONTRACT ADDRESS</span><span>COPY FROM THE POST, NOT THE IMAGE</span></div>
+    <div class="ca" id="ca">0x0000000000000000000000000000000000000000</div>
+    <div class="check">the same address is on <b>payoffchain.tech</b>, bottom of the page.<br>if the two don't match, don't touch it.</div>
+    <div class="tf">ANYTHING ELSE UNDER OUR NAME IS FAKE</div>
+  </div>
+  <script>
+    // ?ca=0x…&ticker=$PAYOFF&via=pons  (+ the usual h1 / lede / stamp overrides)
+    const q = new URLSearchParams(location.search);
+    const t = q.get("ticker");
+    if (t) { document.getElementById("tick").textContent = t; document.getElementById("tick2").textContent = t; }
+    const ca = q.get("ca");
+    if (ca) document.getElementById("ca").innerHTML = "<i>" + ca.slice(0, 6) + "</i>" + ca.slice(6, -4) + "<i>" + ca.slice(-4) + "</i>";
+    if (q.get("via")) { document.getElementById("via").textContent = q.get("via"); document.getElementById("viaRow").hidden = false; }
+    for (const k of ["h1", "lede", "stamp"]) if (q.get(k)) document.getElementById(k).innerHTML = q.get(k);
+  </script>
+</body>
+</html>
