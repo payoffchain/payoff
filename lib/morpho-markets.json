@@ -1,10 +1,97 @@
 {
   "chainId": 4663,
   "source": "https://blue-api.morpho.org/graphql",
-  "fetchedAt": "2026-09-09T11:23:14.904Z",
+  "fetchedAt": "2026-09-19T16:31:25.030Z",
   "morpho": "0x9D53d5E3bd5E8d4Cbfa6DB1ca238AEA02E651010",
-  "count": 196,
+  "count": 268,
   "markets": [
+    {
+      "id": "0xff762c8aee3849902b33d8ec6432668f19f88b755bf3dbf186f66a2cac7750ca",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0x12f190a9F9d7D37a250758b26824B97CE941bF54",
+      "oracle": "0xB1E9aE2B51875b5A0Af7290189Bdd77F9758eE3A",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "625000000000000000",
+      "listed": false,
+      "createdAt": 1789634450,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "AMZN",
+        "decimals": 18,
+        "name": "Amazon • Robinhood Token"
+      },
+      "state": {
+        "borrowApy": 0.00864314966260963,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
+        "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0xfdc77ba2fc1a4b41393b7531623ca73149edf30ad65f5709841f9e47f3f42418",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0x7f0aBeF0C07280F82c6a08ead09dEd6BAE2C13Fc",
+      "oracle": "0x34344970956CE05304d113ca57254FdfFAcfA443",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "625000000000000000",
+      "listed": false,
+      "createdAt": 1789634528,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "EWY",
+        "decimals": 18,
+        "name": "iShares MSCI South Korea fund • Robinhood Token"
+      },
+      "state": {
+        "borrowApy": 0.008643625423508824,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
+        "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0xfcc1d59436a291271c8931925f09c211cbb34244401b082ac3bd8d2b50963f20",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0x941AE714EC6D8130c7B75d67160Ca08f1e7d11Dd",
+      "oracle": "0xA8ddB73954ca5bCde36d68D61AB9237d03275fd0",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "625000000000000000",
+      "listed": false,
+      "createdAt": 1789325519,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "DELL",
+        "decimals": 18,
+        "name": "Dell • Robinhood Token"
+      },
+      "state": {
+        "borrowApy": 0.006971341446268873,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
+        "collateralUsd": 0
+      }
+    },
     {
       "id": "0xfb89cd660644af485ed5eb7dc4fe20623a7934537258c95635ac9a3a87d787fd",
       "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
@@ -25,13 +112,42 @@
         "name": "Alphabet Class A • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.004690655758263176,
+        "borrowApy": 0.0035058405307941036,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
         "borrowUsd": 0,
         "liquidityUsd": 0,
         "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0xfa8d4c09cf72a8ce8b4ae7f4e114e185209120a1943fe68bd74ac9717207a06d",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0x98ca9ffEF66216827112790543898C0d8309aA24",
+      "oracle": "0x98ca9ffEF66216827112790543898C0d8309aA24",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "625000000000000000",
+      "listed": false,
+      "createdAt": 1789734462,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "scV4-SPCX-TSLA-U",
+        "decimals": 18,
+        "name": "V4 SPCX/TSLA borrow USDG"
+      },
+      "state": {
+        "borrowApy": 0.009300897025118967,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
+        "collateralUsd": null
       }
     },
     {
@@ -54,7 +170,7 @@
         "name": "Tesla • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.004690655758263176,
+        "borrowApy": 0.0035058405307941036,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -83,7 +199,7 @@
         "name": "Global Dollar"
       },
       "state": {
-        "borrowApy": 0.0075400546889837095,
+        "borrowApy": 0.004668750016819421,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -112,7 +228,7 @@
         "name": "SPDR S&P 500 ETF Trust • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.007481587445317893,
+        "borrowApy": 0.004646183063306337,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -141,7 +257,7 @@
         "name": "Hims & Hers Health • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.007539957302343016,
+        "borrowApy": 0.004668714309815675,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -170,12 +286,12 @@
         "name": "MD LP"
       },
       "state": {
-        "borrowApy": 0.0010197403014174011,
+        "borrowApy": 0.0005744724347768494,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 2.485183110368784e-15,
+        "supplyUsd": 2.6438065196334744e-15,
         "borrowUsd": 0,
-        "liquidityUsd": 2.485183110368784e-15,
+        "liquidityUsd": 2.6438065196334744e-15,
         "collateralUsd": null
       }
     },
@@ -199,7 +315,7 @@
         "name": "Tesla • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.007539957302343016,
+        "borrowApy": 0.004668710571194238,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -231,9 +347,9 @@
         "borrowApy": 0.00025003122118847645,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 110.97097892126432,
+        "supplyUsd": 110.96567335697452,
         "borrowUsd": 0,
-        "liquidityUsd": 110.97097892126432,
+        "liquidityUsd": 110.96567335697452,
         "collateralUsd": 0
       }
     },
@@ -257,12 +373,41 @@
         "name": "Global Dollar"
       },
       "state": {
-        "borrowApy": 0.003188190048951421,
+        "borrowApy": 0.0028750616097390942,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
         "borrowUsd": 0,
         "liquidityUsd": 0,
+        "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0xf5ff7d546af5e72f3912d2aa723088fd0bf66fddc158714995637714d9db6e4c",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0xd0601CE157Db5bdC3162BbaC2a2C8aF5320D9EEC",
+      "oracle": "0x37CF511fA79B8446f1C23D6a81Df117F28240bE0",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "625000000000000000",
+      "listed": false,
+      "createdAt": 1789767668,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "NVDA",
+        "decimals": 18,
+        "name": "NVIDIA • Robinhood Token"
+      },
+      "state": {
+        "borrowApy": 0.009540344816879869,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0.0009998676915138642,
+        "borrowUsd": 0,
+        "liquidityUsd": 0.0009998676915138642,
         "collateralUsd": 0
       }
     },
@@ -286,12 +431,12 @@
         "name": "NVIDIA • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.0068951176885243505,
+        "borrowApy": 0.0013699295431787474,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 10.999070476353825,
+        "supplyUsd": 0,
         "borrowUsd": 0,
-        "liquidityUsd": 10.999070476353825,
+        "liquidityUsd": 0,
         "collateralUsd": 0
       }
     },
@@ -315,13 +460,13 @@
         "name": "Tesla • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.011300045064819745,
-        "supplyApy": 0.008937121369465647,
-        "utilization": 0.792057843207181,
-        "supplyUsd": 15.028601943507,
-        "borrowUsd": 11.903522041793405,
-        "liquidityUsd": 3.125079901713597,
-        "collateralUsd": 22.443568513541013
+        "borrowApy": 0.010587681553759125,
+        "supplyApy": 0.008374334586680666,
+        "utilization": 0.7920914297878568,
+        "supplyUsd": 15.03031109914386,
+        "borrowUsd": 11.905380608677154,
+        "liquidityUsd": 3.124930490466707,
+        "collateralUsd": 22.51455551037301
       }
     },
     {
@@ -344,13 +489,13 @@
         "name": "Wrapped Staked NET"
       },
       "state": {
-        "borrowApy": 0.06822909622289333,
-        "supplyApy": 0.06822901594517211,
-        "utilization": 0.9999988620753492,
-        "supplyUsd": 101.05263311363511,
-        "borrowUsd": 101.05251812335287,
-        "liquidityUsd": 0.00011499028225279,
-        "collateralUsd": 759.1648638700489
+        "borrowApy": 0.0035206268620450796,
+        "supplyApy": 0.0003754147291818968,
+        "utilization": 0.10680383987282865,
+        "supplyUsd": 1601.8998350120635,
+        "borrowUsd": 171.08905347093904,
+        "liquidityUsd": 1430.8107815411242,
+        "collateralUsd": 1389.8059775204852
       }
     },
     {
@@ -376,9 +521,9 @@
         "borrowApy": 0.0014780019620888225,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 9.999154978503478e-7,
+        "supplyUsd": 9.998676915138641e-7,
         "borrowUsd": 0,
-        "liquidityUsd": 9.999154978503478e-7,
+        "liquidityUsd": 9.998676915138641e-7,
         "collateralUsd": null
       }
     },
@@ -402,12 +547,12 @@
         "name": "MD LP"
       },
       "state": {
-        "borrowApy": 0.002749300389421393,
+        "borrowApy": 0.0008381954063795446,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 77.11703389415169,
+        "supplyUsd": 9.998676915138641e-7,
         "borrowUsd": 0,
-        "liquidityUsd": 77.11703389415169,
+        "liquidityUsd": 9.998676915138641e-7,
         "collateralUsd": null
       }
     },
@@ -434,9 +579,9 @@
         "borrowApy": 0.00025003122118847645,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 99.99177176627529,
+        "supplyUsd": 99.98699112201393,
         "borrowUsd": 0,
-        "liquidityUsd": 99.99177176627529,
+        "liquidityUsd": 99.98699112201393,
         "collateralUsd": 0
       }
     },
@@ -460,12 +605,12 @@
         "name": "Nebius Group • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.0006771705771960731,
+        "borrowApy": 0.00041914928719595426,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 124.98947322825138,
+        "supplyUsd": 124.98349743446992,
         "borrowUsd": 0,
-        "liquidityUsd": 124.98947322825138,
+        "liquidityUsd": 124.98349743446992,
         "collateralUsd": 0
       }
     },
@@ -489,7 +634,7 @@
         "name": "MD LP"
       },
       "state": {
-        "borrowApy": 0.0042944965611139835,
+        "borrowApy": 0.0033359780090707453,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -521,10 +666,39 @@
         "borrowApy": 0.00025003122118847645,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 99.99177176627529,
+        "supplyUsd": 99.98699112201393,
         "borrowUsd": 0,
-        "liquidityUsd": 99.99177176627529,
+        "liquidityUsd": 99.98699112201393,
         "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0xedc213c29e117c66ae8deb3b53af2ce3b66a9011c2152e83e412b2c5cd40ea3e",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0xf23942801CD33c75a2D6e4832BC2FB05Ca1044ec",
+      "oracle": "0x74Bcb2E87637bb605E1d1Ce8652D666bB25F8998",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "385000000000000000",
+      "listed": false,
+      "createdAt": 1789127571,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "BIGTECH",
+        "decimals": 18,
+        "name": "BIG TECH"
+      },
+      "state": {
+        "borrowApy": 0.06132088952844003,
+        "supplyApy": 0.05645828523781022,
+        "utilization": 0.9228404907232856,
+        "supplyUsd": 1648.0995375904977,
+        "borrowUsd": 1520.9329860308346,
+        "liquidityUsd": 127.16655155966288,
+        "collateralUsd": null
       }
     },
     {
@@ -547,13 +721,42 @@
         "name": "Roblox • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.005203014471293651,
+        "borrowApy": 0.003722051029179868,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
         "borrowUsd": 0,
         "liquidityUsd": 0,
         "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0xea3d01844f641e5bd21048649af5d4534aefae8f63b83ce6d7739a7c55d7809c",
+      "loanToken": "0x117cc2133c37B721F49dE2A7a74833232B3B4C0C",
+      "collateralToken": "0x895A94d387Cf0d8d8dC3e0D6D99d5F9583781A79",
+      "oracle": "0x895A94d387Cf0d8d8dC3e0D6D99d5F9583781A79",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "770000000000000000",
+      "listed": false,
+      "createdAt": 1789734387,
+      "loan": {
+        "symbol": "SPY",
+        "decimals": 18,
+        "name": "SPDR S&P 500 ETF Trust • Robinhood Token"
+      },
+      "collateral": {
+        "symbol": "scV4-SPY-TSM-S",
+        "decimals": 18,
+        "name": "V4 SPY/TSM borrow SPY"
+      },
+      "state": {
+        "borrowApy": 0.009300403257105804,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
+        "collateralUsd": null
       }
     },
     {
@@ -576,12 +779,12 @@
         "name": "Moderna • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.002672296438190496,
+        "borrowApy": 0.0015537352190935054,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 99.99170977151442,
+        "supplyUsd": 99.98692913021706,
         "borrowUsd": 0,
-        "liquidityUsd": 99.99170977151442,
+        "liquidityUsd": 99.98692913021706,
         "collateralUsd": 0
       }
     },
@@ -605,13 +808,71 @@
         "name": "AMD • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.007825671000827993,
+        "borrowApy": 0.004778842041861708,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
         "borrowUsd": 0,
         "liquidityUsd": 0,
         "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0xe7bd342ca7fd1a223e01222387e126e806f490ac55f438c8be8d1342037751ca",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0xd9320963e6284E45cE8E46c46E9239650dFBCe71",
+      "oracle": "0xd9320963e6284E45cE8E46c46E9239650dFBCe71",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "770000000000000000",
+      "listed": false,
+      "createdAt": 1789734449,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "scV3-GOOGL-USDG-U",
+        "decimals": 18,
+        "name": "V3 GOOGL/USDG borrow USDG"
+      },
+      "state": {
+        "borrowApy": 0.009300847657855575,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
+        "collateralUsd": null
+      }
+    },
+    {
+      "id": "0xe6677281d72c296361190c3dc51b5a95bda1267449901ffe7ac6ff9dfcb3942a",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0xA782fB3F5Af0362f70b06f50572305b9d6160f8d",
+      "oracle": "0xA782fB3F5Af0362f70b06f50572305b9d6160f8d",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "770000000000000000",
+      "listed": false,
+      "createdAt": 1789041988,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "scV4-SPY-QQQ-USDG",
+        "decimals": 18,
+        "name": "V4 SPY/QQQ USDG"
+      },
+      "state": {
+        "borrowApy": 0.005897949042102618,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
+        "collateralUsd": null
       }
     },
     {
@@ -634,13 +895,42 @@
         "name": "Take-Two Interactive Software • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.004961996927467746,
-        "supplyApy": 0,
-        "utilization": 0,
-        "supplyUsd": 99.99154978503478,
-        "borrowUsd": 0,
-        "liquidityUsd": 99.99154978503478,
-        "collateralUsd": 0
+        "borrowApy": 0.0017773348402206034,
+        "supplyApy": 0.00026639903541031743,
+        "utilization": 0.15000065449949604,
+        "supplyUsd": 99.98684614119867,
+        "borrowUsd": 14.99809236252021,
+        "liquidityUsd": 84.98875377867846,
+        "collateralUsd": 49.713142172980895
+      }
+    },
+    {
+      "id": "0xe5a6d99c3721ef2ab00fb16f0ad226bc7c87a90394f82e27dc6bbca4b1d95c5d",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0x2E8c31162b855A2ffa90F6F8634643Ad6F111e18",
+      "oracle": "0x66E5882A324b0a2441dD12289806d7e2ef9BefFf",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "625000000000000000",
+      "listed": false,
+      "createdAt": 1789050844,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "AI",
+        "decimals": 18,
+        "name": "Artificial Inu"
+      },
+      "state": {
+        "borrowApy": 0.04024674625263329,
+        "supplyApy": 0.03578598208757821,
+        "utilization": 0.8911839189616967,
+        "supplyUsd": 0.1010746251997535,
+        "borrowUsd": 0.090076080593101,
+        "liquidityUsd": 0.010998544606652507,
+        "collateralUsd": 0.7337596443783835
       }
     },
     {
@@ -663,12 +953,41 @@
         "name": "SPDR S&P 500 ETF Trust • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.002847945113116301,
+        "borrowApy": 0.0027015225659727687,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 0.0009999154978503478,
+        "supplyUsd": 0.0009998676915138642,
         "borrowUsd": 0,
-        "liquidityUsd": 0.0009999154978503478,
+        "liquidityUsd": 0.0009998676915138642,
+        "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0xe4b8efc2c4dfedf7f3935a02cd5ce6477c64e9bb5daeeb74323dae8e4725e7e8",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0x322F0929c4625eD5bAd873c95208D54E1c003b2d",
+      "oracle": "0x48C07dA26c791f64E688454D5Fea9f2Dd4F4f825",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "625000000000000000",
+      "listed": false,
+      "createdAt": 1789634424,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "TSLA",
+        "decimals": 18,
+        "name": "Tesla • Robinhood Token"
+      },
+      "state": {
+        "borrowApy": 0.008643039891239265,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
         "collateralUsd": 0
       }
     },
@@ -692,7 +1011,7 @@
         "name": "Apple • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.0038806446732930207,
+        "borrowApy": 0.0031755659772685673,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -721,9 +1040,9 @@
         "name": "Clearstone WETH"
       },
       "state": {
-        "borrowApy": 0.009930005796337,
-        "supplyApy": 0.005404236394182369,
-        "utilization": 0.5458541937640331,
+        "borrowApy": 0.009142093851553108,
+        "supplyApy": 0.004976313537512247,
+        "utilization": 0.545885953798437,
         "supplyUsd": null,
         "borrowUsd": null,
         "liquidityUsd": null,
@@ -750,13 +1069,13 @@
         "name": "Tesla • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.01004377244034386,
-        "supplyApy": 0,
-        "utilization": 0,
-        "supplyUsd": 0,
-        "borrowUsd": 0,
-        "liquidityUsd": 0,
-        "collateralUsd": 0
+        "borrowApy": 0.05545062748737766,
+        "supplyApy": 0.050285094783597745,
+        "utilization": 0.9092150695003537,
+        "supplyUsd": 1.0022363780750607,
+        "borrowUsd": 0.911248418147299,
+        "liquidityUsd": 0.09098795992776164,
+        "collateralUsd": 4.0108942599841235
       }
     },
     {
@@ -779,13 +1098,71 @@
         "name": "MD LP"
       },
       "state": {
-        "borrowApy": 0.0014052114914182322,
+        "borrowApy": 0.0007908946628242722,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 9.999154978503478e-7,
+        "supplyUsd": 9.998676915138641e-7,
         "borrowUsd": 0,
-        "liquidityUsd": 9.999154978503478e-7,
+        "liquidityUsd": 9.998676915138641e-7,
         "collateralUsd": null
+      }
+    },
+    {
+      "id": "0xe1eea56f55e987d18f639f03a30c921d258d58e3fd696ef2afc2af1bd134d8ce",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0xc0D6457C16Cc70d6790Dd43521C899C87ce02f35",
+      "oracle": "0x07731E851F11d0e2E9e862461497E56E47CDAC04",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "625000000000000000",
+      "listed": false,
+      "createdAt": 1789634467,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "META",
+        "decimals": 18,
+        "name": "Meta Platforms • Robinhood Token"
+      },
+      "state": {
+        "borrowApy": 0.008643308260153953,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
+        "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0xe077b1bcc0038cf4222e10ee6f6fe5a2749b8d20083ddb53e3dd4e68516d86ed",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0xc72b96e0E48ecd4DC75E1e45396e26300BC39681",
+      "oracle": "0x1F62414E13b10046A4CaE31168831Cd7148C3547",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "625000000000000000",
+      "listed": false,
+      "createdAt": 1789344089,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "INTC",
+        "decimals": 18,
+        "name": "Intel • Robinhood Token"
+      },
+      "state": {
+        "borrowApy": 0.007052881603223165,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
+        "collateralUsd": 0
       }
     },
     {
@@ -808,7 +1185,7 @@
         "name": "Micron Technology • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.007825712826980975,
+        "borrowApy": 0.004778856110759076,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -837,13 +1214,71 @@
         "name": "Global Dollar"
       },
       "state": {
-        "borrowApy": 0.007540108227809764,
+        "borrowApy": 0.0046687706742880065,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
         "borrowUsd": 0,
         "liquidityUsd": 0,
         "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0xdf97197c9ba7bbc6ac8cb9f7d330ad9f7c908213298ac2ce9583bed8e60f5309",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0x2e0847E8910a9732eB3fb1bb4b70a580ADAD4FE3",
+      "oracle": "0x45E0391c9CA821C6D4B24dA757ef71A377682C1d",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "625000000000000000",
+      "listed": false,
+      "createdAt": 1789634458,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "GOOGL",
+        "decimals": 18,
+        "name": "Alphabet Class A • Robinhood Token"
+      },
+      "state": {
+        "borrowApy": 0.008643259465800515,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
+        "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0xdeb4782d012d5fd3b24962538c2f6559049d70bda4dabd2e4212dacb96c28d45",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0xaF3D76f1834A1d425780943C99Ea8A608f8a93f9",
+      "oracle": "0xD625d488D552775D2867194C618B945E5dDfE097",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "625000000000000000",
+      "listed": false,
+      "createdAt": 1788994460,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "AAPL",
+        "decimals": 18,
+        "name": "Apple • Robinhood Token"
+      },
+      "state": {
+        "borrowApy": 0.008995445826042293,
+        "supplyApy": 0.0000037880484226373077,
+        "utilization": 0.000423006047008112,
+        "supplyUsd": 239027.7212611935,
+        "borrowUsd": 101.11017149605452,
+        "liquidityUsd": 238926.61108969743,
+        "collateralUsd": 1019.4123759657664
       }
     },
     {
@@ -869,10 +1304,68 @@
         "borrowApy": 0.00025709363807407644,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 110.51338559215206,
+        "supplyUsd": 110.50810190557165,
         "borrowUsd": 0,
-        "liquidityUsd": 110.51338559215206,
+        "liquidityUsd": 110.50810190557165,
         "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0xdd5526da32ddca02fb46eca8b982c3d396a23709e17e96ce116c71c3360f3adb",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0x284358abc07F9359f19f4b5b4aC91901Be2597Ba",
+      "oracle": "0xc927890355242959AAd7e6e76E738Cec18f4e9df",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "625000000000000000",
+      "listed": false,
+      "createdAt": 1789380270,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "RGTI",
+        "decimals": 18,
+        "name": "Rigetti Computing • Robinhood Token"
+      },
+      "state": {
+        "borrowApy": 0.007216408914219634,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
+        "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0xdccef1665b1a5711bf406bbcfe194512c4eaa58f64cce171bd15a18eaac6117b",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0xd4b3DeC1dF59c95420b9F72065133ee88A630F4c",
+      "oracle": "0xd4b3DeC1dF59c95420b9F72065133ee88A630F4c",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "770000000000000000",
+      "listed": false,
+      "createdAt": 1789734466,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "scV3-USDG-NVDA-U",
+        "decimals": 18,
+        "name": "V3 USDG/NVDA borrow USDG"
+      },
+      "state": {
+        "borrowApy": 0.009300988757203458,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
+        "collateralUsd": null
       }
     },
     {
@@ -895,7 +1388,36 @@
         "name": "Invesco QQQ • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.0075400790277019075,
+        "borrowApy": 0.004668761296050682,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
+        "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0xdb33e1291a096be5b9c52aeefec7c8b46cd349d3b8294fcac80bb02b7e2bf5fe",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0xd0601CE157Db5bdC3162BbaC2a2C8aF5320D9EEC",
+      "oracle": "0x13879886ff32A2eD8a59b203EAC46695BC0145AE",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "625000000000000000",
+      "listed": false,
+      "createdAt": 1789634416,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "NVDA",
+        "decimals": 18,
+        "name": "NVIDIA • Robinhood Token"
+      },
+      "state": {
+        "borrowApy": 0.008643009386824062,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -924,13 +1446,13 @@
         "name": "Intel • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.00025003122118847645,
-        "supplyApy": 0,
-        "utilization": 0,
-        "supplyUsd": 100.67557997812823,
-        "borrowUsd": 0,
-        "liquidityUsd": 100.67557997812823,
-        "collateralUsd": 1.128105e-15
+        "borrowApy": 0.00029473766506083994,
+        "supplyApy": 0.000015805463529022564,
+        "utilization": 0.053633374964196186,
+        "supplyUsd": 100.67079563690181,
+        "borrowUsd": 5.399314530337921,
+        "liquidityUsd": 95.27148110656388,
+        "collateralUsd": 19.08140772802345
       }
     },
     {
@@ -953,7 +1475,7 @@
         "name": "Dell • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.007825597805064451,
+        "borrowApy": 0.004778813840694153,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -982,12 +1504,12 @@
         "name": "Dell • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.00027648632333165187,
+        "borrowApy": 0.00026436177388046867,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 102.49156051090115,
+        "supplyUsd": 102.48666035079859,
         "borrowUsd": 0,
-        "liquidityUsd": 102.49156051090115,
+        "liquidityUsd": 102.48666035079859,
         "collateralUsd": 0
       }
     },
@@ -1011,7 +1533,7 @@
         "name": "NVIDIA • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.003880643438616201,
+        "borrowApy": 0.0031755655027263974,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -1040,12 +1562,12 @@
         "name": "Apple • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.002641307215041083,
+        "borrowApy": 0.002490566533199719,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 0.001000915413348198,
+        "supplyUsd": 0.001000867559205378,
         "borrowUsd": 0,
-        "liquidityUsd": 0.001000915413348198,
+        "liquidityUsd": 0.001000867559205378,
         "collateralUsd": 0
       }
     },
@@ -1069,13 +1591,42 @@
         "name": "ASML Holding NV • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.00782586443090869,
+        "borrowApy": 0.00477891650562254,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
         "borrowUsd": 0,
         "liquidityUsd": 0,
         "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0xd255e25cbab14a13292a127be2bce3f5c9a0fe620e4537d5bbc54daf5309458b",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0x1d0d084ee243eC25876547E69Ca54A499E253ac9",
+      "oracle": "0xc2414099151326C5d238B9F00609f1a12283B723",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "625000000000000000",
+      "listed": false,
+      "createdAt": 1789719019,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "pSPY-DEC27",
+        "decimals": 18,
+        "name": "PARE Principal SPY-DEC27"
+      },
+      "state": {
+        "borrowApy": 0.00898910819292621,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 9998.676918138244,
+        "borrowUsd": 0,
+        "liquidityUsd": 9998.676918138244,
+        "collateralUsd": null
       }
     },
     {
@@ -1098,7 +1649,7 @@
         "name": "USA Rare Earth • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.007825963783935325,
+        "borrowApy": 0.0047789547514797154,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -1127,12 +1678,70 @@
         "name": "Costco • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.007826538893858067,
+        "borrowApy": 0.004779174181964311,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
         "borrowUsd": 0,
         "liquidityUsd": 0,
+        "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0xcc8266552777cfbccfd926429d6f8f21401c106f0c284bf218207dfaf25eb6c3",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0xb48eCD95992e05Ba489dDA75065DB181890AB6C0",
+      "oracle": "0xb48eCD95992e05Ba489dDA75065DB181890AB6C0",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "770000000000000000",
+      "listed": false,
+      "createdAt": 1789734471,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "scV4-SPY-QQQ-U",
+        "decimals": 18,
+        "name": "V4 SPY/QQQ borrow USDG"
+      },
+      "state": {
+        "borrowApy": 0.009301052224861519,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
+        "collateralUsd": null
+      }
+    },
+    {
+      "id": "0xcaa167af7ba0422c76424fae56167b7db25bf19f4f435215e6dd7d06a943bdac",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0xaF3D76f1834A1d425780943C99Ea8A608f8a93f9",
+      "oracle": "0xA39F2c101bCc19aD5d0C7b83281F94a5ADe2a344",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "625000000000000000",
+      "listed": false,
+      "createdAt": 1789770928,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "AAPL",
+        "decimals": 18,
+        "name": "Apple • Robinhood Token"
+      },
+      "state": {
+        "borrowApy": 0.009564479231372552,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0.0009998676915138642,
+        "borrowUsd": 0,
+        "liquidityUsd": 0.0009998676915138642,
         "collateralUsd": 0
       }
     },
@@ -1156,12 +1765,12 @@
         "name": "WETH"
       },
       "state": {
-        "borrowApy": 0.002942958836970516,
+        "borrowApy": 0.0027434518826219265,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 1.4169332559753287,
+        "supplyUsd": 1.4168655118627957,
         "borrowUsd": 0,
-        "liquidityUsd": 1.4169332559753287,
+        "liquidityUsd": 1.4168655118627957,
         "collateralUsd": 0
       }
     },
@@ -1185,12 +1794,12 @@
         "name": "IonQ • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.00032576578283966445,
+        "borrowApy": 0.0002784528230641351,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 99.9916287783591,
+        "supplyUsd": 99.98684814093406,
         "borrowUsd": 0,
-        "liquidityUsd": 99.9916287783591,
+        "liquidityUsd": 99.98684814093406,
         "collateralUsd": 0
       }
     },
@@ -1214,13 +1823,13 @@
         "name": "USDe"
       },
       "state": {
-        "borrowApy": 0.04226945916378216,
-        "supplyApy": 0.03807780163745566,
-        "utilization": 0.9026636924354935,
-        "supplyUsd": 315344319.05904675,
-        "borrowUsd": 284649867.4303955,
-        "liquidityUsd": 30694451.62865125,
-        "collateralUsd": 320007301.0076645
+        "borrowApy": 0.039954660707061836,
+        "supplyApy": 0.03588029529714868,
+        "utilization": 0.8998005734650182,
+        "supplyUsd": 341731912.26899767,
+        "borrowUsd": 307490570.6309414,
+        "liquidityUsd": 34241341.63805627,
+        "collateralUsd": 345055072.24578506
       }
     },
     {
@@ -1243,12 +1852,41 @@
         "name": "SPDR S&P 500 ETF Trust • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.0008989239070250288,
+        "borrowApy": 0.0006932763186304331,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 9.999154978503478e-7,
+        "supplyUsd": 9.998676915138641e-7,
         "borrowUsd": 0,
-        "liquidityUsd": 9.999154978503478e-7,
+        "liquidityUsd": 9.998676915138641e-7,
+        "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0xc738be0459585868fb5e8afa522f1597e72cde9488ed86a5402bd17f7b47ab39",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0x58FfE4a942d3885bAa22D7520691F611EF09e7AA",
+      "oracle": "0x837FE12495ce129316BB50256953188f02cc9A24",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "625000000000000000",
+      "listed": false,
+      "createdAt": 1789634493,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "TSM",
+        "decimals": 18,
+        "name": "Taiwan Semiconductor Manufacturing • Robinhood Token"
+      },
+      "state": {
+        "borrowApy": 0.008643503437591302,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
         "collateralUsd": 0
       }
     },
@@ -1272,13 +1910,42 @@
         "name": "Artificial Inu"
       },
       "state": {
-        "borrowApy": 0.23558797460411324,
-        "supplyApy": 0.23558786234450604,
-        "utilization": 0.9999995710506543,
-        "supplyUsd": 1435.9456492514553,
-        "borrowUsd": 1435.9450333035086,
-        "liquidityUsd": 0.0006159479466758142,
-        "collateralUsd": 7253.680790068162
+        "borrowApy": 0.10767749899211385,
+        "supplyApy": 0.0903006032511821,
+        "utilization": 0.8454048942627136,
+        "supplyUsd": 8081.64950069676,
+        "borrowUsd": 6832.266041604856,
+        "liquidityUsd": 1249.383459091904,
+        "collateralUsd": 34176.523063441295
+      }
+    },
+    {
+      "id": "0xc6e0b157b9b0719cb08429f237247c4a47fc0eda12bb68d39952621f1de37bf6",
+      "loanToken": "0x117cc2133c37B721F49dE2A7a74833232B3B4C0C",
+      "collateralToken": "0x33c12509A4c02Bd4e9195FC55A3Dbd2a1936b6e8",
+      "oracle": "0x33c12509A4c02Bd4e9195FC55A3Dbd2a1936b6e8",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "770000000000000000",
+      "listed": false,
+      "createdAt": 1789734367,
+      "loan": {
+        "symbol": "SPY",
+        "decimals": 18,
+        "name": "SPDR S&P 500 ETF Trust • Robinhood Token"
+      },
+      "collateral": {
+        "symbol": "scV4-SPY-QQQ-S",
+        "decimals": 18,
+        "name": "V4 SPY/QQQ borrow SPY"
+      },
+      "state": {
+        "borrowApy": 0.009300325657281441,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
+        "collateralUsd": null
       }
     },
     {
@@ -1301,12 +1968,12 @@
         "name": "T-Bill Basket"
       },
       "state": {
-        "borrowApy": 0.00745551798499258,
+        "borrowApy": 0.0046272537267905796,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 999.9154978503477,
+        "supplyUsd": 999.8676915138642,
         "borrowUsd": 0,
-        "liquidityUsd": 999.9154978503477,
+        "liquidityUsd": 999.8676915138642,
         "collateralUsd": null
       }
     },
@@ -1330,7 +1997,7 @@
         "name": "Tesla • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.002897820165207059,
+        "borrowApy": 0.0027307890416698915,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -1359,7 +2026,7 @@
         "name": "SPDR S&P 500 ETF Trust • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.003188193528971131,
+        "borrowApy": 0.0028750635705925083,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -1388,12 +2055,12 @@
         "name": ""
       },
       "state": {
-        "borrowApy": 12.26148964753618,
-        "supplyApy": 12.261463279984838,
-        "utilization": 0.9999994787493947,
-        "supplyUsd": 1.9183008857524717,
-        "borrowUsd": 1.9182998858369738,
-        "liquidityUsd": 9.999154978503478e-7,
+        "borrowApy": 22.803231676225593,
+        "supplyApy": 22.803173638367205,
+        "utilization": 0.9999995623582588,
+        "supplyUsd": 2.2846716785492003,
+        "borrowUsd": 2.284670678681509,
+        "liquidityUsd": 9.998676915138641e-7,
         "collateralUsd": null
       }
     },
@@ -1449,9 +2116,9 @@
         "borrowApy": 0.00025003122118847645,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 99.99177176627529,
+        "supplyUsd": 99.98699112201393,
         "borrowUsd": 0,
-        "liquidityUsd": 99.99177176627529,
+        "liquidityUsd": 99.98699112201393,
         "collateralUsd": 0
       }
     },
@@ -1475,12 +2142,12 @@
         "name": "NVIDIA • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.005700004539044254,
+        "borrowApy": 0.0039181670131391375,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 99.99154978503478,
+        "supplyUsd": 99.98676915138643,
         "borrowUsd": 0,
-        "liquidityUsd": 99.99154978503478,
+        "liquidityUsd": 99.98676915138643,
         "collateralUsd": 0
       }
     },
@@ -1504,7 +2171,7 @@
         "name": "MD LP"
       },
       "state": {
-        "borrowApy": 0.004294512270144003,
+        "borrowApy": 0.003335985191623944,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -1533,7 +2200,7 @@
         "name": "Space Exploration Technologies Corp. Class A Common Stock • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.007540049795821113,
+        "borrowApy": 0.004668750016819421,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -1562,12 +2229,41 @@
         "name": "NVIDIA • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.0028978207028726153,
+        "borrowApy": 0.0027307891681583644,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
         "borrowUsd": 0,
         "liquidityUsd": 0,
+        "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0xba01f6625137b692c5dd86afb8e654b4016d7b64e36dfca4124e84bef98bc4d2",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0x2e0847E8910a9732eB3fb1bb4b70a580ADAD4FE3",
+      "oracle": "0xE8F50Ad9C0d52dd90c324d63Ae936681e6736B2D",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "625000000000000000",
+      "listed": false,
+      "createdAt": 1789771106,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "GOOGL",
+        "decimals": 18,
+        "name": "Alphabet Class A • Robinhood Token"
+      },
+      "state": {
+        "borrowApy": 0.009565592243533035,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0.0009998676915138642,
+        "borrowUsd": 0,
+        "liquidityUsd": 0.0009998676915138642,
         "collateralUsd": 0
       }
     },
@@ -1594,9 +2290,38 @@
         "borrowApy": 0.0005790420177096284,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 9.999154978503478e-7,
+        "supplyUsd": 9.998676915138641e-7,
         "borrowUsd": 0,
-        "liquidityUsd": 9.999154978503478e-7,
+        "liquidityUsd": 9.998676915138641e-7,
+        "collateralUsd": null
+      }
+    },
+    {
+      "id": "0xb873258e577d939a11478e3e4c81e1c26bd218d564b9bd991653a39f136cf525",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0x7E842142D1FBAD627F9F104965E3E985722acDca",
+      "oracle": "0x7E842142D1FBAD627F9F104965E3E985722acDca",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "770000000000000000",
+      "listed": false,
+      "createdAt": 1789734324,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "scV3-SPY-USDG-U",
+        "decimals": 18,
+        "name": "V3 SPY/USDG borrow USDG"
+      },
+      "state": {
+        "borrowApy": 0.009300043490620087,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
         "collateralUsd": null
       }
     },
@@ -1620,7 +2345,7 @@
         "name": "NVIDIA • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.0031881890682185963,
+        "borrowApy": 0.0028750611037124075,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -1649,12 +2374,12 @@
         "name": "WETH"
       },
       "state": {
-        "borrowApy": 0.002645089301058377,
+        "borrowApy": 0.002493616835359491,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 0.001000915413348198,
+        "supplyUsd": 0.001000867559205378,
         "borrowUsd": 0,
-        "liquidityUsd": 0.001000915413348198,
+        "liquidityUsd": 0.001000867559205378,
         "collateralUsd": 0
       }
     },
@@ -1678,12 +2403,41 @@
         "name": "Invesco QQQ • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.006895278170445295,
+        "borrowApy": 0.0013699617223862021,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 10.999070476353825,
+        "supplyUsd": 0,
         "borrowUsd": 0,
-        "liquidityUsd": 10.999070476353825,
+        "liquidityUsd": 0,
+        "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0xb66d504f2207f15d2bc3f0039c461f6efae91a1627e6c73288b2f4165a5b2f35",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0x4a0E65A3EcceC6dBe60AE065F2e7bb85Fae35eEa",
+      "oracle": "0x1a0995D2Bb8304a91C4D42AC13245F4CA036fADf",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "625000000000000000",
+      "listed": false,
+      "createdAt": 1789325557,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "SPCX",
+        "decimals": 18,
+        "name": "Space Exploration Technologies Corp. Class A Common Stock • Robinhood Token"
+      },
+      "state": {
+        "borrowApy": 0.006971584759607361,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
         "collateralUsd": 0
       }
     },
@@ -1707,13 +2461,13 @@
         "name": "Palantir Technologies • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.004505531953430581,
-        "supplyApy": 0.004505527866957436,
-        "utilization": 0.9999991000594861,
-        "supplyUsd": 29.99944776794267,
-        "borrowUsd": 29.999420770224226,
-        "liquidityUsd": 0.000026997718441959386,
-        "collateralUsd": 168.59998602784674
+        "borrowApy": 0.01064224039535067,
+        "supplyApy": 0.010642230738251766,
+        "utilization": 0.9999991003508931,
+        "supplyUsd": 30.00773019727433,
+        "borrowUsd": 30.00770320084666,
+        "liquidityUsd": 0.000026996427670874335,
+        "collateralUsd": 177.7653269230582
       }
     },
     {
@@ -1736,13 +2490,13 @@
         "name": "Tesla • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.00025012765084952255,
-        "supplyApy": 2.8918512418140173e-8,
-        "utilization": 0.000115694597189184,
-        "supplyUsd": 13113.52321045269,
-        "borrowUsd": 1.5171637855643498,
-        "liquidityUsd": 13112.006046667126,
-        "collateralUsd": 2.5554877347374236
+        "borrowApy": 0.0002502240489759739,
+        "supplyApy": 5.786856167438515e-8,
+        "utilization": 0.000231309184792436,
+        "supplyUsd": 6558.763541095094,
+        "borrowUsd": 1.5171022479370608,
+        "liquidityUsd": 6557.246438847157,
+        "collateralUsd": 2.5635705135353035
       }
     },
     {
@@ -1765,7 +2519,7 @@
         "name": "iShares 0-3 Month Treasury Bond • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.0075401325665292555,
+        "borrowApy": 0.004668780084208653,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -1794,12 +2548,12 @@
         "name": "PARE Principal SPY-MAR27"
       },
       "state": {
-        "borrowApy": 0.241940529434583,
-        "supplyApy": 0.241940529434583,
-        "utilization": 1,
-        "supplyUsd": 100.2392358532608,
-        "borrowUsd": 100.2392358532608,
-        "liquidityUsd": 0,
+        "borrowApy": 0.007203043779210702,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0.3583495810354944,
+        "borrowUsd": 0,
+        "liquidityUsd": 0.3583495810354944,
         "collateralUsd": null
       }
     },
@@ -1823,12 +2577,12 @@
         "name": "Costco • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.0018978713223432053,
+        "borrowApy": 0.001103641502085645,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 102.49140952366099,
+        "supplyUsd": 102.48650937077718,
         "borrowUsd": 0,
-        "liquidityUsd": 102.49140952366099,
+        "liquidityUsd": 102.48650937077718,
         "collateralUsd": 0
       }
     },
@@ -1852,7 +2606,7 @@
         "name": "Cash Cat"
       },
       "state": {
-        "borrowApy": 0.00754008388909086,
+        "borrowApy": 0.004668763165361493,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -1881,13 +2635,42 @@
         "name": "Global Dollar"
       },
       "state": {
-        "borrowApy": 0.0031882033995725553,
+        "borrowApy": 0.002875068472726061,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
         "borrowUsd": 0,
         "liquidityUsd": 0,
         "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0xb1040e4699fe9630d149882174aaab6a64ec6b2978570442c5810ab5a955f9dc",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0x5472AEfdc6969E8ffe52C85cc90416e3F4C646ff",
+      "oracle": "0x5472AEfdc6969E8ffe52C85cc90416e3F4C646ff",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "770000000000000000",
+      "listed": false,
+      "createdAt": 1789734439,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "scV3-SPCX-USDG-U",
+        "decimals": 18,
+        "name": "V3 SPCX/USDG borrow USDG"
+      },
+      "state": {
+        "borrowApy": 0.009300875858625985,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
+        "collateralUsd": null
       }
     },
     {
@@ -1910,7 +2693,7 @@
         "name": "GameStop • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.007825623962299357,
+        "borrowApy": 0.004778823917066289,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -1939,13 +2722,13 @@
         "name": "Microsoft • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.0044988529362088685,
-        "supplyApy": 0.004498082023718585,
-        "utilization": 0.9998290359879245,
-        "supplyUsd": 2.0002519601252904,
-        "borrowUsd": 1.9999099890250256,
-        "liquidityUsd": 0.00034197110026481896,
-        "collateralUsd": 16.043278687428263
+        "borrowApy": 0.0007788964324846873,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 2.000553274799387,
+        "borrowUsd": 0,
+        "liquidityUsd": 2.000553274799387,
+        "collateralUsd": 16.02914964974308
       }
     },
     {
@@ -1968,7 +2751,65 @@
         "name": "Sandisk Corporation • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.007825718071141618,
+        "borrowApy": 0.0047788601349707475,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
+        "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0xae1c6160c3f3dd7884579d235b48f66d18770e6d27be29c59abe344d44ac67ce",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0xcf3a65a3b54241577881FAa7003E4335247F3FB2",
+      "oracle": "0xb49940deca4190520a5c31Ab1AD6f57e69cF47EF",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "915000000000000000",
+      "listed": false,
+      "createdAt": 1789089492,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "vUSDG",
+        "decimals": 18,
+        "name": "Navi USDG - demo"
+      },
+      "state": {
+        "borrowApy": 0.03478593403281543,
+        "supplyApy": 0.030180241635498237,
+        "utilization": 0.8696289081700224,
+        "supplyUsd": 46.02405282146306,
+        "borrowUsd": 40.023846804688354,
+        "liquidityUsd": 6.000206016774699,
+        "collateralUsd": null
+      }
+    },
+    {
+      "id": "0xad21de31ad13b7c221565206b10490864f2be1fd0514523ae56bd6575a616d23",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0xD5f3879160bc7c32ebb4dC785F8a4F505888de68",
+      "oracle": "0x5e27992cc92B388dFF0E2f9c5d0f99dF82Fe8841",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "625000000000000000",
+      "listed": false,
+      "createdAt": 1789634510,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "QQQ",
+        "decimals": 18,
+        "name": "Invesco QQQ • Robinhood Token"
+      },
+      "state": {
+        "borrowApy": 0.0086436498206941,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -2000,9 +2841,9 @@
         "borrowApy": 0.0005791095122754758,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 9.999154978503478e-7,
+        "supplyUsd": 9.998676915138641e-7,
         "borrowUsd": 0,
-        "liquidityUsd": 9.999154978503478e-7,
+        "liquidityUsd": 9.998676915138641e-7,
         "collateralUsd": null
       }
     },
@@ -2026,13 +2867,13 @@
         "name": "Pons"
       },
       "state": {
-        "borrowApy": 0.10111665805595715,
-        "supplyApy": 0.1011166579517827,
-        "utilization": 0.9999999992955122,
-        "supplyUsd": 46838.58348752416,
-        "borrowUsd": 46838.583454526946,
-        "liquidityUsd": 0.000032997211429061476,
-        "collateralUsd": 311781.65549747675
+        "borrowApy": 0.016314544208648054,
+        "supplyApy": 0.00759502146515097,
+        "utilization": 0.4675539449099495,
+        "supplyUsd": 50899.21566269424,
+        "borrowUsd": 23798.12907591498,
+        "liquidityUsd": 27101.086586779256,
+        "collateralUsd": 101627.65071179025
       }
     },
     {
@@ -2055,13 +2896,42 @@
         "name": "Wrapped Staked NET"
       },
       "state": {
-        "borrowApy": 0.8630587775217011,
-        "supplyApy": 0.8615086336706728,
-        "utilization": 0.9986622347272764,
-        "supplyUsd": 339565.27440745605,
-        "borrowUsd": 339111.01577553095,
-        "liquidityUsd": 454.25863192514487,
-        "collateralUsd": 1006928.0425005696
+        "borrowApy": 0.4771849457903852,
+        "supplyApy": 0.4500571932700028,
+        "utilization": 0.9524907663651545,
+        "supplyUsd": 1193083.2906736515,
+        "borrowUsd": 1136400.8178712067,
+        "liquidityUsd": 56682.47280244473,
+        "collateralUsd": 4084742.9146482353
+      }
+    },
+    {
+      "id": "0xa85928d77bd25cc348e13ea6587b8b3ca3793f4af5e5db8ca07d0f20fd5cfa99",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0x980dcf6766FA79f5Cf0c4AAdb3ab477ff15a9619",
+      "oracle": "0x72e34eBE97224333B0D9e757A3D306F658Aa6926",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "385000000000000000",
+      "listed": false,
+      "createdAt": 1789229043,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "IBM",
+        "decimals": 18,
+        "name": "IBM • Robinhood Token"
+      },
+      "state": {
+        "borrowApy": 0.005118221532354363,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 93.73759607942478,
+        "borrowUsd": 0,
+        "liquidityUsd": 93.73759607942478,
+        "collateralUsd": 0
       }
     },
     {
@@ -2087,10 +2957,39 @@
         "borrowApy": 0.0013189209888096072,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 0.0000019998309957006955,
+        "supplyUsd": 0.0000019997353830277283,
         "borrowUsd": 0,
-        "liquidityUsd": 0.0000019998309957006955,
-        "collateralUsd": 0.5835920661483028
+        "liquidityUsd": 0.0000019997353830277283,
+        "collateralUsd": 0.5842018802195132
+      }
+    },
+    {
+      "id": "0x9eb061674020355c26a343c01eacf31b39a1dbb79f35a0596412bb7f14e33cee",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0xd51f5D3Bb4AC528F58B08E574dAA56E9bF58C230",
+      "oracle": "0x267dd757Fbb8B4c064a6Bcf6a1CcCd5014C39b1B",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "385000000000000000",
+      "listed": false,
+      "createdAt": 1789550506,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "STEERUV417",
+        "decimals": 18,
+        "name": "STEER_UNIV4_VAULT_17"
+      },
+      "state": {
+        "borrowApy": 0.012027388959529867,
+        "supplyApy": 0.001713429984024172,
+        "utilization": 0.14319400910295263,
+        "supplyUsd": 60434.80169379442,
+        "borrowUsd": 8653.901543876334,
+        "liquidityUsd": 51780.90014991808,
+        "collateralUsd": null
       }
     },
     {
@@ -2116,10 +3015,39 @@
         "borrowApy": 0.00025003122118847645,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 100.67557997812823,
+        "supplyUsd": 100.67076664073876,
         "borrowUsd": 0,
-        "liquidityUsd": 100.67557997812823,
-        "collateralUsd": 9.953450000000002e-15
+        "liquidityUsd": 100.67076664073876,
+        "collateralUsd": 9.98e-15
+      }
+    },
+    {
+      "id": "0x9d61e320efb766ce5c375032b399f08afe644b095a9cb0b2d6d1f6ab68399a6f",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0x25C288E6D899b9BC30160965aD9644c67e73bE0C",
+      "oracle": "0x2Ffa228cfd93Bc2173537615bD4a8bD30e718a88",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "385000000000000000",
+      "listed": false,
+      "createdAt": 1789750287,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "F",
+        "decimals": 18,
+        "name": "Ford Motor • Robinhood Token"
+      },
+      "state": {
+        "borrowApy": 0.009408269438580379,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 562.7539660220756,
+        "borrowUsd": 0,
+        "liquidityUsd": 562.7539660220756,
+        "collateralUsd": 0
       }
     },
     {
@@ -2142,13 +3070,129 @@
         "name": "Global Dollar"
       },
       "state": {
-        "borrowApy": 0.003188209315606148,
+        "borrowApy": 0.0028750716353928823,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
         "borrowUsd": 0,
         "liquidityUsd": 0,
         "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0x9c54e02182f7d53d062675674bdab30aa01bf8e4616838ee8fc2f6acccb05401",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0x117cc2133c37B721F49dE2A7a74833232B3B4C0C",
+      "oracle": "0x9c3c7a4D4107c73De1e2741b909fbA066b76E3Da",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "625000000000000000",
+      "listed": false,
+      "createdAt": 1789634501,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "SPY",
+        "decimals": 18,
+        "name": "SPDR S&P 500 ETF Trust • Robinhood Token"
+      },
+      "state": {
+        "borrowApy": 0.008643607133572402,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
+        "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0x9b7ac46518f941212aed9af6d98be6803d3de679363f75a5f3ad6e5155ad7e97",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0x2Bc083E1653A596F28D7BE85dbdeE031A0071e03",
+      "oracle": "0xd560Df09dF3Ef319A4AD2b8fD43711719cA69840",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "385000000000000000",
+      "listed": false,
+      "createdAt": 1789089606,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "mDEF",
+        "decimals": 18,
+        "name": "Mast Bond Defensive"
+      },
+      "state": {
+        "borrowApy": 0.0050144637740288725,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
+        "collateralUsd": null
+      }
+    },
+    {
+      "id": "0x9b4b47cdf7e295341c6c6cdfd3efb9805c4a5b3d580dba0c0c39d3a4232b297b",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0x4a0E65A3EcceC6dBe60AE065F2e7bb85Fae35eEa",
+      "oracle": "0x872F9D8955B34e841227a92dE755cd63042Ab7A5",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "625000000000000000",
+      "listed": false,
+      "createdAt": 1788994460,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "SPCX",
+        "decimals": 18,
+        "name": "Space Exploration Technologies Corp. Class A Common Stock • Robinhood Token"
+      },
+      "state": {
+        "borrowApy": 0.010544633320156621,
+        "supplyApy": 0.0000032492855029167045,
+        "utilization": 0.000309770481669351,
+        "supplyUsd": 304182.21534300136,
+        "borrowUsd": 94.22667136205187,
+        "liquidityUsd": 304087.9886716393,
+        "collateralUsd": 717.5862952590812
+      }
+    },
+    {
+      "id": "0x9981d5f5d8cf1c66b388e6d48d3f4bdd9dc60373a006164b450b4b098e4ee537",
+      "loanToken": "0x0Bd7D308f8E1639FAb988df18A8011f41EAcAD73",
+      "collateralToken": "0xAD7f1DbDA088a708F8fe4d9C80510FeEFF2d4dA7",
+      "oracle": "0xAD7f1DbDA088a708F8fe4d9C80510FeEFF2d4dA7",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "625000000000000000",
+      "listed": false,
+      "createdAt": 1789734351,
+      "loan": {
+        "symbol": "WETH",
+        "decimals": 18,
+        "name": "WETH"
+      },
+      "collateral": {
+        "symbol": "scV3-WETH-SPY-W",
+        "decimals": 18,
+        "name": "V3 WETH/SPY borrow WETH"
+      },
+      "state": {
+        "borrowApy": 0.009300283324319885,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
+        "collateralUsd": null
       }
     },
     {
@@ -2171,13 +3215,42 @@
         "name": "CoreWeave • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.0008931895967016192,
+        "borrowApy": 0.0005328936820073657,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 124.9894742281669,
+        "supplyUsd": 124.98349843433762,
         "borrowUsd": 0,
-        "liquidityUsd": 124.9894742281669,
-        "collateralUsd": 1.483575e-15
+        "liquidityUsd": 124.98349843433762,
+        "collateralUsd": 1.21965e-15
+      }
+    },
+    {
+      "id": "0x967fa72999996bcec63cf5029224d14146cf1241a83ff7ff5fedfb8e6db3f737",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0xb0992820E760d836549ba69BC7598b4af75dEE03",
+      "oracle": "0xF5af53159Be4b9907810682D346fA0D532DF3144",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "625000000000000000",
+      "listed": false,
+      "createdAt": 1789634484,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "ORCL",
+        "decimals": 18,
+        "name": "Oracle • Robinhood Token"
+      },
+      "state": {
+        "borrowApy": 0.008643509513030391,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
+        "collateralUsd": 0
       }
     },
     {
@@ -2200,13 +3273,13 @@
         "name": "NVIDIA • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.010042372672636577,
-        "supplyApy": 0,
-        "utilization": 0,
-        "supplyUsd": 0,
-        "borrowUsd": 0,
-        "liquidityUsd": 0,
-        "collateralUsd": 0
+        "borrowApy": 0.02879607363148364,
+        "supplyApy": 0.013005095221638632,
+        "utilization": 0.45514592450649755,
+        "supplyUsd": 2.002106069324308,
+        "borrowUsd": 0.911250417882682,
+        "liquidityUsd": 1.0908556514416259,
+        "collateralUsd": 3.9577114427860693
       }
     },
     {
@@ -2229,13 +3302,13 @@
         "name": "Apple • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.010043460474652483,
-        "supplyApy": 0,
-        "utilization": 0,
-        "supplyUsd": 0,
-        "borrowUsd": 0,
-        "liquidityUsd": 0,
-        "collateralUsd": 0
+        "borrowApy": 0.055446245933035355,
+        "supplyApy": 0.050281131040134756,
+        "utilization": 0.9092150695003537,
+        "supplyUsd": 1.0022363780750607,
+        "borrowUsd": 0.911248418147299,
+        "liquidityUsd": 0.09098795992776164,
+        "collateralUsd": 4.243979721166032
       }
     },
     {
@@ -2258,7 +3331,7 @@
         "name": "Global Dollar"
       },
       "state": {
-        "borrowApy": 0.007455508993766448,
+        "borrowApy": 0.004627235446319979,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": null,
@@ -2287,12 +3360,12 @@
         "name": "Agentic MAG7"
       },
       "state": {
-        "borrowApy": 0.007455527738725613,
+        "borrowApy": 0.004627251952602778,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 2499.788744625869,
+        "supplyUsd": 2499.6692287846604,
         "borrowUsd": 0,
-        "liquidityUsd": 2499.788744625869,
+        "liquidityUsd": 2499.6692287846604,
         "collateralUsd": null
       }
     },
@@ -2316,13 +3389,42 @@
         "name": "syrupUSDG"
       },
       "state": {
-        "borrowApy": 0.040400468902118895,
-        "supplyApy": 0.03629848566964256,
-        "utilization": 0.900254708975766,
-        "supplyUsd": 96895577.61220565,
-        "borrowUsd": 87230700.02431494,
-        "liquidityUsd": 9664877.587890713,
-        "collateralUsd": 99117193.26953557
+        "borrowApy": 0.040398779414598,
+        "supplyApy": 0.03585622764998561,
+        "utilization": 0.8895133566362354,
+        "supplyUsd": 120007769.01174226,
+        "borrowUsd": 106748513.43606086,
+        "liquidityUsd": 13259255.57568141,
+        "collateralUsd": 122575603.99323368
+      }
+    },
+    {
+      "id": "0x90ebd955bb4856b717e0067517f29c232adc38468aa5f512e29240e86a030764",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0xe93237C50D904957Cf27E7B1133b510C669c2e74",
+      "oracle": "0x05C2Fbe2B37b99f07E84C2AAB550536b3482d1a1",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "625000000000000000",
+      "listed": false,
+      "createdAt": 1789634441,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "MSFT",
+        "decimals": 18,
+        "name": "Microsoft • Robinhood Token"
+      },
+      "state": {
+        "borrowApy": 0.00864325335855436,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
+        "collateralUsd": 0
       }
     },
     {
@@ -2345,7 +3447,7 @@
         "name": "Tesla • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.003188213270174077,
+        "borrowApy": 0.0028750736278729846,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -2374,7 +3476,36 @@
         "name": "SPDR S&P 500 ETF Trust • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.0038806616105264693,
+        "borrowApy": 0.003175573221945718,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
+        "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0x8eb2931c4a140c25a8bdd6ccc2c56693e69022dca4cc046b273851686895b34f",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0x92FD66527192E3e61d4DDd13322Aa222DE86F9B5",
+      "oracle": "0x92f819A8AA4A3f414C85A133Ac67A7Eff990c61D",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "860000000000000000",
+      "listed": false,
+      "createdAt": 1789634519,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "SGOV",
+        "decimals": 18,
+        "name": "iShares 0-3 Month Treasury Bond • Robinhood Token"
+      },
+      "state": {
+        "borrowApy": 0.008643735226751504,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -2403,12 +3534,41 @@
         "name": "AMC Entertainment • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.00653269049956787,
+        "borrowApy": 0.003795185722702122,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 99.99154978503478,
+        "supplyUsd": 99.98676915138643,
         "borrowUsd": 0,
-        "liquidityUsd": 99.99154978503478,
+        "liquidityUsd": 99.98676915138643,
+        "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0x8b6d2a1f15140524fdc359783b29b22c65972b0c045ef1be476c81c8fef5cd8b",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0xB90A19fF0Af67f7779afF50A882A9CfF42446400",
+      "oracle": "0xd0D07692D28610d90798C2176c6953e40Fca2BD2",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "625000000000000000",
+      "listed": false,
+      "createdAt": 1789550627,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "SNDK",
+        "decimals": 18,
+        "name": "Sandisk Corporation • Robinhood Token"
+      },
+      "state": {
+        "borrowApy": 0.008128176362194678,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
         "collateralUsd": 0
       }
     },
@@ -2435,10 +3595,39 @@
         "borrowApy": 0.0008753828930628605,
         "supplyApy": 0.0006564653479223791,
         "utilization": 0.75,
-        "supplyUsd": 0.0005599526787961947,
-        "borrowUsd": 0.00041996450909714605,
-        "liquidityUsd": 0.00013998816969904867,
-        "collateralUsd": 0.0008851991596855025
+        "supplyUsd": 0.000559925907247764,
+        "borrowUsd": 0.000419944430435823,
+        "liquidityUsd": 0.000139981476811941,
+        "collateralUsd": 0.0008860709163573087
+      }
+    },
+    {
+      "id": "0x8b16891f032a93b771347c9cb470a780e6699dd701553d3402aa3cdba6189c3e",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0xd0601CE157Db5bdC3162BbaC2a2C8aF5320D9EEC",
+      "oracle": "0xED29D310cfa91778A5850538DA28ed42234Cb78c",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "625000000000000000",
+      "listed": false,
+      "createdAt": 1788994460,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "NVDA",
+        "decimals": 18,
+        "name": "NVIDIA • Robinhood Token"
+      },
+      "state": {
+        "borrowApy": 0.010114260140837097,
+        "supplyApy": 0.00003573114709423058,
+        "utilization": 0.003550595685820868,
+        "supplyUsd": 310662.9016527437,
+        "borrowUsd": 1103.0383583528244,
+        "liquidityUsd": 309559.86329439085,
+        "collateralUsd": 3318.1796463669593
       }
     },
     {
@@ -2464,9 +3653,9 @@
         "borrowApy": 0.0014780592845281028,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 9.999154978503478e-7,
+        "supplyUsd": 9.998676915138641e-7,
         "borrowUsd": 0,
-        "liquidityUsd": 9.999154978503478e-7,
+        "liquidityUsd": 9.998676915138641e-7,
         "collateralUsd": null
       }
     },
@@ -2490,13 +3679,42 @@
         "name": "Netflix • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.007835327135539593,
+        "borrowApy": 0.004782561719426081,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
         "borrowUsd": 0,
         "liquidityUsd": 0,
         "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0x880ea4d1c1fd411b197f8c624f9c77da91efd4db983ffaeed9126e24716d523b",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0x887156b65660D59239506Ead2e311C82c269aFd6",
+      "oracle": "0x887156b65660D59239506Ead2e311C82c269aFd6",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "625000000000000000",
+      "listed": false,
+      "createdAt": 1789734453,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "scV3-CRCL-USDG-U",
+        "decimals": 18,
+        "name": "V3 CRCL/USDG borrow USDG"
+      },
+      "state": {
+        "borrowApy": 0.00930102402408618,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
+        "collateralUsd": null
       }
     },
     {
@@ -2519,7 +3737,7 @@
         "name": "Circle Internet Group • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.007825906257069701,
+        "borrowApy": 0.004778934630419627,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -2548,13 +3766,42 @@
         "name": "Alibaba • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.007825629174676748,
+        "borrowApy": 0.004778827941277831,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
         "borrowUsd": 0,
         "liquidityUsd": 0,
         "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0x86b078fdd293e860f6016f524284e3a52f2a174fba4e1819ebc4c002e7592b8e",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0xe0ec4DD1BEc7E4f5a80230Fd63456B84C378CcF1",
+      "oracle": "0xe0ec4DD1BEc7E4f5a80230Fd63456B84C378CcF1",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "860000000000000000",
+      "listed": false,
+      "createdAt": 1789734313,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "scV4-WETH-USDG-U",
+        "decimals": 18,
+        "name": "V4 WETH/USDG borrow USDG"
+      },
+      "state": {
+        "borrowApy": 0.009300043490620087,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
+        "collateralUsd": null
       }
     },
     {
@@ -2577,7 +3824,7 @@
         "name": "Global Dollar"
       },
       "state": {
-        "borrowApy": 0.0031882167185573237,
+        "borrowApy": 0.0028750753357130753,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -2635,7 +3882,7 @@
         "name": "Taiwan Semiconductor Manufacturing • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.007825874887448781,
+        "borrowApy": 0.0047789225260970606,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -2664,7 +3911,36 @@
         "name": "MD LP"
       },
       "state": {
-        "borrowApy": 0.001106814688668745,
+        "borrowApy": 0.0006229752535690648,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
+        "collateralUsd": null
+      }
+    },
+    {
+      "id": "0x839d006743b3ee9dba7bbc37b2f8efa67399049c34d4e12466667edc9e637556",
+      "loanToken": "0x117cc2133c37B721F49dE2A7a74833232B3B4C0C",
+      "collateralToken": "0x6408602E126d4e71a2A942E3705F666611D67721",
+      "oracle": "0x6408602E126d4e71a2A942E3705F666611D67721",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "770000000000000000",
+      "listed": false,
+      "createdAt": 1789734433,
+      "loan": {
+        "symbol": "SPY",
+        "decimals": 18,
+        "name": "SPDR S&P 500 ETF Trust • Robinhood Token"
+      },
+      "collateral": {
+        "symbol": "scV3-SPY-USDG-S",
+        "decimals": 18,
+        "name": "V3 SPY/USDG borrow SPY"
+      },
+      "state": {
+        "borrowApy": 0.009300897025118967,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -2693,12 +3969,12 @@
         "name": "Roblox • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.0021988589190616,
+        "borrowApy": 0.001278588088317302,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 99.99170977151442,
+        "supplyUsd": 99.98692913021706,
         "borrowUsd": 0,
-        "liquidityUsd": 99.99170977151442,
+        "liquidityUsd": 99.98692913021706,
         "collateralUsd": 0
       }
     },
@@ -2722,12 +3998,12 @@
         "name": "CleanSpark • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.0007791761222355389,
+        "borrowApy": 0.000472859928881388,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 99.99197174937487,
+        "supplyUsd": 99.98719109555225,
         "borrowUsd": 0,
-        "liquidityUsd": 99.99197174937487,
+        "liquidityUsd": 99.98719109555225,
         "collateralUsd": 0
       }
     },
@@ -2751,13 +4027,71 @@
         "name": "Pons"
       },
       "state": {
-        "borrowApy": 0.007540122843750902,
+        "borrowApy": 0.004668780084208653,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
         "borrowUsd": 0,
         "liquidityUsd": 0,
         "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0x7faafd3f2f50ef0924fb36082fae8b168342c74460d9fbb3570ca239b32fd6d2",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0x86923f96303D656E4aa86D9d42D1e57ad2023fdC",
+      "oracle": "0x1F293351B2C6c136D7d0f3cFEd020a1E927418f0",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "625000000000000000",
+      "listed": false,
+      "createdAt": 1789634476,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "AMD",
+        "decimals": 18,
+        "name": "AMD • Robinhood Token"
+      },
+      "state": {
+        "borrowApy": 0.008643503437591302,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
+        "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0x7fa81b10e5d21b2e4c571f862442bc11aff2ed14f02335868d0ff933fd40d0ba",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0x2e0847E8910a9732eB3fb1bb4b70a580ADAD4FE3",
+      "oracle": "0x12Ec3474D1e321e0aAB065278B97FBC7eDa5F424",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "625000000000000000",
+      "listed": false,
+      "createdAt": 1788994460,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "GOOGL",
+        "decimals": 18,
+        "name": "Alphabet Class A • Robinhood Token"
+      },
+      "state": {
+        "borrowApy": 0.012407270992911536,
+        "supplyApy": 0.000007852494830676135,
+        "utilization": 0.000636865436093125,
+        "supplyUsd": 158919.6045143685,
+        "borrowUsd": 101.21040323279031,
+        "liquidityUsd": 158818.3941111357,
+        "collateralUsd": 358.7404269092738
       }
     },
     {
@@ -2780,13 +4114,13 @@
         "name": "Alphabet Class A • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.004503329315138074,
-        "supplyApy": 0.004503076556272285,
-        "utilization": 0.9999440044516461,
-        "supplyUsd": 9.999949911324268,
-        "borrowUsd": 9.999389958645471,
-        "liquidityUsd": 0.0005599526787961947,
-        "collateralUsd": 195.3580345146978
+        "borrowApy": 0.00027876218278206715,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 9.999627789313273,
+        "borrowUsd": 0,
+        "liquidityUsd": 9.999627789313273,
+        "collateralUsd": 0
       }
     },
     {
@@ -2809,7 +4143,65 @@
         "name": "Amazon • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.007540156905249335,
+        "borrowApy": 0.004668793232751118,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
+        "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0x7d4313cf1b0ede39395a2c7495dc1b1b47370caf51f70571d927f22e715e5f58",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0x4e62068525Ab11FE768e29dfD00ef909B9803016",
+      "oracle": "0x7c38823d907bd3E78ECDAB44eE0362FD0be2d7dA",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "385000000000000000",
+      "listed": false,
+      "createdAt": 1788974187,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "LULU",
+        "decimals": 18,
+        "name": "Lululemon • Robinhood Token"
+      },
+      "state": {
+        "borrowApy": 0.0034088631623573487,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 124.98346143923303,
+        "borrowUsd": 0,
+        "liquidityUsd": 124.98346143923303,
+        "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0x7c937a27516c7ce2cbcfd07d7558fc024d684361b82bcd9e6d4bb5f6dd9e8050",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0xe93237C50D904957Cf27E7B1133b510C669c2e74",
+      "oracle": "0x11C5782FF9440Bf48f032D71840831be5f405Ab3",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "860000000000000000",
+      "listed": false,
+      "createdAt": 1789323009,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "MSFT",
+        "decimals": 18,
+        "name": "Microsoft • Robinhood Token"
+      },
+      "state": {
+        "borrowApy": 0.006960589640334006,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -2838,13 +4230,13 @@
         "name": "WETH"
       },
       "state": {
-        "borrowApy": 0.0010962681678622491,
-        "supplyApy": 0.0009449081586764457,
-        "utilization": 0.8619967636793793,
-        "supplyUsd": 17934.13874265251,
-        "borrowUsd": 15459.169555543438,
-        "liquidityUsd": 2474.9691871090745,
-        "collateralUsd": 31410.160419050335
+        "borrowApy": 0.0007794153829612158,
+        "supplyApy": 0.00043573939189605997,
+        "utilization": 0.5591553205713918,
+        "supplyUsd": 39368.918822684565,
+        "borrowUsd": 22013.34042484729,
+        "liquidityUsd": 17355.578397837275,
+        "collateralUsd": 46325.33488513076
       }
     },
     {
@@ -2854,7 +4246,7 @@
       "oracle": "0xc62f83dDbdf103512f288BA0Ba97756Cb63244BC",
       "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
       "lltv": "625000000000000000",
-      "listed": false,
+      "listed": true,
       "createdAt": 1788866503,
       "loan": {
         "symbol": "USDG",
@@ -2867,13 +4259,42 @@
         "name": "Cash Cat"
       },
       "state": {
-        "borrowApy": 0.040471639099564395,
-        "supplyApy": 0.035985519949520955,
-        "utilization": 0.8910988129770614,
-        "supplyUsd": 0.10100046452236577,
-        "borrowUsd": 0.09000139404601196,
-        "liquidityUsd": 0.010999070476353824,
-        "collateralUsd": 0.513348546862421
+        "borrowApy": 0.006845330439444241,
+        "supplyApy": 0.00008844460468944685,
+        "utilization": 0.012964081435230751,
+        "supplyUsd": 2499.669954688605,
+        "borrowUsd": 32.40592485378263,
+        "liquidityUsd": 2467.264029834822,
+        "collateralUsd": 207.16536391220433
+      }
+    },
+    {
+      "id": "0x77d4e5ad304509ec7f0c2783d131d7bfef33a6dc31b69bbce1ab2b7794571e5b",
+      "loanToken": "0x0Bd7D308f8E1639FAb988df18A8011f41EAcAD73",
+      "collateralToken": "0xeBa8fD69e05f4A18DD136c921c304EEd59C8f411",
+      "oracle": "0xeBa8fD69e05f4A18DD136c921c304EEd59C8f411",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "770000000000000000",
+      "listed": false,
+      "createdAt": 1789734333,
+      "loan": {
+        "symbol": "WETH",
+        "decimals": 18,
+        "name": "WETH"
+      },
+      "collateral": {
+        "symbol": "scV3-WETH-USDG-W",
+        "decimals": 18,
+        "name": "V3 WETH/USDG borrow WETH"
+      },
+      "state": {
+        "borrowApy": 0.009300212790607432,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
+        "collateralUsd": null
       }
     },
     {
@@ -2896,13 +4317,13 @@
         "name": "Sandisk Corporation • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.00025003122118847645,
-        "supplyApy": 0,
-        "utilization": 0,
-        "supplyUsd": 100.67558397779023,
-        "borrowUsd": 0,
-        "liquidityUsd": 100.67558397779023,
-        "collateralUsd": 0
+        "borrowApy": 0.00027909018557312264,
+        "supplyApy": 0.000009728177990416626,
+        "utilization": 0.0348616877082193,
+        "supplyUsd": 100.67078863782798,
+        "borrowUsd": 3.5095535948321106,
+        "liquidityUsd": 97.16123504299587,
+        "collateralUsd": 12.878721464341432
       }
     },
     {
@@ -2925,7 +4346,7 @@
         "name": "Microsoft • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.007540147182470747,
+        "borrowApy": 0.004668791331757016,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -2954,13 +4375,13 @@
         "name": "Alphabet Class A • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.010044380413783,
-        "supplyApy": 0,
-        "utilization": 0,
-        "supplyUsd": 0,
-        "borrowUsd": 0,
-        "liquidityUsd": 0,
-        "collateralUsd": 0
+        "borrowApy": 0.05547639351445598,
+        "supplyApy": 0.05030840377380255,
+        "utilization": 0.9092151600706326,
+        "supplyUsd": 1.002237377942752,
+        "borrowUsd": 0.9112494180149905,
+        "liquidityUsd": 0.09098795992776164,
+        "collateralUsd": 4.229234478601566
       }
     },
     {
@@ -2983,7 +4404,7 @@
         "name": "CoreWeave • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.0025509176660675503,
+        "borrowApy": 0.002423440832165823,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -3012,12 +4433,12 @@
         "name": "United States Oil Fund • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.006895732371889278,
+        "borrowApy": 0.004402491021060333,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 9.999154978503476,
+        "supplyUsd": 9.998676915138642,
         "borrowUsd": 0,
-        "liquidityUsd": 9.999154978503476,
+        "liquidityUsd": 9.998676915138642,
         "collateralUsd": 0
       }
     },
@@ -3041,13 +4462,42 @@
         "name": "The Index"
       },
       "state": {
-        "borrowApy": 0.028916907665032153,
-        "supplyApy": 0.02891689092190371,
-        "utilization": 0.9999994301257038,
-        "supplyUsd": 528.1420250919813,
-        "borrowUsd": 528.1417241174165,
-        "liquidityUsd": 0.0003009745648529547,
-        "collateralUsd": 3069.441378346396
+        "borrowApy": 0.005052477869320777,
+        "supplyApy": 0.002822622771018323,
+        "utilization": 0.5592850232651155,
+        "supplyUsd": 1815.282473942267,
+        "borrowUsd": 1015.2603006715574,
+        "liquidityUsd": 800.0221732707097,
+        "collateralUsd": 5237.640390286367
+      }
+    },
+    {
+      "id": "0x6e5d13a8328f260b27c14f3531e8c09b830efc6602fa5582279a83a93489e020",
+      "loanToken": "0x0Bd7D308f8E1639FAb988df18A8011f41EAcAD73",
+      "collateralToken": "0xcdBdFFE19CD1726481571a4407580BE60cf3ED10",
+      "oracle": "0xcdBdFFE19CD1726481571a4407580BE60cf3ED10",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "625000000000000000",
+      "listed": false,
+      "createdAt": 1789734355,
+      "loan": {
+        "symbol": "WETH",
+        "decimals": 18,
+        "name": "WETH"
+      },
+      "collateral": {
+        "symbol": "scV3-WETH-NVDA-W",
+        "decimals": 18,
+        "name": "V3 WETH/NVDA borrow WETH"
+      },
+      "state": {
+        "borrowApy": 0.009300382090623177,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
+        "collateralUsd": null
       }
     },
     {
@@ -3070,7 +4520,7 @@
         "name": "Alphabet Class A • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.0027651269176908627,
+        "borrowApy": 0.002691114535206732,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -3099,12 +4549,12 @@
         "name": "SPDR Gold Trust • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.002116383365762718,
+        "borrowApy": 0.0014109295026922474,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 110.8272570670963,
+        "supplyUsd": 110.82195837420247,
         "borrowUsd": 0,
-        "liquidityUsd": 110.8272570670963,
+        "liquidityUsd": 110.82195837420247,
         "collateralUsd": 0
       }
     },
@@ -3128,13 +4578,42 @@
         "name": "Spark Savings USDG"
       },
       "state": {
-        "borrowApy": 0.002612144434974554,
+        "borrowApy": 0.002392366615541914,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 2.710662923798525,
+        "supplyUsd": 2.7105333259834024,
         "borrowUsd": 0,
-        "liquidityUsd": 2.710662923798525,
-        "collateralUsd": 0.013588790169588463
+        "liquidityUsd": 2.7105333259834024,
+        "collateralUsd": 0.013601668857624268
+      }
+    },
+    {
+      "id": "0x6bdcf8f419b92c346a968bbde32b9f8ddab2827a3f4734a9dbc1c9d7ff1034d8",
+      "loanToken": "0x117cc2133c37B721F49dE2A7a74833232B3B4C0C",
+      "collateralToken": "0xb8fdfC1E751dD3b682b5332D10E084f4Ecbf6a51",
+      "oracle": "0xb8fdfC1E751dD3b682b5332D10E084f4Ecbf6a51",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "625000000000000000",
+      "listed": false,
+      "createdAt": 1789734428,
+      "loan": {
+        "symbol": "SPY",
+        "decimals": 18,
+        "name": "SPDR S&P 500 ETF Trust • Robinhood Token"
+      },
+      "collateral": {
+        "symbol": "scV3-WETH-SPY-S",
+        "decimals": 18,
+        "name": "V3 WETH/SPY borrow SPY"
+      },
+      "state": {
+        "borrowApy": 0.009300904091226499,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
+        "collateralUsd": null
       }
     },
     {
@@ -3160,10 +4639,10 @@
         "borrowApy": 0.0002501925681731858,
         "supplyApy": 4.840776117165563e-8,
         "utilization": 0.000193546890733182,
-        "supplyUsd": 2.5004746866573946,
-        "borrowUsd": 0.0004839591009595683,
-        "liquidityUsd": 2.499990727556435,
-        "collateralUsd": 0.0009534553151567043
+        "supplyUsd": 2.500355138021039,
+        "borrowUsd": 0.0004839359626927103,
+        "liquidityUsd": 2.4998712020583462,
+        "collateralUsd": 0.001008139065921282
       }
     },
     {
@@ -3189,9 +4668,9 @@
         "borrowApy": 0.00025003122118847645,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 100.675916949651,
+        "supplyUsd": 100.6711035961508,
         "borrowUsd": 0,
-        "liquidityUsd": 100.675916949651,
+        "liquidityUsd": 100.6711035961508,
         "collateralUsd": 0
       }
     },
@@ -3215,7 +4694,7 @@
         "name": "Alphabet Class A • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.003188212763989381,
+        "borrowApy": 0.002875073374859638,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -3244,7 +4723,7 @@
         "name": "Intel • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.007825874887448781,
+        "borrowApy": 0.0047789225260970606,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -3273,7 +4752,7 @@
         "name": "Netflix • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.005203066617930329,
+        "borrowApy": 0.0037220761303094125,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -3302,7 +4781,7 @@
         "name": "WETH"
       },
       "state": {
-        "borrowApy": 0.007481774327882433,
+        "borrowApy": 0.0026582319972626354,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -3331,7 +4810,7 @@
         "name": "Apple • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.00469072438564603,
+        "borrowApy": 0.0035058697089230197,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -3360,13 +4839,13 @@
         "name": "NVIDIA • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.0002524768846689843,
-        "supplyApy": 7.406547702846089e-7,
-        "utilization": 0.002934041849639496,
-        "supplyUsd": 13126.55994472752,
-        "borrowUsd": 38.51387621963206,
-        "liquidityUsd": 13088.04606850789,
-        "collateralUsd": 1084.4675284792804
+        "borrowApy": 0.00025374526818966366,
+        "supplyApy": 0.0000011304716309825726,
+        "utilization": 0.00445574135544189,
+        "supplyUsd": 6577.799141190391,
+        "borrowUsd": 29.308971661192174,
+        "liquidityUsd": 6548.490169529198,
+        "collateralUsd": 882.1407577246301
       }
     },
     {
@@ -3389,12 +4868,12 @@
         "name": "MD LP"
       },
       "state": {
-        "borrowApy": 0.003686545429336489,
+        "borrowApy": 0.002073839519529473,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 9.999154978503478e-7,
+        "supplyUsd": 9.998676915138641e-7,
         "borrowUsd": 0,
-        "liquidityUsd": 9.999154978503478e-7,
+        "liquidityUsd": 9.998676915138641e-7,
         "collateralUsd": null
       }
     },
@@ -3418,7 +4897,7 @@
         "name": "Nothing"
       },
       "state": {
-        "borrowApy": 0.0062667059803925675,
+        "borrowApy": 0.004122331864155886,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -3447,7 +4926,7 @@
         "name": "Apple • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.003188209315606148,
+        "borrowApy": 0.0028750714140062046,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -3476,13 +4955,13 @@
         "name": "NVIDIA • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.006995281924980195,
-        "supplyApy": 0,
-        "utilization": 0,
-        "supplyUsd": 0.9999234971743305,
-        "borrowUsd": 0,
-        "liquidityUsd": 0.9999234971743305,
-        "collateralUsd": 0
+        "borrowApy": 0.0020737370361925576,
+        "supplyApy": 0.00016574787138079407,
+        "utilization": 0.08000335997312022,
+        "supplyUsd": 0.4999378452276982,
+        "borrowUsd": 0.0399967073959376,
+        "liquidityUsd": 0.4599411378317606,
+        "collateralUsd": 0.4384567826937205
       }
     },
     {
@@ -3505,13 +4984,42 @@
         "name": "Circle Internet Group • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.006895858179120777,
+        "borrowApy": 0.0013700735759298753,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 10.999070476353825,
+        "supplyUsd": 0,
         "borrowUsd": 0,
-        "liquidityUsd": 10.999070476353825,
+        "liquidityUsd": 0,
         "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0x5b7ad14c56044b5868d541872af5c487b671ffaa825588dddc2f1440ed10a8e8",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0x9E0c21bEaa4e078A7d72269825292Ed870CBfE67",
+      "oracle": "0xDC7fD913c7C058809381c3BbD86d1b1e3fCd22e7",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "385000000000000000",
+      "listed": false,
+      "createdAt": 1789089612,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "mBAL",
+        "decimals": 18,
+        "name": "Mast Bond Balanced"
+      },
+      "state": {
+        "borrowApy": 0.00501451616443726,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
+        "collateralUsd": null
       }
     },
     {
@@ -3534,12 +5042,12 @@
         "name": "Tesla • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.006895534452568764,
+        "borrowApy": 0.001370012091216434,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 10.999070476353825,
+        "supplyUsd": 0,
         "borrowUsd": 0,
-        "liquidityUsd": 10.999070476353825,
+        "liquidityUsd": 0,
         "collateralUsd": 0
       }
     },
@@ -3563,13 +5071,42 @@
         "name": "Space Exploration Technologies Corp. Class A Common Stock • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.00025003122118847645,
+        "borrowApy": 0.0002759441012990354,
+        "supplyApy": 0.000008577198063952979,
+        "utilization": 0.03108741570558511,
+        "supplyUsd": 100.67098861136627,
+        "borrowUsd": 3.129600872453768,
+        "liquidityUsd": 97.5413877389125,
+        "collateralUsd": 46.886688732270954
+      }
+    },
+    {
+      "id": "0x558c5580b37ac95813c9d569b3a09029f94f891e295ca2f57752ff7784c3099e",
+      "loanToken": "0x0Bd7D308f8E1639FAb988df18A8011f41EAcAD73",
+      "collateralToken": "0x92BB3d12D79F03Ef29442FA7C76FB1339247ec0B",
+      "oracle": "0x92BB3d12D79F03Ef29442FA7C76FB1339247ec0B",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "625000000000000000",
+      "listed": false,
+      "createdAt": 1789734457,
+      "loan": {
+        "symbol": "WETH",
+        "decimals": 18,
+        "name": "WETH"
+      },
+      "collateral": {
+        "symbol": "scV3-AAPL-WETH-W",
+        "decimals": 18,
+        "name": "V3 AAPL/WETH borrow WETH"
+      },
+      "state": {
+        "borrowApy": 0.009301129824741745,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 100.67578696063629,
+        "supplyUsd": 0,
         "borrowUsd": 0,
-        "liquidityUsd": 100.67578696063629,
-        "collateralUsd": 33.87114548893518
+        "liquidityUsd": 0,
+        "collateralUsd": null
       }
     },
     {
@@ -3592,7 +5129,7 @@
         "name": "Meta Platforms • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.007540205582691257,
+        "borrowApy": 0.004668810119915549,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -3621,13 +5158,13 @@
         "name": "SPDR S&P 500 ETF Trust • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.0003374362370110729,
-        "supplyApy": 0.00000861623996758237,
-        "utilization": 0.025538640430950058,
-        "supplyUsd": 21733.901546392495,
-        "borrowUsd": 555.0542967549875,
-        "liquidityUsd": 21178.84724963751,
-        "collateralUsd": 1127.1624709886678
+        "borrowApy": 0.0005710392896764667,
+        "supplyApy": 0.00021984099294603064,
+        "utilization": 0.3850516086865661,
+        "supplyUsd": 11226.278120588911,
+        "borrowUsd": 4322.69644989556,
+        "liquidityUsd": 6903.58167069335,
+        "collateralUsd": 8714.394162779807
       }
     },
     {
@@ -3650,13 +5187,13 @@
         "name": "Coinbase • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.00025003122118847645,
-        "supplyApy": 0,
-        "utilization": 0,
-        "supplyUsd": 109.99126371630155,
-        "borrowUsd": 0,
-        "liquidityUsd": 109.99126371630155,
-        "collateralUsd": 0
+        "borrowApy": 0.0006289836559685834,
+        "supplyApy": 0.0002858511741588345,
+        "utilization": 0.4545442107525534,
+        "supplyUsd": 109.9862199641183,
+        "borrowUsd": 49.99359954724689,
+        "liquidityUsd": 59.99262041687141,
+        "collateralUsd": 154.90064006706146
       }
     },
     {
@@ -3679,12 +5216,12 @@
         "name": "Pons"
       },
       "state": {
-        "borrowApy": 0.008388778196969726,
+        "borrowApy": 0.004993446851458716,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 1999.8309957006954,
+        "supplyUsd": 1999.7353830277284,
         "borrowUsd": 0,
-        "liquidityUsd": 1999.8309957006954,
+        "liquidityUsd": 1999.7353830277284,
         "collateralUsd": 0
       }
     },
@@ -3711,9 +5248,9 @@
         "borrowApy": 0.00025003122118847645,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 102.49202147194566,
+        "supplyUsd": 102.48712128980438,
         "borrowUsd": 0,
-        "liquidityUsd": 102.49202147194566,
+        "liquidityUsd": 102.48712128980438,
         "collateralUsd": 0
       }
     },
@@ -3737,12 +5274,12 @@
         "name": "SPDR S&P 500 ETF Trust • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.0012512403675792303,
+        "borrowApy": 0.0002560713256098935,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 3321.3331141458343,
+        "supplyUsd": 4646.2476495056,
         "borrowUsd": 0,
-        "liquidityUsd": 3321.3331141458343,
+        "liquidityUsd": 4646.247649505599,
         "collateralUsd": 0
       }
     },
@@ -3769,9 +5306,9 @@
         "borrowApy": 0.00025003122118847645,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 100.67557997812823,
+        "supplyUsd": 100.67076664073876,
         "borrowUsd": 0,
-        "liquidityUsd": 100.67557997812823,
+        "liquidityUsd": 100.67076664073876,
         "collateralUsd": 0
       }
     },
@@ -3795,7 +5332,36 @@
         "name": "MD LP"
       },
       "state": {
-        "borrowApy": 0.001107093175656145,
+        "borrowApy": 0.0006231347673730552,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
+        "collateralUsd": null
+      }
+    },
+    {
+      "id": "0x4b7e9fc3cabc607b81e2f4eeb09f3bde1ca5256a2684d04d7dac149a4a530ce1",
+      "loanToken": "0x0Bd7D308f8E1639FAb988df18A8011f41EAcAD73",
+      "collateralToken": "0xc98F1b5fdfC5f68C631E7E949784f7CD214D2746",
+      "oracle": "0xc98F1b5fdfC5f68C631E7E949784f7CD214D2746",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "770000000000000000",
+      "listed": false,
+      "createdAt": 1789734342,
+      "loan": {
+        "symbol": "WETH",
+        "decimals": 18,
+        "name": "WETH"
+      },
+      "collateral": {
+        "symbol": "scV4-WETH-USDG-W",
+        "decimals": 18,
+        "name": "V4 WETH/USDG borrow WETH"
+      },
+      "state": {
+        "borrowApy": 0.009300339757659254,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -3827,9 +5393,9 @@
         "borrowApy": 0.00025003122118847645,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 102.49188548343797,
+        "supplyUsd": 102.48698530779834,
         "borrowUsd": 0,
-        "liquidityUsd": 102.49188548343797,
+        "liquidityUsd": 102.48698530779834,
         "collateralUsd": 0
       }
     },
@@ -3856,9 +5422,9 @@
         "borrowApy": 0.0005791283817248068,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 9.999154978503478e-7,
+        "supplyUsd": 9.998676915138641e-7,
         "borrowUsd": 0,
-        "liquidityUsd": 9.999154978503478e-7,
+        "liquidityUsd": 9.998676915138641e-7,
         "collateralUsd": null
       }
     },
@@ -3882,12 +5448,12 @@
         "name": "Space Exploration Technologies Corp. Class A Common Stock • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.006895778985975239,
+        "borrowApy": 0.0013700601547671429,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 10.999070476353825,
+        "supplyUsd": 0,
         "borrowUsd": 0,
-        "liquidityUsd": 10.999070476353825,
+        "liquidityUsd": 0,
         "collateralUsd": 0
       }
     },
@@ -3911,7 +5477,36 @@
         "name": "Alphabet Class A • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.002897827281368857,
+        "borrowApy": 0.0027307925833471324,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
+        "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0x47baa250d10b6969d3177dfac9b1235f1fb32e35a0d52609d438c800bf3f09da",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0xaF3D76f1834A1d425780943C99Ea8A608f8a93f9",
+      "oracle": "0x68c24d810aE6480c8C2e9B0d98d4FDEB35dc4a90",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "625000000000000000",
+      "listed": false,
+      "createdAt": 1789634433,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "AAPL",
+        "decimals": 18,
+        "name": "Apple • Robinhood Token"
+      },
+      "state": {
+        "borrowApy": 0.008643308260153953,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -3940,12 +5535,12 @@
         "name": "Rivian Automotive • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.002672471203457585,
+        "borrowApy": 0.001553824415133506,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 99.99170977151442,
+        "supplyUsd": 99.98692913021706,
         "borrowUsd": 0,
-        "liquidityUsd": 99.99170977151442,
+        "liquidityUsd": 99.98692913021706,
         "collateralUsd": 0
       }
     },
@@ -3969,7 +5564,7 @@
         "name": "Palantir Technologies • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.007825806935831533,
+        "borrowApy": 0.004778892360351401,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -3998,13 +5593,42 @@
         "name": "Hims & Hers Health • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.004957930346619786,
+        "borrowApy": 0.002881256439201948,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 99.99154978503478,
+        "supplyUsd": 99.98676915138643,
         "borrowUsd": 0,
-        "liquidityUsd": 99.99154978503478,
+        "liquidityUsd": 99.98676915138643,
         "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0x439073acfccd1a79288a5d5468fd7f69cc1f77351f9c99c43578e8463adfc6e1",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0xcF211f38d702B99E2428b8038E6073c11c5ebCa0",
+      "oracle": "0xBd076d1eF39154cec634d5dB519Be1527E8471E6",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "385000000000000000",
+      "listed": false,
+      "createdAt": 1789125956,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "BLUECHIP",
+        "decimals": 18,
+        "name": "US BLUECHIP"
+      },
+      "state": {
+        "borrowApy": 0.005135357360709635,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0.0009998676915138642,
+        "borrowUsd": 0,
+        "liquidityUsd": 0.0009998676915138642,
+        "collateralUsd": null
       }
     },
     {
@@ -4029,10 +5653,10 @@
       "state": {
         "borrowApy": 0.001077496892209914,
         "supplyApy": 0.00023939152537099,
-        "utilization": 0.22229482405474876,
-        "supplyUsd": 8.999624448119802,
-        "borrowUsd": 2.000569933253607,
-        "liquidityUsd": 6.999054514866195,
+        "utilization": 0.22230009490640798,
+        "supplyUsd": 8.999255164615194,
+        "borrowUsd": 2.0005352771809393,
+        "liquidityUsd": 6.9987198874342536,
         "collateralUsd": null
       }
     },
@@ -4056,13 +5680,71 @@
         "name": "Reddit • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.00782667486076149,
+        "borrowApy": 0.004779228524683784,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
         "borrowUsd": 0,
         "liquidityUsd": 0,
         "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0x3f141524de42f529ac5bf87f70858ef1f4ba6391a7a9ba4fc4ba8fcf15ba2bfa",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0x0Bd7D308f8E1639FAb988df18A8011f41EAcAD73",
+      "oracle": "0x1D65050b6DC2748c2ed67Ba628A50Db9723E665b",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "770000000000000000",
+      "listed": false,
+      "createdAt": 1789634537,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "WETH",
+        "decimals": 18,
+        "name": "WETH"
+      },
+      "state": {
+        "borrowApy": 0.008643948726022354,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
+        "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0x3ebd43d91c3960a9fac32bedd5c60428e0e414de5bdd67fda770207afb0eb615",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0x6330D8C3178a418788dF01a47479c0ce7CCF450b",
+      "oracle": "0x3ebD3088b69A5eeC3bDF03B82CcF19c3Bc1fa894",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "385000000000000000",
+      "listed": false,
+      "createdAt": 1788994460,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "COIN",
+        "decimals": 18,
+        "name": "Coinbase • Robinhood Token"
+      },
+      "state": {
+        "borrowApy": 0.5551581448852493,
+        "supplyApy": 0.5551581448852493,
+        "utilization": 1,
+        "supplyUsd": 10.767665158005041,
+        "borrowUsd": 10.767665158005041,
+        "liquidityUsd": 0,
+        "collateralUsd": 395.1938130684809
       }
     },
     {
@@ -4114,12 +5796,41 @@
         "name": "NVIDIA • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.0028480768662610687,
+        "borrowApy": 0.0027016478175348408,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 0.0009999154978503478,
+        "supplyUsd": 0.0009998676915138642,
         "borrowUsd": 0,
-        "liquidityUsd": 0.0009999154978503478,
+        "liquidityUsd": 0.0009998676915138642,
+        "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0x3c538ee562f18ce6be5080f2915a0c4d25decd99d565bad14052a2586cd8e31a",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0x56910D4409F3a0C78C64DD8D0545FF0705389870",
+      "oracle": "0x9df17489D63dF44f103F7261f3b826BB0c032667",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "385000000000000000",
+      "listed": false,
+      "createdAt": 1789064290,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "Index",
+        "decimals": 18,
+        "name": "The Index"
+      },
+      "state": {
+        "borrowApy": 0.003395431218570044,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
         "collateralUsd": 0
       }
     },
@@ -4143,12 +5854,12 @@
         "name": "Trump Media & Technology Group • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.001893307627979722,
+        "borrowApy": 0.0011009819494816663,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 102.49224945267919,
+        "supplyUsd": 102.48734925963805,
         "borrowUsd": 0,
-        "liquidityUsd": 102.49224945267919,
+        "liquidityUsd": 102.48734925963805,
         "collateralUsd": 0
       }
     },
@@ -4172,12 +5883,12 @@
         "name": "Apple • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.004958242674810007,
+        "borrowApy": 0.0029200877049077117,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 3.24972536801363,
+        "supplyUsd": 3.2495699974200587,
         "borrowUsd": 0,
-        "liquidityUsd": 3.24972536801363,
+        "liquidityUsd": 3.2495699974200587,
         "collateralUsd": 0
       }
     },
@@ -4201,7 +5912,7 @@
         "name": "NVIDIA • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.008851039359315601,
+        "borrowApy": 0.005168801566852055,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -4230,12 +5941,12 @@
         "name": "Micron Technology • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.00689563209445554,
+        "borrowApy": 0.0013700323334868523,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 10.999070476353825,
+        "supplyUsd": 0,
         "borrowUsd": 0,
-        "liquidityUsd": 10.999070476353825,
+        "liquidityUsd": 0,
         "collateralUsd": 0
       }
     },
@@ -4259,12 +5970,12 @@
         "name": "Artificial Inu"
       },
       "state": {
-        "borrowApy": 0.008487779499644573,
+        "borrowApy": 0.0048025567472167316,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 6004.334973909215,
+        "supplyUsd": 6004.047904393102,
         "borrowUsd": 0,
-        "liquidityUsd": 6004.334973909215,
+        "liquidityUsd": 6004.047904393102,
         "collateralUsd": 0
       }
     },
@@ -4291,9 +6002,9 @@
         "borrowApy": 0.0005800873478031142,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 9.999154978503478e-7,
+        "supplyUsd": 9.998676915138641e-7,
         "borrowUsd": 0,
-        "liquidityUsd": 9.999154978503478e-7,
+        "liquidityUsd": 9.998676915138641e-7,
         "collateralUsd": null
       }
     },
@@ -4317,13 +6028,13 @@
         "name": "StonkBroker"
       },
       "state": {
-        "borrowApy": 0.007334707295477052,
-        "supplyApy": 0.007334696462825311,
-        "utilization": 0.9999985306741306,
-        "supplyUsd": 496.10397060524684,
-        "borrowUsd": 496.10324166684893,
-        "liquidityUsd": 0.0007289383979329036,
-        "collateralUsd": 2671.370220689969
+        "borrowApy": 0.000375148149977199,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 996.0291934469363,
+        "borrowUsd": 0,
+        "liquidityUsd": 996.0291934469363,
+        "collateralUsd": 1.8985397281010024e-14
       }
     },
     {
@@ -4346,7 +6057,7 @@
         "name": "Alphabet Class A • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.007540225060023442,
+        "borrowApy": 0.004668817628842413,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -4375,12 +6086,12 @@
         "name": "SPDR S&P 500 ETF Trust • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.006895483329503367,
+        "borrowApy": 0.001370004827999379,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 10.999070476353825,
+        "supplyUsd": 0,
         "borrowUsd": 0,
-        "liquidityUsd": 10.999070476353825,
+        "liquidityUsd": 0,
         "collateralUsd": 0
       }
     },
@@ -4404,7 +6115,7 @@
         "name": "Apple • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.007540156905249335,
+        "borrowApy": 0.004668791331757016,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -4433,12 +6144,12 @@
         "name": "Alphabet Class A • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.002847938946082825,
+        "borrowApy": 0.002701511308827335,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 0.0009999154978503478,
+        "supplyUsd": 0.0009998676915138642,
         "borrowUsd": 0,
-        "liquidityUsd": 0.0009999154978503478,
+        "liquidityUsd": 0.0009998676915138642,
         "collateralUsd": 0
       }
     },
@@ -4462,13 +6173,13 @@
         "name": "Invesco QQQ • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.004503266180852191,
-        "supplyApy": 0.004503013897172394,
-        "utilization": 0.9999441044381077,
-        "supplyUsd": 9.99994891140877,
-        "borrowUsd": 9.999389958645471,
-        "liquidityUsd": 0.0005589527632983444,
-        "collateralUsd": 100.88972999999999
+        "borrowApy": 0.0002787812042912477,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 9.99962678944558,
+        "borrowUsd": 0,
+        "liquidityUsd": 9.99962678944558,
+        "collateralUsd": 0
       }
     },
     {
@@ -4491,13 +6202,42 @@
         "name": "Apple • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.0013154384915448226,
-        "supplyApy": 0.0005259589042724592,
-        "utilization": 0.39999458415944233,
-        "supplyUsd": 24.998623384065112,
-        "borrowUsd": 9.999313965067635,
-        "liquidityUsd": 14.999309418997475,
-        "collateralUsd": 192.39083114163202
+        "borrowApy": 0.00029811494157376035,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 24.997463185836764,
+        "borrowUsd": 0,
+        "liquidityUsd": 24.997463185836764,
+        "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0x305bda0d3f1c2c5992d51f19acdb1820f03924fd53a2cde5dc60cf72937b73a7",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0xd51f5D3Bb4AC528F58B08E574dAA56E9bF58C230",
+      "oracle": "0x11b13f169D13a95207B5ea215fC3895BB644E381",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "385000000000000000",
+      "listed": false,
+      "createdAt": 1789493415,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "STEERUV417",
+        "decimals": 18,
+        "name": "STEER_UNIV4_VAULT_17"
+      },
+      "state": {
+        "borrowApy": 0.007450283008067936,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0.001000867559205378,
+        "borrowUsd": 0,
+        "liquidityUsd": 0.001000867559205378,
+        "collateralUsd": null
       }
     },
     {
@@ -4520,7 +6260,7 @@
         "name": "Global Dollar"
       },
       "state": {
-        "borrowApy": 0.003188207322503918,
+        "borrowApy": 0.002875070180566143,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -4549,7 +6289,7 @@
         "name": "United States Oil Fund • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.007826104931358204,
+        "borrowApy": 0.004779005069975054,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -4578,13 +6318,42 @@
         "name": "Pons"
       },
       "state": {
-        "borrowApy": 0.006364898674307029,
+        "borrowApy": 0.002969362503222178,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 14411.702767218929,
+        "supplyUsd": 4323.3086038916745,
         "borrowUsd": 0,
-        "liquidityUsd": 14411.702767218929,
-        "collateralUsd": 0
+        "liquidityUsd": 4323.3086038916745,
+        "collateralUsd": 0.5968206981260976
+      }
+    },
+    {
+      "id": "0x2e1859aa8f143b7220088f80562c6dfe0bf8e52b87d9cedf8da8805f231994ce",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0xe93237C50D904957Cf27E7B1133b510C669c2e74",
+      "oracle": "0xcb9a035fe0e8f321e36286405fEBC70dE42DB34e",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "625000000000000000",
+      "listed": false,
+      "createdAt": 1788994460,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "MSFT",
+        "decimals": 18,
+        "name": "Microsoft • Robinhood Token"
+      },
+      "state": {
+        "borrowApy": 0.2878787395366166,
+        "supplyApy": 0.2878787395366166,
+        "utilization": 1,
+        "supplyUsd": 5.010556973068106,
+        "borrowUsd": 5.010556973068106,
+        "liquidityUsd": 0,
+        "collateralUsd": 258.36406947895307
       }
     },
     {
@@ -4607,12 +6376,12 @@
         "name": "Tesla • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.002848004411517049,
+        "borrowApy": 0.0027015759425517132,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 0.0009999154978503478,
+        "supplyUsd": 0.0009998676915138642,
         "borrowUsd": 0,
-        "liquidityUsd": 0.0009999154978503478,
+        "liquidityUsd": 0.0009998676915138642,
         "collateralUsd": 0
       }
     },
@@ -4636,9 +6405,9 @@
         "name": "Wrapped Ether"
       },
       "state": {
-        "borrowApy": 0.0037529225692781764,
-        "supplyApy": 0.0003746599474166751,
-        "utilization": 0.10004568168119786,
+        "borrowApy": 0.00359962025279535,
+        "supplyApy": 0.00035938025835339637,
+        "utilization": 0.10005286739430493,
         "supplyUsd": null,
         "borrowUsd": null,
         "liquidityUsd": null,
@@ -4668,10 +6437,10 @@
         "borrowApy": 0.00025003122118847645,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 100.67608293562364,
+        "supplyUsd": 100.67126957418759,
         "borrowUsd": 0,
-        "liquidityUsd": 100.67608293562364,
-        "collateralUsd": 3.81024e-15
+        "liquidityUsd": 100.67126957418759,
+        "collateralUsd": 1.636632e-13
       }
     },
     {
@@ -4694,12 +6463,12 @@
         "name": "GameStop • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.006895738817842454,
+        "borrowApy": 0.001370052007331972,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 10.999070476353825,
+        "supplyUsd": 0,
         "borrowUsd": 0,
-        "liquidityUsd": 10.999070476353825,
+        "liquidityUsd": 0,
         "collateralUsd": 0
       }
     },
@@ -4723,13 +6492,42 @@
         "name": "Reddit • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.0014143283276618168,
+        "borrowApy": 0.0005837937851068612,
+        "supplyApy": 0.000019524885072087477,
+        "utilization": 0.03345461107381345,
+        "supplyUsd": 109.98639594083201,
+        "borrowUsd": 3.6795520996109894,
+        "liquidityUsd": 106.30684384122101,
+        "collateralUsd": 14.210291516953097
+      }
+    },
+    {
+      "id": "0x255192f55dd65f9eacfb7a1c6ead289cc0d5f0dc54b7f7985dbe9ea645599225",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0x23312F66b4a19112149b4c3B748150464A90DC65",
+      "oracle": "0x23312F66b4a19112149b4c3B748150464A90DC65",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "770000000000000000",
+      "listed": false,
+      "createdAt": 1789041988,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "scV3-USDG-NVDA",
+        "decimals": 18,
+        "name": "V3 USDG/NVDA USDG"
+      },
+      "state": {
+        "borrowApy": 0.003471287290953728,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 109.9916156865568,
+        "supplyUsd": 4.999338457569321,
         "borrowUsd": 0,
-        "liquidityUsd": 109.9916156865568,
-        "collateralUsd": 0
+        "liquidityUsd": 4.999338457569321,
+        "collateralUsd": null
       }
     },
     {
@@ -4784,9 +6582,9 @@
         "borrowApy": 0.00025003122118847645,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 99.99177176627529,
+        "supplyUsd": 99.98699112201393,
         "borrowUsd": 0,
-        "liquidityUsd": 99.99177176627529,
+        "liquidityUsd": 99.98699112201393,
         "collateralUsd": 0
       }
     },
@@ -4812,11 +6610,69 @@
       "state": {
         "borrowApy": 0.0017030480360915024,
         "supplyApy": 0.00008135155615439173,
-        "utilization": 0.04782750265503388,
+        "utilization": 0.047829669969896425,
         "supplyUsd": null,
         "borrowUsd": null,
         "liquidityUsd": null,
         "collateralUsd": null
+      }
+    },
+    {
+      "id": "0x22e4598e5cc16cff0056e72d61c5f1f2f8bf5bbffc22da5277ab196939c8a59e",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0x322F0929c4625eD5bAd873c95208D54E1c003b2d",
+      "oracle": "0xe343124476849d6F161E380d682b9603e97903d3",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "625000000000000000",
+      "listed": false,
+      "createdAt": 1789771494,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "TSLA",
+        "decimals": 18,
+        "name": "Tesla • Robinhood Token"
+      },
+      "state": {
+        "borrowApy": 0.00956894485026518,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0.0009998676915138642,
+        "borrowUsd": 0,
+        "liquidityUsd": 0.0009998676915138642,
+        "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0x21ea2a012b888120e328775c2a7bf6fb4619cf4c4c631ad1c9b6db51f8882d5a",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0x4a0E65A3EcceC6dBe60AE065F2e7bb85Fae35eEa",
+      "oracle": "0x90805011F903b1d31CE2A3C6DBfDCCff282B30B4",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "625000000000000000",
+      "listed": false,
+      "createdAt": 1789768948,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "SPCX",
+        "decimals": 18,
+        "name": "Space Exploration Technologies Corp. Class A Common Stock • Robinhood Token"
+      },
+      "state": {
+        "borrowApy": 0.009536091388931,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0.0009998676915138642,
+        "borrowUsd": 0,
+        "liquidityUsd": 0.0009998676915138642,
+        "collateralUsd": 0
       }
     },
     {
@@ -4839,7 +6695,7 @@
         "name": "NVIDIA • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.004690752964548306,
+        "borrowApy": 0.0035058818928491203,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -4868,12 +6724,12 @@
         "name": "Midas Fasanara Global Open"
       },
       "state": {
-        "borrowApy": 0.05506130151114613,
-        "supplyApy": 0.050210962485573996,
-        "utilization": 0.914031778305279,
-        "supplyUsd": 31148843.215894435,
-        "borrowUsd": 28471032.55677632,
-        "liquidityUsd": 2677810.6591181164,
+        "borrowApy": 0.05505771355329663,
+        "supplyApy": 0.04984574748290893,
+        "utilization": 0.9075999973807369,
+        "supplyUsd": 31415177.305160794,
+        "borrowUsd": 28512414.839879323,
+        "liquidityUsd": 2902762.4652814716,
         "collateralUsd": 34515612.54340549
       }
     },
@@ -4897,7 +6753,7 @@
         "name": "Wrapped Ether"
       },
       "state": {
-        "borrowApy": 0.0027352818590394732,
+        "borrowApy": 0.002691114535206732,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -4926,12 +6782,12 @@
         "name": "WETH"
       },
       "state": {
-        "borrowApy": 0.004392253164111483,
+        "borrowApy": 0.0031748852942112384,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 9.999154978503478e-7,
+        "supplyUsd": 9.998676915138641e-7,
         "borrowUsd": 0,
-        "liquidityUsd": 9.999154978503478e-7,
+        "liquidityUsd": 9.998676915138641e-7,
         "collateralUsd": 0
       }
     },
@@ -4955,13 +6811,71 @@
         "name": "USDe"
       },
       "state": {
-        "borrowApy": 0.07716472703438919,
-        "supplyApy": 0.06991034071126655,
-        "utilization": 0.9100264186164239,
-        "supplyUsd": 1.0113225338498246,
-        "borrowUsd": 0.9203302235454428,
-        "liquidityUsd": 0.09099231030438164,
-        "collateralUsd": 3.998782856686664
+        "borrowApy": 0.08326766251082904,
+        "supplyApy": 0.07541968261960381,
+        "utilization": 0.9102800347443031,
+        "supplyUsd": 1.0141328038686925,
+        "borrowUsd": 0.9231448439409309,
+        "liquidityUsd": 0.09098795992776164,
+        "collateralUsd": 3.9987494339040275
+      }
+    },
+    {
+      "id": "0x1c20e013bc6bf7e356a3b7fe0ed8a92deecce8e56680900d32e466a86f356b15",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0x117cc2133c37B721F49dE2A7a74833232B3B4C0C",
+      "oracle": "0xC53793F920182835532BC7E69eAAb0eD455D0558",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "625000000000000000",
+      "listed": false,
+      "createdAt": 1789344029,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "SPY",
+        "decimals": 18,
+        "name": "SPDR S&P 500 ETF Trust • Robinhood Token"
+      },
+      "state": {
+        "borrowApy": 0.007052810654916112,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
+        "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0x1b8b34fd794924dcbd8c92f5efc54ccb1e977ad4ff2386f7be6d4d26a2fbdecb",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0xD5f3879160bc7c32ebb4dC785F8a4F505888de68",
+      "oracle": "0xEad960d619a70EEfb5d76A25895f8E0423CC6C4a",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "625000000000000000",
+      "listed": false,
+      "createdAt": 1789344049,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "QQQ",
+        "decimals": 18,
+        "name": "Invesco QQQ • Robinhood Token"
+      },
+      "state": {
+        "borrowApy": 0.0070528993244215,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
+        "collateralUsd": 0
       }
     },
     {
@@ -4984,13 +6898,42 @@
         "name": "iShares MSCI South Korea fund • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.0010516090541431624,
+        "borrowApy": 0.0006162977224574091,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 99.99197174937487,
+        "supplyUsd": 99.98719109555225,
         "borrowUsd": 0,
-        "liquidityUsd": 99.99197174937487,
+        "liquidityUsd": 99.98719109555225,
         "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0x1a31d1c8c05a98b94777663912e4166bf50f3fcdc9c3c3d29deb55634ac58239",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0x39dBED3a2bd333467115dE45665cC57F813C4571",
+      "oracle": "0x9ff810F075d8D1D9bD73516574C2634e0289528b",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "625000000000000000",
+      "listed": false,
+      "createdAt": 1789051127,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "PONS",
+        "decimals": 18,
+        "name": "Pons"
+      },
+      "state": {
+        "borrowApy": 0.04024659324909199,
+        "supplyApy": 0.035785846333730886,
+        "utilization": 0.8911839189616967,
+        "supplyUsd": 0.1010746251997535,
+        "borrowUsd": 0.090076080593101,
+        "liquidityUsd": 0.010998544606652507,
+        "collateralUsd": 0.5261872200023086
       }
     },
     {
@@ -5013,7 +6956,7 @@
         "name": "Ether"
       },
       "state": {
-        "borrowApy": 0.0027352834717747267,
+        "borrowApy": 0.002691114535206732,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -5042,7 +6985,36 @@
         "name": "Alphabet Class A • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.003880704032757295,
+        "borrowApy": 0.003175589672741189,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
+        "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0x17d2f23d96c0a7c54197556f966a49e2802e49b574d8e39cfb3e1c0d91bf78fe",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0x58FfE4a942d3885bAa22D7520691F611EF09e7AA",
+      "oracle": "0x8d5EA9596311e766a01369B069A81fD468772ECd",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "625000000000000000",
+      "listed": false,
+      "createdAt": 1789344069,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "TSM",
+        "decimals": 18,
+        "name": "Taiwan Semiconductor Manufacturing • Robinhood Token"
+      },
+      "state": {
+        "borrowApy": 0.007052992440113928,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -5071,7 +7043,7 @@
         "name": "Tesla • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.0038807076418128366,
+        "borrowApy": 0.003175591128003878,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -5100,12 +7072,12 @@
         "name": "Rocket Lab Corporation • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.0005988863734844794,
+        "borrowApy": 0.00037791978848043513,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 99.99197174937487,
+        "supplyUsd": 99.98719109555225,
         "borrowUsd": 0,
-        "liquidityUsd": 99.99197174937487,
+        "liquidityUsd": 99.98719109555225,
         "collateralUsd": 0
       }
     },
@@ -5129,12 +7101,12 @@
         "name": "NVIDIA • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.002736960085396283,
+        "borrowApy": 0.0002546732931622684,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 2236.664799331905,
+        "supplyUsd": 1274.4021445241435,
         "borrowUsd": 0,
-        "liquidityUsd": 2236.664799331905,
+        "liquidityUsd": 1274.4021445241435,
         "collateralUsd": 0
       }
     },
@@ -5158,13 +7130,13 @@
         "name": "WETH"
       },
       "state": {
-        "borrowApy": 0.03393534233565876,
-        "supplyApy": 0.02293716471464814,
-        "utilization": 0.679548892964252,
-        "supplyUsd": 1.3456422807250925,
-        "borrowUsd": 0.9144297221926279,
-        "liquidityUsd": 0.4312125585324646,
-        "collateralUsd": 5.300738475626389
+        "borrowApy": 0.03028759661272711,
+        "supplyApy": 0.0232010875966606,
+        "utilization": 0.7686858062640821,
+        "supplyUsd": 1.1901845076519961,
+        "borrowUsd": 0.9148779378674943,
+        "liquidityUsd": 0.2753065697845019,
+        "collateralUsd": 5.639074353852286
       }
     },
     {
@@ -5216,13 +7188,13 @@
         "name": "Space Exploration Technologies Corp. Class A Common Stock • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.010043284488331418,
-        "supplyApy": 0,
-        "utilization": 0,
-        "supplyUsd": 0,
-        "borrowUsd": 0,
-        "liquidityUsd": 0,
-        "collateralUsd": 0
+        "borrowApy": 0.05544209881904077,
+        "supplyApy": 0.05027737938887764,
+        "utilization": 0.9092150695003537,
+        "supplyUsd": 1.0022363780750607,
+        "borrowUsd": 0.911248418147299,
+        "liquidityUsd": 0.09098795992776164,
+        "collateralUsd": 4.0236220472440944
       }
     },
     {
@@ -5245,12 +7217,12 @@
         "name": "Eli Lilly • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.008695668792639482,
+        "borrowApy": 0.005049461365430455,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 99.99154978503478,
+        "supplyUsd": 99.98676915138643,
         "borrowUsd": 0,
-        "liquidityUsd": 99.99154978503478,
+        "liquidityUsd": 99.98676915138643,
         "collateralUsd": 0
       }
     },
@@ -5274,7 +7246,7 @@
         "name": "iShares Silver Trust • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.00782617291477835,
+        "borrowApy": 0.004779033239461264,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -5306,9 +7278,9 @@
         "borrowApy": 0.00025003122118847645,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 0.0000019998309957006955,
+        "supplyUsd": 0.0000019997353830277283,
         "borrowUsd": 0,
-        "liquidityUsd": 0.0000019998309957006955,
+        "liquidityUsd": 0.0000019997353830277283,
         "collateralUsd": 0
       }
     },
@@ -5332,13 +7304,13 @@
         "name": "Pons"
       },
       "state": {
-        "borrowApy": 0.003912551603758468,
-        "supplyApy": 0.0000028361311098122317,
-        "utilization": 0.000726310181417927,
-        "supplyUsd": 12391.954033752127,
-        "borrowUsd": 9.00040238237713,
-        "liquidityUsd": 12382.953631369748,
-        "collateralUsd": 103.21207346959272
+        "borrowApy": 0.001022797650671809,
+        "supplyApy": 7.4251539566442e-7,
+        "utilization": 0.000726349389568601,
+        "supplyUsd": 12391.364451382105,
+        "borrowUsd": 9.000460005183468,
+        "liquidityUsd": 12382.363991376924,
+        "collateralUsd": 79.24488254710656
       }
     },
     {
@@ -5361,12 +7333,12 @@
         "name": ""
       },
       "state": {
-        "borrowApy": 126.35036759441743,
-        "supplyApy": 126.35029048491384,
-        "utilization": 0.9999999394545802,
-        "supplyUsd": 16.51513031804821,
-        "borrowUsd": 16.515129318132715,
-        "liquidityUsd": 9.999154978503478e-7,
+        "borrowApy": 415.77587118854774,
+        "supplyApy": 415.7755571129311,
+        "utilization": 0.999999956461097,
+        "supplyUsd": 22.96492614332123,
+        "borrowUsd": 22.964925143453538,
+        "liquidityUsd": 9.998676915138641e-7,
         "collateralUsd": null
       }
     },
@@ -5390,13 +7362,13 @@
         "name": "SPDR S&P 500 ETF Trust • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.0032418414604185077,
-        "supplyApy": 9.145440418195377e-8,
+        "borrowApy": 0.0022448719189065674,
+        "supplyApy": 6.335582600698026e-8,
         "utilization": 0.0000282592008298,
-        "supplyUsd": 33.3314591820209,
-        "borrowUsd": 0.0009419203989750276,
-        "liquidityUsd": 33.33051726162192,
-        "collateralUsd": 45.8193
+        "supplyUsd": 33.32986559240601,
+        "borrowUsd": 0.0009418753654060601,
+        "liquidityUsd": 33.3289237170406,
+        "collateralUsd": 45.6432
       }
     },
     {
@@ -5419,13 +7391,42 @@
         "name": "Nothing"
       },
       "state": {
-        "borrowApy": 0.021035851121605567,
-        "supplyApy": 0.011873122561756742,
-        "utilization": 0.5669925090925276,
-        "supplyUsd": 227.16075480569808,
-        "borrowUsd": 128.7984463346352,
-        "liquidityUsd": 98.36230847106287,
-        "collateralUsd": 527.9118497242233
+        "borrowApy": 0.014387018557264418,
+        "supplyApy": 0.008147948428762352,
+        "utilization": 0.5681505996495864,
+        "supplyUsd": 226.7882070250807,
+        "borrowUsd": 128.84985581475414,
+        "liquidityUsd": 97.93835121032659,
+        "collateralUsd": 645.7993782357545
+      }
+    },
+    {
+      "id": "0x05d8328220ee076e6f14db1b4f3bb4ed82680cf2c1d5d769501b0034b7e22be9",
+      "loanToken": "0x117cc2133c37B721F49dE2A7a74833232B3B4C0C",
+      "collateralToken": "0x784427d1D95C15e005D3A5656F5b2Cf8AD9859f7",
+      "oracle": "0x784427d1D95C15e005D3A5656F5b2Cf8AD9859f7",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "770000000000000000",
+      "listed": false,
+      "createdAt": 1789734377,
+      "loan": {
+        "symbol": "SPY",
+        "decimals": 18,
+        "name": "SPDR S&P 500 ETF Trust • Robinhood Token"
+      },
+      "collateral": {
+        "symbol": "scV4-SPY-NVDA-S",
+        "decimals": 18,
+        "name": "V4 SPY/NVDA borrow SPY"
+      },
+      "state": {
+        "borrowApy": 0.009300692458144478,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
+        "collateralUsd": null
       }
     },
     {
@@ -5435,7 +7436,7 @@
       "oracle": "0x1bc8eDC42a2d5ABDC094E56Bec1BebbcF516990A",
       "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
       "lltv": "385000000000000000",
-      "listed": false,
+      "listed": true,
       "createdAt": 1783672265,
       "loan": {
         "symbol": "USDG",
@@ -5448,13 +7449,13 @@
         "name": "Cash Cat"
       },
       "state": {
-        "borrowApy": 0.0005080539496957891,
-        "supplyApy": 0.0001572201692675661,
-        "utilization": 0.30951001942216855,
-        "supplyUsd": 39997.157250603974,
-        "borrowUsd": 12379.520917465969,
-        "liquidityUsd": 27617.63633313801,
-        "collateralUsd": 46793.39903051977
+        "borrowApy": 0.0017524019148135483,
+        "supplyApy": 0.0016120968055897567,
+        "utilization": 0.9200003672663215,
+        "supplyUsd": 767.4068881207364,
+        "borrowUsd": 706.0146189137823,
+        "liquidityUsd": 61.39226920695403,
+        "collateralUsd": 4143.56848632002
       }
     },
     {
@@ -5477,13 +7478,13 @@
         "name": "Spark Savings USDG"
       },
       "state": {
-        "borrowApy": 0.027108483215186947,
-        "supplyApy": 0.024364889829560976,
-        "utilization": 0.9000000902237417,
-        "supplyUsd": 28423758.84345231,
-        "borrowUsd": 25581385.523604956,
-        "liquidityUsd": 2842373.3198473547,
-        "collateralUsd": 33225369.833537906
+        "borrowApy": 0.030303050786558046,
+        "supplyApy": 0.027332215088094858,
+        "utilization": 0.9032718921721176,
+        "supplyUsd": 13894293.310524927,
+        "borrowUsd": 12550324.608992247,
+        "liquidityUsd": 1343968.7015326812,
+        "collateralUsd": 13871747.914630195
       }
     },
     {
@@ -5506,13 +7507,13 @@
         "name": "Strategy Inc. • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.00025003122118847645,
-        "supplyApy": 0,
-        "utilization": 0,
-        "supplyUsd": 99.99210973771356,
-        "borrowUsd": 0,
-        "liquidityUsd": 99.99210973771356,
-        "collateralUsd": 5.9525895e-14
+        "borrowApy": 0.0008003169738221804,
+        "supplyApy": 0.0005281343943812454,
+        "utilization": 0.6599969840229214,
+        "supplyUsd": 99.98752905083197,
+        "borrowUsd": 65.99146761345335,
+        "liquidityUsd": 33.99606143737863,
+        "collateralUsd": 217.92931045745487
       }
     },
     {
@@ -5535,13 +7536,42 @@
         "name": "Apple • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.03522274707514759,
-        "supplyApy": 0.03164518414098605,
-        "utilization": 0.9002488230552668,
-        "supplyUsd": 0.08559576636248331,
-        "borrowUsd": 0.0770574879263392,
-        "liquidityUsd": 0.008538278436144119,
-        "collateralUsd": 0.12609920797515828
+        "borrowApy": 0.03522261665125152,
+        "supplyApy": 0.03164506718139739,
+        "utilization": 0.9003361423002404,
+        "supplyUsd": 0.08566666407352487,
+        "borrowUsd": 0.07712879385568797,
+        "liquidityUsd": 0.008537870217836887,
+        "collateralUsd": 0.13396253046679596
+      }
+    },
+    {
+      "id": "0x018dbc4fe625d6758024efa095d0ad00b30f35154c16d65a0b4e6a1089855e15",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0xE69CD31D0f80243c4B3671422e6E1f2196ea4C6a",
+      "oracle": "0xE69CD31D0f80243c4B3671422e6E1f2196ea4C6a",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "860000000000000000",
+      "listed": false,
+      "createdAt": 1789734307,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "scV3-WETH-USDG-U",
+        "decimals": 18,
+        "name": "V3 WETH/USDG borrow USDG"
+      },
+      "state": {
+        "borrowApy": 0.009300212790607432,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
+        "collateralUsd": null
       }
     },
     {
@@ -5567,10 +7597,39 @@
         "borrowApy": 0.0002506541184792191,
         "supplyApy": 1.872607855332987e-7,
         "utilization": 0.00074726474508114,
-        "supplyUsd": 5.000482412777294,
-        "borrowUsd": 0.003736684215466749,
-        "liquidityUsd": 4.996745728561827,
-        "collateralUsd": 11.940230461102681
+        "supplyUsd": 5.000243337830142,
+        "borrowUsd": 0.0037365055631873104,
+        "liquidityUsd": 4.996506832266954,
+        "collateralUsd": 13.451553703634008
+      }
+    },
+    {
+      "id": "0x010141ba8b3cfffa2845706e45dc58d754dc1b4fbdc7126147361b8b382f58e8",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0xd0008837448b4aF6cBb804e37B1c06EDf3ECB871",
+      "oracle": "0xd0008837448b4aF6cBb804e37B1c06EDf3ECB871",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "860000000000000000",
+      "listed": false,
+      "createdAt": 1789041988,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "scV4-ETH-USDG-FR",
+        "decimals": 18,
+        "name": "V4 ETH/USDG Fables USDG"
+      },
+      "state": {
+        "borrowApy": 0.003473700893892643,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 14.998015372707963,
+        "borrowUsd": 0,
+        "liquidityUsd": 14.998015372707963,
+        "collateralUsd": null
       }
     },
     {
@@ -5593,7 +7652,7 @@
         "name": "Strategy Inc. • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.007826261779508372,
+        "borrowApy": 0.004779067461110367,
         "supplyApy": 0,
         "utilization": 0,
         "supplyUsd": 0,
@@ -5622,12 +7681,12 @@
         "name": "MD LP"
       },
       "state": {
-        "borrowApy": 0.0025233764842374526,
+        "borrowApy": 0.0014198543798531569,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 9.999154978503478e-7,
+        "supplyUsd": 9.998676915138641e-7,
         "borrowUsd": 0,
-        "liquidityUsd": 9.999154978503478e-7,
+        "liquidityUsd": 9.998676915138641e-7,
         "collateralUsd": null
       }
     },
@@ -5651,12 +7710,12 @@
         "name": "Netflix • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.002197785633786074,
+        "borrowApy": 0.0012779526466239856,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 99.99170977151442,
+        "supplyUsd": 99.98692913021706,
         "borrowUsd": 0,
-        "liquidityUsd": 99.99170977151442,
+        "liquidityUsd": 99.98692913021706,
         "collateralUsd": 0
       }
     },
@@ -5680,13 +7739,42 @@
         "name": "Rigetti Computing • Robinhood Token"
       },
       "state": {
-        "borrowApy": 0.0003722240173737175,
+        "borrowApy": 0.0002914158879383489,
         "supplyApy": 0,
         "utilization": 0,
-        "supplyUsd": 110.04153246812498,
+        "supplyUsd": 110.0362713410201,
         "borrowUsd": 0,
-        "liquidityUsd": 110.04153246812498,
+        "liquidityUsd": 110.0362713410201,
         "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0x002eabf99ad26b83c951c95080731105451c68e05d2b20e50ec70ed56fe4a8eb",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0x4852A31E448390B3a321cef216bADf7A0e21b857",
+      "oracle": "0x4852A31E448390B3a321cef216bADf7A0e21b857",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "770000000000000000",
+      "listed": false,
+      "createdAt": 1789734443,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "scV3-META-USDG-U",
+        "decimals": 18,
+        "name": "V3 META/USDG borrow USDG"
+      },
+      "state": {
+        "borrowApy": 0.00930117922384826,
+        "supplyApy": 0,
+        "utilization": 0,
+        "supplyUsd": 0,
+        "borrowUsd": 0,
+        "liquidityUsd": 0,
+        "collateralUsd": null
       }
     }
   ]
