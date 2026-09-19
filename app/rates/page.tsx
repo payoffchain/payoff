@@ -60,7 +60,7 @@ export default function Rates() {
                     <tr key={g.collateral.address + "-x"}>
                       <td colSpan={8} style={{ background: "var(--paper-2)", padding: 0 }}>
                         <table className="tbl" style={{ fontSize: 12 }}>
-                          <thead><tr><th>Market</th><th className="r">LLTV</th><th className="r">Borrow APY</th><th className="r">Supply APY</th><th className="r">Utilisation</th><th className="r">Available</th><th className="r">Supplied</th><th className="r">Borrowed</th><th></th></tr></thead>
+                          <thead><tr><th>Market</th><th className="r">LLTV</th><th className="r">Borrow APY</th><th className="r">Supply APY</th><th className="r">Utilization</th><th className="r">Available</th><th className="r">Supplied</th><th className="r">Borrowed</th><th></th></tr></thead>
                           <tbody>
                             {g.rows.map((r) => (
                               <tr key={r.id}>

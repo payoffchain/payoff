@@ -1,7 +1,7 @@
 /* ============================================================================
    GLASS. The light look: frosted white surfaces on a pale sky ground, navy ink,
    one periwinkle accent, soft shadows instead of hard ones. Loaded last, so it
-   only re-colours; the structure, type and motion stay as they are.
+   only re-colors; the structure, type and motion stay as they are.
    ========================================================================== */
 :root{
   --paper:#f4f7fd;

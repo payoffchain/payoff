@@ -44,7 +44,7 @@ export default function Docs() {
         </div>
 
         <h3 style={{ marginTop: 40 }}>Refinancing</h3>
-        <p className="mute">On {CHAIN_NAME} one collateral usually has several Morpho markets against USDG, at different LLTVs and with different curators. Each has its own utilisation and so its own borrow rate. You allow-list the markets you trust; when one is cheaper by at least the savings threshold, has the liquidity, and keeps LTV inside the ceiling, the agent moves the whole position there: flash-borrow the debt, repay the old market, withdraw the collateral, supply it to the new market, borrow there, repay the flash loan. All or nothing.</p>
+        <p className="mute">On {CHAIN_NAME} one collateral usually has several Morpho markets against USDG, at different LLTVs and with different curators. Each has its own utilization and so its own borrow rate. You allow-list the markets you trust; when one is cheaper by at least the savings threshold, has the liquidity, and keeps LTV inside the ceiling, the agent moves the whole position there: flash-borrow the debt, repay the old market, withdraw the collateral, supply it to the new market, borrow there, repay the flash loan. All or nothing.</p>
 
         <h3 id="runner" style={{ marginTop: 40 }}>Who runs auto-repay</h3>
         <p className="mute">By default, {APP} does. A program we host checks every vault whose operator is our key{HOSTED_OPERATOR ? <> (<code className="inline">{HOSTED_OPERATOR}</code>)</> : null} once a minute and signs the steps the plan below calls for. The key is an <em>operator</em>: the contract lets it borrow within your ceiling, place and collect liquidity, repay, refinance between markets you allowed, and run protection. It cannot withdraw anything; every withdraw path pays the owner and nobody else. What a stolen or faulty operator key could still do is trade badly, and the contract bounds that: every swap is held to your slippage band around the oracle price, the key may only use the pools you allowed, and it has to wait (six hours unless you change it) between two new positions, so a loss could only build slowly and in plain sight. You can turn it off on the vault page, or replace it with your own key at any time.{HOSTED_STATUS_URL ? <> Its live status is public at <a href={`${HOSTED_STATUS_URL}/health`} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "underline" }}>{HOSTED_STATUS_URL.replace(/^https?:\/\//, "")}/health ↗</a>.</> : null}</p>
@@ -63,7 +63,7 @@ export default function Docs() {
 
         <h3 style={{ marginTop: 40 }}>Risks, plainly</h3>
         <ul className="mute" style={{ paddingLeft: 20, lineHeight: 1.7 }}>
-          <li>A concentrated position carries impermanent loss; if the stock moves out of the range it stops earning and the agent closes it into USDG, realising the move.</li>
+          <li>A concentrated position carries impermanent loss; if the stock moves out of the range it stops earning and the agent closes it into USDG, realizing the move.</li>
           <li>Debt accrues interest whether or not the position earns. Fee income is variable; a quiet week can be a losing week.</li>
           <li>Liquidation protection needs the agent to be running and funded with gas. A vault with the agent turned off does not protect itself.</li>
           <li>Equity oracles pause outside market hours; the vault refuses to mint or burn while the pool price drifts from the oracle beyond your slippage.</li>

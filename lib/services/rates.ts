@@ -9,7 +9,7 @@ import { ApiError } from "../http";
  *
  * On Robinhood Chain one collateral usually has several Morpho markets against USDG,
  * created at different LLTVs (39/63/77/86%) and often by different curators. Each has its
- * own utilisation, so each has its own borrow rate. A borrower in one can move to another
+ * own utilization, so each has its own borrow rate. A borrower in one can move to another
  * of the same pair — that is the whole refinancing product — as long as the new market has
  * the liquidity to take the debt and an LLTV that keeps the position healthy.
  */

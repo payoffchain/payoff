@@ -4,7 +4,7 @@
    One hue family (deep green-black), three surface levels, and physical depth on
    everything you can touch: an inset highlight on the top edge, a hard 3px shadow
    underneath, a soft shadow beyond that. Buttons press down when clicked. Accent
-   colour is spent only on two meanings: green = earning / safe, coral = debt / risk.
+   color is spent only on two meanings: green = earning / safe, coral = debt / risk.
    ========================================================================== */
 :root{
   --paper:#0d1512;

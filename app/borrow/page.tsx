@@ -345,7 +345,7 @@ function DeployInner() {
                   <div className="kv"><span>Collateral</span><b className="row" style={{ gap: 8 }}><TokenLogo symbol={sym} size={18} /> {sym} → borrow USDG at {pct(market.borrowApy)}</b></div>
                   <div className="kv"><span>Safety</span><b>borrow up to {policy.maxLtvBps / 100}% · protect at {policy.triggerLtvBps / 100}% · liquidation line {(market.lltv * 100).toFixed(0)}%</b></div>
                   <div className="kv"><span>Auto-repay</span><b className="mono">{opMode === "hosted" ? "by PAYOFF · " : ""}{operator}</b></div>
-                  <div className="kv"><span>Fees</span><b>0% to borrow · 2.5% of harvested fees · 10% of realised profit</b></div>
+                  <div className="kv"><span>Fees</span><b>0% to borrow · 2.5% of harvested fees · 10% of realized profit</b></div>
                 </div>
               )}
               {!vault && (

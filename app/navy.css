@@ -1,9 +1,9 @@
 /* ============================================================================
-   PAYOFF — colours from the logo. Loaded last, over the brutalist structure.
+   PAYOFF — colors from the logo. Loaded last, over the brutalist structure.
 
    Sampled from the mark: background #00020e with a #0d2551 glow, logo face
    #e5eefd, logo side #b9cae8. So: deep navy paper, ice-white ink and rules,
-   hard shadows in electric blue, and the two meaning colours kept: mint for
+   hard shadows in electric blue, and the two meaning colors kept: mint for
    earning/safe, coral for debt/risk.
    ========================================================================== */
 :root{
@@ -193,7 +193,7 @@ footer .builton-item{background:var(--paper-2)}
 .tabs button{color:var(--mute)} .tabs button.on{color:var(--ink);border-bottom-color:var(--ice)}
 .eyebrow{color:var(--ice)} .eyebrow::before{background:var(--ice)}
 
-/* the loop diagram, in the logo's colours: ice for flows, coral only for the repayment */
+/* the loop diagram, in the logo's colors: ice for flows, coral only for the repayment */
 .loop .dot{fill:var(--ice)} .loop .green{fill:var(--ice)}
 .loop .debt{fill:var(--red)}
 .chip .dot,.chip.live .dot{background:var(--ice)}
@@ -289,11 +289,11 @@ body{background-size:100% 100%,auto;animation:navyDrift 18s ease-in-out infinite
 }
 
 /* ============================================================================
-   HARMONY PASS. The logo is soft: navy into ice with almost no saturated colour.
+   HARMONY PASS. The logo is soft: navy into ice with almost no saturated color.
    The first navy pass kept tumble's loud contrasts (white 2.4px rules, electric
    blue shadows) and they fought the mark. This block settles everything down:
    ice lines at low opacity, deep-blue shadows, primary buttons in the logo's own
-   face colour, one muted blue for accents, salmon only where money is at risk.
+   face color, one muted blue for accents, salmon only where money is at risk.
    ========================================================================== */
 :root{
   --rule:rgba(170,196,255,.34);
@@ -425,7 +425,7 @@ footer{border-top-width:1px}
 
 /* ============================================================================
    DESK LAYER (blend with raildesk): tickets, numbered cards, dense mono labels.
-   Structure from the desk, colours and type from the logo.
+   Structure from the desk, colors and type from the logo.
    ========================================================================== */
 .pixel{font-family:'Pixelify Sans',var(--mono);letter-spacing:.02em}
 

@@ -39,7 +39,7 @@ export const useWallet = () => {
   return c;
 };
 
-/** Set when the user chose "Disconnect". The wallet still authorises the site (EIP-1193
+/** Set when the user chose "Disconnect". The wallet still authorizes the site (EIP-1193
  *  has no real disconnect), so without this flag a reload would silently reconnect. */
 const OFF_KEY = "payoff.wallet.off";
 /** Set once the user has connected here. Until then the page never touches
@@ -78,7 +78,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
       e.on?.("chainChanged", onChain);
     } catch { /* odd injected provider; listeners are best-effort */ }
 
-    // restore an already-authorised session without prompting. Everything here is
+    // restore an already-authorized session without prompting. Everything here is
     // wrapped so a non-conforming injected provider (a synchronous throw, a request
     // that is not a function) cannot take the root provider down.
     if (typeof e.request === "function") {
@@ -145,7 +145,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
   const disconnect = useCallback(() => {
     // EIP-1193 has no real disconnect. Clear local state, remember the choice so a reload
     // does not reconnect, and ask the wallet to drop the permission where it supports
-    // that (MetaMask does); elsewhere the wallet keeps the site authorised until the
+    // that (MetaMask does); elsewhere the wallet keeps the site authorized until the
     // user revokes it in the wallet itself.
     setOff(true);
     setOn(false);

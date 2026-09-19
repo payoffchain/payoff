@@ -1,6 +1,6 @@
 /* ============================================================================
    PAYOFF — dark theme. Loaded last; re-points the design tokens and restyles the
-   handful of surfaces that hard-coded a light colour.
+   handful of surfaces that hard-coded a light color.
    ========================================================================== */
 :root{
   --paper:#0c0b0a;
