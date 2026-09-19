@@ -165,10 +165,16 @@ export default function VaultPage() {
           {(["position", "agent", "activity", "settings"] as const).map((t) => <button key={t} className={tab === t ? "on" : ""} onClick={() => setTab(t)}>{t === "agent" ? "What happens next" : t === "position" ? "Your loan" : t[0].toUpperCase() + t.slice(1)}</button>)}
         </div>
 
-        {tx.error && <p className="note bad" style={{ marginBottom: 14 }}>{tx.error}</p>}
-        {tx.busy && <p className="note" style={{ marginBottom: 14 }}>{tx.step}</p>}
-        {tx.hash && !tx.busy && tx.outcome === "confirmed" && <p className="note good" style={{ marginBottom: 14 }}>Confirmed: <TxLink hash={tx.hash} /></p>}
-        {tx.hash && !tx.busy && tx.outcome === null && <p className="note" style={{ marginBottom: 14 }}>Sent, still pending: <TxLink hash={tx.hash} /> · <button className="btn xs" onClick={refresh}>refresh</button></p>}
+        {/* Pinned to the bottom of the screen: the forms sit far down the page, and a
+            message up here was out of sight for whoever had just pressed a button there. */}
+        {(tx.error || tx.busy || tx.hash) && (
+          <div className="txbar" role="status" aria-live="polite">
+            {tx.error && <p className="note bad">{tx.error} <button className="btn xs" onClick={tx.reset}>dismiss</button></p>}
+            {tx.busy && <p className="note"><span className="spinner" /> {tx.step}</p>}
+            {tx.hash && !tx.busy && tx.outcome === "confirmed" && <p className="note good">Confirmed: <TxLink hash={tx.hash} /> <button className="btn xs" onClick={tx.reset}>dismiss</button></p>}
+            {tx.hash && !tx.busy && tx.outcome === null && !tx.error && <p className="note">Sent, still pending: <TxLink hash={tx.hash} /> · <button className="btn xs" onClick={refresh}>refresh</button></p>}
+          </div>
+        )}
         {isOperator && v.paused && <p className="note warn" style={{ marginBottom: 14 }}>Auto-repay is turned off for this loan. Only the owner can turn it back on.</p>}
 
         {tab === "position" && (
@@ -207,7 +213,7 @@ export default function VaultPage() {
               {can && <AmountForm label={`Borrow ${v.loan.symbol}`} hint={maxBorrow === null ? "" : `up to ${usd(Math.max(0, maxBorrow), 2)} within the policy ceiling`} busy={tx.busy} onSubmit={(a) => send({ action: "borrow", amount: a })} />}
               {can && <AmountForm label={`Repay ${v.loan.symbol} from the vault`} hint="empty = everything the vault holds" busy={tx.busy} allowEmpty onSubmit={(a) => send({ action: "repay", amount: a || undefined })} />}
               {isOwner && <AmountForm label={`Deposit ${v.loan.symbol}`} hint="to repay, or to LP without borrowing" busy={tx.busy} onSubmit={(a) => send({ action: "depositLoanToken", amount: a })} />}
-              {isOwner && <AmountForm label={`Withdraw ${v.collateral.symbol} collateral`} hint="to the owner; Morpho refuses if it would leave the loan unhealthy" busy={tx.busy} onSubmit={(a) => send({ action: "withdrawCollateral", amount: a })} />}
+              {isOwner && <AmountForm label={`Withdraw ${v.collateral.symbol} collateral`} hint={p.collateral === 0 ? "nothing is deposited yet, so there is nothing to withdraw" : p.debt > 0 ? `${amount(p.collateral)} ${v.collateral.symbol} is in; repay the debt first, Morpho keeps what still backs it` : `${amount(p.collateral)} ${v.collateral.symbol} is in; it goes to the owner wallet`} busy={tx.busy} onSubmit={(a) => send({ action: "withdrawCollateral", amount: a })} />}
               {isOwner && <div className="row" style={{ marginTop: 12 }}>
                 <button className="btn xs" disabled={tx.busy || v.balances.loan === 0} onClick={() => send({ action: "withdrawToken", token: v.loan.address })}>Withdraw idle {v.loan.symbol}</button>
                 <button className="btn xs" disabled={tx.busy || v.balances.collateral === 0} onClick={() => send({ action: "withdrawToken", token: v.collateral.address })}>Withdraw idle {v.collateral.symbol}</button>
