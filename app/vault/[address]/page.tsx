@@ -273,9 +273,9 @@ export default function VaultPage() {
               </div>
               {v.lpLimits.allowedFees !== null && (
                 <>
-                  <h3 style={{ marginTop: 28 }}>What the agent may do with liquidity</h3>
+                  <h3 style={{ marginTop: 28 }}>Where auto-repay may put your USDG</h3>
                   <div className="card" style={{ marginTop: 10 }}>
-                    <p className="mute" style={{ marginTop: 0 }}>The agent can only open positions, or sell collateral, in the pools you allow here. Your own actions are never limited.</p>
+                    <p className="mute" style={{ marginTop: 0 }}>Auto-repay can only open positions, or sell collateral, in the pools you allow here. Your own actions are never limited.</p>
                     {[100, 500, 3000, 10000].map((fee) => {
                       const on = v.lpLimits.allowedFees!.includes(fee);
                       return (
