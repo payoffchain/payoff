@@ -3,7 +3,7 @@
   "source": "https://blue-api.morpho.org/graphql",
   "fetchedAt": "2026-09-19T16:31:25.030Z",
   "morpho": "0x9D53d5E3bd5E8d4Cbfa6DB1ca238AEA02E651010",
-  "count": 199,
+  "count": 200,
   "markets": [
     {
       "id": "0xfb89cd660644af485ed5eb7dc4fe20623a7934537258c95635ac9a3a87d787fd",
@@ -5774,6 +5774,35 @@
         "borrowUsd": 0,
         "liquidityUsd": 124.98346143923303,
         "collateralUsd": 0
+      }
+    },
+    {
+      "id": "0xdeb4782d012d5fd3b24962538c2f6559049d70bda4dabd2e4212dacb96c28d45",
+      "loanToken": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "collateralToken": "0xaF3D76f1834A1d425780943C99Ea8A608f8a93f9",
+      "oracle": "0xD625d488D552775D2867194C618B945E5dDfE097",
+      "irm": "0x2BD3d5965B26B51814AC95127B2b80dD6CcC0fa1",
+      "lltv": "625000000000000000",
+      "listed": false,
+      "createdAt": 1788994460,
+      "loan": {
+        "symbol": "USDG",
+        "decimals": 6,
+        "name": "Global Dollar"
+      },
+      "collateral": {
+        "symbol": "AAPL",
+        "decimals": 18,
+        "name": "Apple • Robinhood Token"
+      },
+      "state": {
+        "borrowApy": 0.008995445826042293,
+        "supplyApy": 0.0000037880484226373077,
+        "utilization": 0.000423006047008112,
+        "supplyUsd": 239027.7212611935,
+        "borrowUsd": 101.11017149605452,
+        "liquidityUsd": 238926.61108969743,
+        "collateralUsd": 1019.4123759657664
       }
     }
   ]
