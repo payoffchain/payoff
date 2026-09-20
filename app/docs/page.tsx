@@ -36,6 +36,8 @@ export default function Docs() {
           <div className="step"><div><h3>If {APP} disappears</h3><p>The vault is a contract on {CHAIN_NAME}; it does not need this website. You can call <code className="inline">repay</code>, <code className="inline">withdrawCollateral</code> and <code className="inline">withdrawToken</code> from the block explorer with your owner wallet, and the collateral comes back the same way.</p></div></div>
         </div>
 
+        <p className="mute" style={{ marginTop: 14 }}>Every official address, with links to the verified source code, is listed on the <Link href="/contracts" style={{ textDecoration: "underline" }}>contracts page</Link>.</p>
+
         <h3 id="signing-in" style={{ marginTop: 40 }}>Signing in</h3>
         <p className="mute">You can use a wallet you already have (MetaMask, Rabby, anything WalletConnect reaches), or sign in with an email address. With an email, a wallet is created for you through Privy and that wallet becomes the owner of your vaults. Its key is split and secured by Privy&apos;s infrastructure rather than held by {APP}; we never see it and cannot sign with it, and you can export it from the sign-in menu at any time and use it in any other wallet. Whichever way you come in, the rules in the vault are the same: withdrawals go to the owner and nobody else.</p>
         <p className="mute">A wallet made at sign-in starts empty. To open a loan it needs the stock tokens you want to borrow against and a little ETH on {CHAIN_NAME} for gas.</p>

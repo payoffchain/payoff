@@ -270,7 +270,7 @@ export default function Landing() {
       </main>
       <footer>
         <div className="wrap">
-          <span className="links"><Link href="/docs">Docs</Link><Link href="/leaderboard">Leaderboard</Link><Link href="/demo">Demo</Link><a href="/api/health">Status</a>{TWITTER && <a href={TWITTER} target="_blank" rel="noopener noreferrer">{TWITTER_HANDLE}</a>}<span className="faint mono" style={{ fontSize: 12 }}>CA · {TOKEN_CA || "soon"}</span></span>
+          <span className="links"><Link href="/docs">Docs</Link><Link href="/contracts">Contracts</Link><Link href="/leaderboard">Leaderboard</Link><Link href="/demo">Demo</Link><a href="/api/health">Status</a>{TWITTER && <a href={TWITTER} target="_blank" rel="noopener noreferrer">{TWITTER_HANDLE}</a>}<span className="faint mono" style={{ fontSize: 12 }}>CA · {TOKEN_CA || "soon"}</span></span>
         </div>
       </footer>
     </>

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>PAYOFF link preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#1c2a4a;--mute:#7484a8;--ice:#6f8df5;--sans:'Outfit',sans-serif}
+  *{box-sizing:border-box;margin:0}
+  html,body{width:1200px;height:630px;overflow:hidden}
+  body{position:relative;font-family:var(--sans);color:var(--ink);
+    background:
+      radial-gradient(46% 62% at 76% 44%,rgba(158,186,255,.55) 0%,rgba(158,186,255,0) 70%),
+      radial-gradient(40% 50% at 100% 100%,rgba(190,208,250,.55),rgba(190,208,250,0) 70%),
+      linear-gradient(135deg,#ffffff 0%,#f4f7fd 45%,#e6edfa 100%)}
+  /* one soft shaft of daylight */
+  .shaft{position:absolute;left:380px;top:-160px;width:260px;height:1100px;transform:rotate(26deg);
+    background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.85),rgba(255,255,255,0));filter:blur(22px)}
+  /* podium */
+  .podium{position:absolute;left:720px;top:440px;width:420px;height:150px}
+  .podium .side{position:absolute;left:0;top:45px;width:420px;height:105px;border-radius:0 0 210px 210px / 0 0 45px 45px;
+    background:linear-gradient(90deg,#dbe4f5 0%,#f7faff 28%,#ffffff 50%,#eef3fc 74%,#d3def3 100%)}
+  .podium .top{position:absolute;left:0;top:0;width:420px;height:90px;border-radius:50%;
+    background:radial-gradient(ellipse at 50% 40%,#ffffff 0%,#f4f8ff 60%,#e4ecfa 100%);
+    box-shadow:inset 0 -2px 6px rgba(150,172,220,.25)}
+  .podium .shadow{position:absolute;left:-40px;top:112px;width:500px;height:70px;border-radius:50%;
+    background:radial-gradient(closest-side,rgba(86,112,180,.32),rgba(86,112,180,0));filter:blur(10px);z-index:-1}
+  .contact{position:absolute;left:830px;top:462px;width:200px;height:34px;border-radius:50%;
+    background:radial-gradient(closest-side,rgba(70,98,170,.38),rgba(70,98,170,0));filter:blur(6px)}
+  /* the glass mark */
+  .mark{position:absolute;left:790px;top:140px;width:280px;height:280px;border-radius:72px;transform:rotate(-7deg);
+    box-shadow:0 0 0 1px rgba(255,255,255,.95),0 50px 70px -30px rgba(70,98,170,.55),0 0 120px 20px rgba(140,170,255,.35)}
+  .reflect{position:absolute;left:790px;top:440px;width:280px;height:280px;border-radius:72px;transform:scaleY(-1) rotate(-7deg);opacity:.16;filter:blur(3px);
+    -webkit-mask-image:linear-gradient(0deg,#000 0%,transparent 38%);mask-image:linear-gradient(0deg,#000 0%,transparent 38%)}
+  /* words */
+  .brand{position:absolute;left:72px;top:60px;display:flex;align-items:center;gap:4px}
+  .brand img{width:52px;height:52px;border-radius:14px;box-shadow:0 10px 20px -10px rgba(80,105,170,.6)}
+  .brand span{font-size:34px;font-weight:300;letter-spacing:-.02em;color:#2a3a63}
+  h1{position:absolute;left:72px;top:170px;font-weight:300;font-size:64px;line-height:1.08;letter-spacing:-.03em;white-space:nowrap}
+  h1 b{font-weight:500}
+  h1 span{color:var(--ice)}
+  .lede{position:absolute;left:76px;top:410px;width:440px;font-size:22px;line-height:1.5;font-weight:300;color:var(--mute)}
+  .foot{position:absolute;left:76px;bottom:48px;font-size:11px;letter-spacing:.36em;font-weight:400;color:#8a99bd}
+</style>
+</head>
+<body>
+  <div class="shaft"></div>
+  <div class="podium"><div class="shadow"></div><div class="side"></div><div class="top"></div></div>
+  <img class="reflect" src="../public/mark.png" alt="">
+  <div class="contact"></div>
+  <img class="mark" src="../public/mark.png" alt="">
+
+  <div class="brand"><img src="../public/mark.png" alt=""><span>ayoff</span></div>
+  <h1 id="h1"><b>Borrow against</b><br><b>your stocks.</b><br><span>The loan pays itself.</span></h1>
+  <p class="lede" id="lede">Self-repaying loans on Robinhood Chain</p>
+  <div class="foot" id="foot">PAYOFFCHAIN.TECH</div>
+  <script>
+    // ?ticker=$PAYOFF  (+ h1 / lede / foot overrides)
+    const q = new URLSearchParams(location.search);
+    if (q.get("ticker")) document.getElementById("tick").textContent = q.get("ticker");
+    for (const k of ["h1", "lede", "foot"]) if (q.get(k)) document.getElementById(k).innerHTML = q.get(k);
+  </script>
+</body>
+</html>
