@@ -16,6 +16,7 @@ const ROUTES = [
   { href: "/borrow", label: "Borrow" },
   { href: "/leaderboard", label: "Leaderboard" },
   { href: "/docs", label: "Docs" },
+  { href: "/contracts", label: "Contracts" },
 ];
 
 const short = (a: string) => a.slice(0, 6) + "…" + a.slice(-4);
