@@ -11,10 +11,6 @@ export const metadata = { title: "Contracts", description: "Every official PAYOF
  */
 const VAULT_IMPLEMENTATION = "0x8d9b9fBDF65b1AFCed5c5f275093e0884d816D61";
 const TREASURY = "0x62e974a3EA812e8f0FCd1830E9f9B452F2625538";
-const MORPHO = "0x9D53d5E3bd5E8d4Cbfa6DB1ca238AEA02E651010";
-const POSITION_MANAGER = "0x73991a25C818Bf1f1128dEAaB1492D45638DE0D3";
-const SWAP_ROUTER = "0xCaf681a66D020601342297493863E78C959E5cb2";
-const UNISWAP_FACTORY = "0x1f7d7550B1b028f7571E69A784071F0205FD2EfA";
 
 function Row({ label, address, note, code }: { label: string; address: string; note: string; code?: boolean }) {
   if (!address) return null;
@@ -59,15 +55,6 @@ export default function Contracts() {
           <Row label="Hosted auto-repay" address={HOSTED_OPERATOR} note="works on vaults that chose it; it can never withdraw" />
         </div>
         {HOSTED_STATUS_URL && <p className="mute" style={{ marginTop: 10, fontSize: 14 }}>Hosted auto-repay reports its status in public: <a href={`${HOSTED_STATUS_URL}/health`} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "underline" }}>{HOSTED_STATUS_URL.replace(/^https?:\/\//, "")}/health ↗</a></p>}
-
-        <h3 style={{ marginTop: 32 }}>Protocols the vaults use</h3>
-        <div className="card" style={{ marginTop: 10 }}>
-          <Row label="Morpho Blue" address={MORPHO} note="where collateral sits and USDG is borrowed" />
-          <Row label="Uniswap V3 position manager" address={POSITION_MANAGER} note="holds the vault's liquidity positions" />
-          <Row label="Uniswap V3 swap router" address={SWAP_ROUTER} note="every swap is floored by the market oracle" />
-          <Row label="Uniswap V3 factory" address={UNISWAP_FACTORY} note="where the pair's pools are looked up" />
-        </div>
-        <p className="mute" style={{ marginTop: 10, fontSize: 14 }}>A vault can send tokens to these protocol contracts, to the treasury within the fee caps written in its code, and to its owner. Nowhere else.</p>
 
         <h3 style={{ marginTop: 32 }}>Official links</h3>
         <div className="card" style={{ marginTop: 10 }}>
