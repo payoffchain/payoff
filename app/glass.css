@@ -236,3 +236,7 @@ html,body{overflow-x:hidden}
 .txbar .note.bad{background:#fff4f1}
 .txbar .note.good{background:#f1f6ff}
 .txbar .btn.xs{margin-left:8px}
+
+/* holding page: the note under the wordmark */
+.soon-page .soon-note{max-width:460px;font-size:16px;line-height:1.55;color:var(--mute);margin-top:6px}
+.soon-page .soon-note.small{font-size:13px;color:var(--faint)}
