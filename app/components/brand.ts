@@ -6,7 +6,7 @@ export const SITE_HOST = SITE.replace(/^https?:\/\//, "");
 export const CHAIN_NAME = process.env.NEXT_PUBLIC_CHAIN_NAME ?? "Robinhood Chain";
 export const CHAIN_ID = Number(process.env.NEXT_PUBLIC_CHAIN_ID ?? 4663);
 export const FACTORY = process.env.NEXT_PUBLIC_PAYOFF_FACTORY_ADDRESS ?? "";
-export const TWITTER = process.env.NEXT_PUBLIC_TWITTER_URL || "https://x.com/thepayoffchain";
+export const TWITTER = process.env.NEXT_PUBLIC_TWITTER_URL || "https://x.com/payoffchain_";
 export const TWITTER_HANDLE = "@" + TWITTER.replace(/\/$/, "").split("/").pop();
 /** The token contract address. Empty until launch: the nav shows "CA · soon". */
 export const TOKEN_CA = process.env.NEXT_PUBLIC_TOKEN_CA ?? "";
