@@ -240,3 +240,15 @@ html,body{overflow-x:hidden}
 /* holding page: the note under the wordmark */
 .soon-page .soon-note{max-width:460px;font-size:16px;line-height:1.55;color:var(--mute);margin-top:6px}
 .soon-page .soon-note.small{font-size:13px;color:var(--faint)}
+
+/* holding page message box */
+.soon-page .fb{width:min(520px,calc(100vw - 32px));display:grid;gap:10px;margin-top:10px;text-align:left}
+.soon-page .fb textarea,.soon-page .fb input{width:100%;padding:12px 14px;border:1px solid var(--rule-2);border-radius:14px;background:rgba(255,255,255,.85);font:inherit;font-size:15px;color:var(--ink)}
+.soon-page .fb textarea{resize:vertical;min-height:96px}
+.soon-page .fb-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.soon-page .fb .btn{justify-self:start}
+.soon-page .fb-trap{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.soon-page .fb-err{color:#c2412d;font-size:14px;margin:0}
+.soon-page .fb-note{font-size:12px;color:var(--faint);margin:0;letter-spacing:0;text-transform:none;font-family:inherit}
+.soon-page .fb-done{margin-top:10px;padding:14px 18px;border-radius:14px;background:#eef3ff;color:var(--ink);font-size:15px}
+@media(max-width:560px){.soon-page .fb-row{grid-template-columns:1fr}}

@@ -12,7 +12,8 @@ const COOKIE = "payoff_preview";
 export function middleware(req: NextRequest) {
   if (!LOCKED) return NextResponse.next();
   const url = req.nextUrl;
-  if (url.pathname === "/soon") return NextResponse.next();
+  // the holding page itself and the team's inbox reader stay reachable
+  if (url.pathname === "/soon" || url.pathname === "/inbox") return NextResponse.next();
 
   const given = url.searchParams.get("preview");
   if (KEY && given === KEY) {
