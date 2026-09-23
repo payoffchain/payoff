@@ -93,5 +93,5 @@ Some ISP resolvers hijack `rpc.mainnet.chain.robinhood.com` and serve an expired
 
 `NEXT_PUBLIC_APP_NAME` changes the wordmark; contract names are `Payoff*`. Everything else is chain constants.
 
-<p align="center"><img src=".github/assets/demo.gif" alt="The product tour: pick a stock, open the loan, fees pay it down" width="760"></p>
+<p align="center"><img src=".github/assets/flow.svg" alt="How it works: deposit a stock token, borrow USDG, the pool earns trading fees, the fees repay the debt" width="100%"></p>
 

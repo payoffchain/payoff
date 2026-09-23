@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 460" width="1200" height="460" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#e9eefb"/></linearGradient>
+    <linearGradient id="card" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#eef3ff"/></linearGradient>
+    <linearGradient id="ice" x1="0" x2="1"><stop offset="0" stop-color="#8aa4ff"/><stop offset="1" stop-color="#4f6be0"/></linearGradient>
+    <filter id="sh" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="14" stdDeviation="14" flood-color="#3c55a8" flood-opacity=".18"/></filter>
+    <style>
+      text{fill:#1c2a4a} .cw{fill:#fff}
+      .t{font-size:13px;letter-spacing:3px;fill:#6f8df5;font-weight:600}
+      .h{font-size:22px;font-weight:700}
+      .s{font-size:14px;fill:#6b7ba3}
+      .card{animation:lift 8s ease-in-out infinite}
+      .c2{animation-delay:.5s}.c3{animation-delay:1s}.c4{animation-delay:1.5s}
+      @keyframes lift{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+      .wire{stroke-dasharray:6 8;animation:flow 1.2s linear infinite}
+      @keyframes flow{to{stroke-dashoffset:-28}}
+      .coin{animation:travel 4s ease-in-out infinite}
+      .k2{animation-delay:1.3s}.k3{animation-delay:2.6s}
+      @keyframes travel{0%{transform:translate(0,0);opacity:0}8%{opacity:1}45%{transform:translate(290px,0)}55%{transform:translate(290px,0)}92%{opacity:1}100%{transform:translate(580px,0);opacity:0}}
+      .fee{animation:fee 3s ease-in infinite;opacity:0}
+      .e2{animation-delay:1s}.e3{animation-delay:2s}
+      @keyframes fee{0%{transform:translate(0,0);opacity:0}15%{opacity:1}85%{opacity:1}100%{transform:translate(-300px,118px);opacity:0}}
+      .debt{animation:shrink 9s ease-in-out infinite;transform-box:fill-box;transform-origin:left}
+      @keyframes shrink{0%{transform:scaleX(1)}80%{transform:scaleX(.22)}100%{transform:scaleX(1)}}
+      .num{animation:blink 9s steps(1) infinite}
+      .candle{animation:bob 2.4s ease-in-out infinite;transform-box:fill-box;transform-origin:bottom}
+      .d2{animation-delay:.4s}.d3{animation-delay:.8s}.d4{animation-delay:1.2s}.d5{animation-delay:1.6s}
+      @keyframes bob{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.35)}}
+      .dot{animation:pulse 1.6s ease-in-out infinite}
+      @keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
+    </style>
+  </defs>
+  <rect width="1200" height="460" fill="url(#bg)"/>
+  <text x="60" y="54" class="t">HOW IT WORKS</text>
+
+  <!-- wires -->
+  <path class="wire" d="M300 160 H350" stroke="#7d97ff" stroke-width="3" fill="none"/>
+  <path class="wire" d="M590 160 H640" stroke="#7d97ff" stroke-width="3" fill="none"/>
+  <path class="wire" d="M880 160 H930" stroke="#7d97ff" stroke-width="3" fill="none"/>
+  <path class="wire" d="M1030 230 V330 H640" stroke="#35c486" stroke-width="3" fill="none"/>
+
+  <!-- 1 stock -->
+  <g class="card"><g filter="url(#sh)"><rect x="60" y="90" width="240" height="140" rx="22" fill="url(#card)" stroke="#fff" stroke-width="2"/></g>
+    <text x="84" y="124" class="t">01 · DEPOSIT</text><text x="84" y="160" class="h">Your stock token</text><text x="84" y="186" class="s">NVDA, AAPL, SPY…</text><text x="84" y="208" class="s">stays yours</text></g>
+
+  <!-- 2 borrow -->
+  <g class="card c2"><g filter="url(#sh)"><rect x="350" y="90" width="240" height="140" rx="22" fill="url(#card)" stroke="#fff" stroke-width="2"/></g>
+    <text x="374" y="124" class="t">02 · BORROW</text><text x="374" y="160" class="h">USDG loan</text><text x="374" y="186" class="s">on Morpho, up to the</text><text x="374" y="208" class="s">ceiling you set</text></g>
+
+  <!-- 3 pool -->
+  <g class="card c3"><g filter="url(#sh)"><rect x="640" y="90" width="240" height="140" rx="22" fill="url(#card)" stroke="#fff" stroke-width="2"/></g>
+    <text x="664" y="124" class="t">03 · EARN</text><text x="664" y="160" class="h">Trading pool</text>
+    <rect class="candle" x="664" y="186" width="10" height="22" rx="2" fill="#8aa4ff"/><rect class="candle d2" x="680" y="180" width="10" height="28" rx="2" fill="#5b78f2"/><rect class="candle d3" x="696" y="190" width="10" height="18" rx="2" fill="#8aa4ff"/><rect class="candle d4" x="712" y="176" width="10" height="32" rx="2" fill="#5b78f2"/><rect class="candle d5" x="728" y="184" width="10" height="24" rx="2" fill="#8aa4ff"/>
+    <text x="752" y="202" class="s">every swap pays</text></g>
+
+  <!-- 4 fees -->
+  <g class="card c4"><g filter="url(#sh)"><rect x="930" y="90" width="210" height="140" rx="22" fill="url(#card)" stroke="#fff" stroke-width="2"/></g>
+    <text x="954" y="124" class="t">04 · REPAY</text><text x="954" y="160" class="h">Fees collected</text><text x="954" y="186" class="s">sent straight to</text><text x="954" y="208" class="s">your debt</text></g>
+
+  <!-- coins moving along the top -->
+  <g font-size="12" font-weight="700" fill="#fff">
+    <g class="coin"><circle cx="326" cy="160" r="11" fill="url(#ice)"/><text class="cw" x="321" y="164">$</text></g>
+    <g class="coin k2"><circle cx="326" cy="160" r="11" fill="url(#ice)"/><text class="cw" x="321" y="164">$</text></g>
+    <g class="coin k3"><circle cx="326" cy="160" r="11" fill="url(#ice)"/><text class="cw" x="321" y="164">$</text></g>
+  </g>
+  <!-- fees falling back to the debt -->
+  <g font-size="12" font-weight="700">
+    <text class="fee" x="1000" y="262" fill="#35c486">+ fee</text>
+    <text class="fee e2" x="1000" y="262" fill="#35c486">+ fee</text>
+    <text class="fee e3" x="1000" y="262" fill="#35c486">+ fee</text>
+  </g>
+
+  <!-- debt bar -->
+  <g filter="url(#sh)"><rect x="60" y="290" width="580" height="110" rx="22" fill="url(#card)" stroke="#fff" stroke-width="2"/></g>
+  <text x="84" y="324" class="t">YOUR DEBT</text>
+  <rect x="84" y="342" width="530" height="18" rx="9" fill="#dfe6f7"/>
+  <rect class="debt" x="84" y="342" width="530" height="18" rx="9" fill="#e8623f"/>
+  <text x="84" y="386" class="s">goes down on its own while you keep the shares</text>
+
+  <circle class="dot" cx="700" cy="380" r="6" fill="#35c486"/>
+  <text x="716" y="385" class="s">auto-repay checks every vault once a minute · only the owner can withdraw</text>
+</svg>
