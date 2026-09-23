@@ -1,82 +1,94 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 460" width="1200" height="460" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 560" width="1200" height="560" font-family="Segoe UI, Helvetica, Arial, sans-serif">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#e9eefb"/></linearGradient>
-    <linearGradient id="card" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#eef3ff"/></linearGradient>
-    <linearGradient id="ice" x1="0" x2="1"><stop offset="0" stop-color="#8aa4ff"/><stop offset="1" stop-color="#4f6be0"/></linearGradient>
-    <filter id="sh" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="14" stdDeviation="14" flood-color="#3c55a8" flood-opacity=".18"/></filter>
+    <radialGradient id="bg" cx=".5" cy=".5" r=".75"><stop offset="0" stop-color="#16214a"/><stop offset=".6" stop-color="#0b1130"/><stop offset="1" stop-color="#060919"/></radialGradient>
+    <radialGradient id="orb" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#ffffff"/><stop offset=".25" stop-color="#b9c8ff"/><stop offset=".7" stop-color="#4f6be0"/><stop offset="1" stop-color="#1b2a78"/></radialGradient>
+    <radialGradient id="halo"><stop offset="0" stop-color="#6f8df5" stop-opacity=".55"/><stop offset="1" stop-color="#6f8df5" stop-opacity="0"/></radialGradient>
+    <linearGradient id="ring" x1="0" x2="1"><stop offset="0" stop-color="#8aa4ff"/><stop offset=".5" stop-color="#35c486"/><stop offset="1" stop-color="#8aa4ff"/></linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#26356f" stop-opacity=".95"/><stop offset="1" stop-color="#121a45" stop-opacity=".95"/></linearGradient>
+    <linearGradient id="edge" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9fb4ff"/><stop offset="1" stop-color="#3a4fb0" stop-opacity=".3"/></linearGradient>
+    <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.2" fill="#7d97ff" opacity=".18"/></pattern>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="sh" x="-30%" y="-30%" width="160%" height="190%"><feDropShadow dx="0" dy="16" stdDeviation="16" flood-color="#000" flood-opacity=".5"/></filter>
+    <path id="orbit" d="M600 110 A430 170 0 1 1 599.9 110 Z"/>
     <style>
-      text{fill:#1c2a4a} .cw{fill:#fff} .fee{fill:#35c486}
-      .t{font-size:13px;letter-spacing:3px;fill:#6f8df5;font-weight:600}
-      .h{font-size:22px;font-weight:700}
-      .s{font-size:14px;fill:#6b7ba3}
-      .card{animation:lift 8s ease-in-out infinite}
-      .c2{animation-delay:.5s}.c3{animation-delay:1s}.c4{animation-delay:1.5s}
-      @keyframes lift{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-      .wire{stroke-dasharray:6 8;animation:flow 1.2s linear infinite}
-      @keyframes flow{to{stroke-dashoffset:-28}}
-      .coin{animation:travel 4s ease-in-out infinite}
-      .k2{animation-delay:1.3s}.k3{animation-delay:2.6s}
-      @keyframes travel{0%{transform:translate(0,0);opacity:0}8%{opacity:1}45%{transform:translate(290px,0)}55%{transform:translate(290px,0)}92%{opacity:1}100%{transform:translate(580px,0);opacity:0}}
-      .fee{animation:fee 3s ease-in infinite;opacity:0}
-      .e2{animation-delay:1s}.e3{animation-delay:2s}
-      @keyframes fee{0%{transform:translate(0,0);opacity:0}15%{opacity:1}85%{opacity:1}100%{transform:translate(-300px,118px);opacity:0}}
-      .debt{animation:shrink 9s ease-in-out infinite;transform-box:fill-box;transform-origin:left}
-      @keyframes shrink{0%{transform:scaleX(1)}80%{transform:scaleX(.22)}100%{transform:scaleX(1)}}
-      .num{animation:blink 9s steps(1) infinite}
-      .candle{animation:bob 2.4s ease-in-out infinite;transform-box:fill-box;transform-origin:bottom}
-      .d2{animation-delay:.4s}.d3{animation-delay:.8s}.d4{animation-delay:1.2s}.d5{animation-delay:1.6s}
-      @keyframes bob{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.35)}}
-      .dot{animation:pulse 1.6s ease-in-out infinite}
-      @keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
+      .t{font-size:12px;letter-spacing:3px;fill:#8aa4ff;font-weight:700}
+      .h{font-size:20px;font-weight:700;fill:#fff}
+      .s{font-size:13px;fill:#9aa8d6}
+      .node{animation:float 6s ease-in-out infinite}
+      .n2{animation-delay:1.5s}.n3{animation-delay:3s}.n4{animation-delay:4.5s}
+      @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+      .spin{animation:spin 24s linear infinite;transform-origin:600px 280px}
+      .spinr{animation:spin 16s linear infinite reverse;transform-origin:600px 280px}
+      @keyframes spin{to{transform:rotate(360deg)}}
+      .debt{stroke-dasharray:440;animation:pay 9s ease-in-out infinite}
+      @keyframes pay{0%{stroke-dashoffset:40}80%{stroke-dashoffset:360}100%{stroke-dashoffset:40}}
+      .pulse{animation:pulse 3s ease-in-out infinite;transform-origin:600px 280px}
+      @keyframes pulse{0%,100%{transform:scale(1);opacity:.7}50%{transform:scale(1.18);opacity:1}}
+      .tw{animation:tw 2.4s ease-in-out infinite}
+      @keyframes tw{0%,100%{opacity:.2}50%{opacity:1}}
+      .pct{animation:pct 9s steps(1) infinite}
     </style>
   </defs>
-  <rect width="1200" height="460" fill="url(#bg)"/>
-  <text x="60" y="54" class="t">HOW IT WORKS</text>
 
-  <!-- wires -->
-  <path class="wire" d="M300 160 H350" stroke="#7d97ff" stroke-width="3" fill="none"/>
-  <path class="wire" d="M590 160 H640" stroke="#7d97ff" stroke-width="3" fill="none"/>
-  <path class="wire" d="M880 160 H930" stroke="#7d97ff" stroke-width="3" fill="none"/>
-  <path class="wire" d="M1030 230 V330 H640" stroke="#35c486" stroke-width="3" fill="none"/>
+  <rect width="1200" height="560" fill="url(#bg)"/>
+  <rect width="1200" height="560" fill="url(#dots)"/>
+  <text x="60" y="58" class="t">HOW IT WORKS</text>
+  <text x="60" y="84" class="s">one loop, running every minute</text>
 
-  <!-- 1 stock -->
-  <g class="card"><g filter="url(#sh)"><rect x="60" y="90" width="240" height="140" rx="22" fill="url(#card)" stroke="#fff" stroke-width="2"/></g>
-    <text x="84" y="124" class="t">01 · DEPOSIT</text><text x="84" y="160" class="h">Your stock token</text><text x="84" y="186" class="s">NVDA, AAPL, SPY…</text><text x="84" y="208" class="s">stays yours</text></g>
+  <!-- orbit track -->
+  <use href="#orbit" fill="none" stroke="#2a3a80" stroke-width="2"/>
+  <use href="#orbit" fill="none" stroke="url(#ring)" stroke-width="3" stroke-dasharray="4 14" opacity=".8" filter="url(#glow)">
+    <animate attributeName="stroke-dashoffset" from="0" to="-180" dur="3s" repeatCount="indefinite"/>
+  </use>
 
-  <!-- 2 borrow -->
-  <g class="card c2"><g filter="url(#sh)"><rect x="350" y="90" width="240" height="140" rx="22" fill="url(#card)" stroke="#fff" stroke-width="2"/></g>
-    <text x="374" y="124" class="t">02 · BORROW</text><text x="374" y="160" class="h">USDG loan</text><text x="374" y="186" class="s">against your shares, up to</text><text x="374" y="208" class="s">the ceiling you set</text></g>
-
-  <!-- 3 pool -->
-  <g class="card c3"><g filter="url(#sh)"><rect x="640" y="90" width="240" height="140" rx="22" fill="url(#card)" stroke="#fff" stroke-width="2"/></g>
-    <text x="664" y="124" class="t">03 · EARN</text><text x="664" y="160" class="h">Trading pool</text>
-    <rect class="candle" x="664" y="186" width="10" height="22" rx="2" fill="#8aa4ff"/><rect class="candle d2" x="680" y="180" width="10" height="28" rx="2" fill="#5b78f2"/><rect class="candle d3" x="696" y="190" width="10" height="18" rx="2" fill="#8aa4ff"/><rect class="candle d4" x="712" y="176" width="10" height="32" rx="2" fill="#5b78f2"/><rect class="candle d5" x="728" y="184" width="10" height="24" rx="2" fill="#8aa4ff"/>
-    <text x="752" y="202" class="s">every swap pays</text></g>
-
-  <!-- 4 fees -->
-  <g class="card c4"><g filter="url(#sh)"><rect x="930" y="90" width="210" height="140" rx="22" fill="url(#card)" stroke="#fff" stroke-width="2"/></g>
-    <text x="954" y="124" class="t">04 · REPAY</text><text x="954" y="160" class="h">Fees collected</text><text x="954" y="186" class="s">sent straight to</text><text x="954" y="208" class="s">your debt</text></g>
-
-  <!-- coins moving along the top -->
-  <g font-size="12" font-weight="700" fill="#fff">
-    <g class="coin"><circle cx="326" cy="160" r="11" fill="url(#ice)"/><text class="cw" x="321" y="164">$</text></g>
-    <g class="coin k2"><circle cx="326" cy="160" r="11" fill="url(#ice)"/><text class="cw" x="321" y="164">$</text></g>
-    <g class="coin k3"><circle cx="326" cy="160" r="11" fill="url(#ice)"/><text class="cw" x="321" y="164">$</text></g>
-  </g>
-  <!-- fees falling back to the debt -->
-  <g font-size="12" font-weight="700">
-    <text class="fee" x="1000" y="262" fill="#35c486">+ fee</text>
-    <text class="fee e2" x="1000" y="262" fill="#35c486">+ fee</text>
-    <text class="fee e3" x="1000" y="262" fill="#35c486">+ fee</text>
+  <!-- particles riding the loop -->
+  <g filter="url(#glow)">
+    <circle r="7" fill="#8aa4ff"><animateMotion dur="8s" repeatCount="indefinite"><mpath href="#orbit"/></animateMotion></circle>
+    <circle r="5" fill="#35c486"><animateMotion dur="8s" begin="-2s" repeatCount="indefinite"><mpath href="#orbit"/></animateMotion></circle>
+    <circle r="7" fill="#8aa4ff"><animateMotion dur="8s" begin="-4s" repeatCount="indefinite"><mpath href="#orbit"/></animateMotion></circle>
+    <circle r="5" fill="#35c486"><animateMotion dur="8s" begin="-6s" repeatCount="indefinite"><mpath href="#orbit"/></animateMotion></circle>
   </g>
 
-  <!-- debt bar -->
-  <g filter="url(#sh)"><rect x="60" y="290" width="580" height="110" rx="22" fill="url(#card)" stroke="#fff" stroke-width="2"/></g>
-  <text x="84" y="324" class="t">YOUR DEBT</text>
-  <rect x="84" y="342" width="530" height="18" rx="9" fill="#dfe6f7"/>
-  <rect class="debt" x="84" y="342" width="530" height="18" rx="9" fill="#e8623f"/>
-  <text x="84" y="386" class="s">goes down on its own while you keep the shares</text>
+  <!-- core: the vault and its debt ring -->
+  <circle cx="600" cy="280" r="150" fill="url(#halo)" class="pulse"/>
+  <g class="spin"><circle cx="600" cy="280" r="112" fill="none" stroke="#6f8df5" stroke-width="1.5" stroke-dasharray="2 10" opacity=".7"/></g>
+  <g class="spinr"><circle cx="600" cy="280" r="124" fill="none" stroke="#35c486" stroke-width="1" stroke-dasharray="30 40" opacity=".5"/></g>
+  <circle cx="600" cy="280" r="70" fill="none" stroke="#1d2757" stroke-width="12"/>
+  <circle class="debt" cx="600" cy="280" r="70" fill="none" stroke="#e8623f" stroke-width="12" stroke-linecap="round" transform="rotate(-90 600 280)" filter="url(#glow)"/>
+  <circle cx="600" cy="280" r="54" fill="url(#orb)" filter="url(#sh)"/>
+  <text x="600" y="276" text-anchor="middle" font-size="11" letter-spacing="2" font-weight="700" fill="#0b1130">YOUR DEBT</text>
+  <text x="600" y="296" text-anchor="middle" font-size="13" font-weight="700" fill="#0b1130">going down</text>
 
-  <circle class="dot" cx="700" cy="380" r="6" fill="#35c486"/>
-  <text x="716" y="385" class="s">auto-repay checks every vault once a minute · only the owner can withdraw</text>
+  <!-- nodes: deposit (top) → borrow (right) → earn (bottom) → repay (left) -->
+  <g class="node" filter="url(#sh)">
+    <rect x="490" y="70" width="220" height="80" rx="20" fill="url(#glass)" stroke="url(#edge)" stroke-width="1.5"/>
+    <circle cx="526" cy="110" r="18" fill="#6f8df5"/><text x="526" y="116" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">1</text>
+    <text x="554" y="102" class="t">DEPOSIT</text><text x="554" y="128" class="h">Stock token</text>
+  </g>
+  <g class="node n2" filter="url(#sh)">
+    <rect x="920" y="240" width="230" height="80" rx="20" fill="url(#glass)" stroke="url(#edge)" stroke-width="1.5"/>
+    <circle cx="956" cy="280" r="18" fill="#6f8df5"/><text x="956" y="286" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">2</text>
+    <text x="984" y="272" class="t">BORROW</text><text x="984" y="298" class="h">USDG loan</text>
+  </g>
+  <g class="node n3" filter="url(#sh)">
+    <rect x="480" y="410" width="240" height="80" rx="20" fill="url(#glass)" stroke="url(#edge)" stroke-width="1.5"/>
+    <circle cx="516" cy="450" r="18" fill="#35c486"/><text x="516" y="456" text-anchor="middle" font-size="16" font-weight="700" fill="#0b1130">3</text>
+    <text x="544" y="442" class="t">EARN</text><text x="544" y="468" class="h">Pool fees</text>
+    <g fill="#35c486"><rect x="660" y="446" width="6" height="18" rx="2" class="tw"/><rect x="670" y="438" width="6" height="26" rx="2" class="tw" style="animation-delay:.4s"/><rect x="680" y="444" width="6" height="20" rx="2" class="tw" style="animation-delay:.8s"/><rect x="690" y="434" width="6" height="30" rx="2" class="tw" style="animation-delay:1.2s"/></g>
+  </g>
+  <g class="node n4" filter="url(#sh)">
+    <rect x="50" y="240" width="230" height="80" rx="20" fill="url(#glass)" stroke="url(#edge)" stroke-width="1.5"/>
+    <circle cx="86" cy="280" r="18" fill="#e8623f"/><text x="86" y="286" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">4</text>
+    <text x="114" y="272" class="t">REPAY</text><text x="114" y="298" class="h">Fees hit debt</text>
+  </g>
+
+  <!-- stars -->
+  <g fill="#fff">
+    <circle cx="160" cy="130" r="1.6" class="tw"/><circle cx="1040" cy="110" r="1.8" class="tw" style="animation-delay:.8s"/>
+    <circle cx="1100" cy="460" r="1.4" class="tw" style="animation-delay:1.6s"/><circle cx="220" cy="470" r="1.6" class="tw" style="animation-delay:1.1s"/>
+    <circle cx="880" cy="170" r="1.2" class="tw" style="animation-delay:.3s"/><circle cx="330" cy="400" r="1.2" class="tw" style="animation-delay:2s"/>
+  </g>
+
+  <circle cx="72" cy="526" r="5" fill="#35c486" class="tw"/>
+  <text x="86" y="531" class="s">auto-repay checks every vault once a minute · only the owner can withdraw</text>
 </svg>
