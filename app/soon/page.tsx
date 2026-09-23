@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { APP, TWITTER, TWITTER_HANDLE } from "../components/brand";
+import { APP } from "../components/brand";
 import FeedbackForm from "../components/FeedbackForm";
 
 export const metadata: Metadata = { title: "Paused", robots: { index: false, follow: false } };
@@ -9,7 +9,7 @@ export const metadata: Metadata = { title: "Paused", robots: { index: false, fol
  * replaces the main message; the form under it collects messages for the team.
  */
 const NOTE = process.env.SITE_LOCKED_NOTE
-  ?? "We were not able to recover our original X account, so the site is paused while we decide how to keep in touch with you.";
+  ?? "We have created five X accounts for PAYOFF and every one of them was suspended, so we are stepping away from X and pausing the site for now.";
 
 export default function Soon() {
   return (
@@ -19,8 +19,7 @@ export default function Soon() {
       <h1>{APP}</h1>
       <p>paused</p>
       <span className="soon-note">{NOTE}</span>
-      <span className="soon-note"><b>Update:</b> thank you for every message. Our new official X account is live, follow it for news. A Discord for the community comes next.</span>
-      {TWITTER && <a href={TWITTER} target="_blank" rel="noopener noreferrer">𝕏 Follow {TWITTER_HANDLE}</a>}
+      <span className="soon-note"><b>Update:</b> thank you for every message you left here. We will share a new way to reach us on this page once it is ready. Until then, leave a message below.</span>
       <FeedbackForm />
       <span className="soon-note small">Contracts on chain are not affected. Vault owners keep full control of their vaults through the block explorer at any time.</span>
     </main>
