@@ -1,4 +1,3 @@
-<p align="center"><img src=".github/assets/banner.svg" alt="PAYOFF, self-repaying loans on Robinhood Chain" width="100%"></p>
 
 <p align="center">
   <a href="https://payoffchain.tech"><img alt="Website" src="https://img.shields.io/badge/site-payoffchain.tech-5b78f2?style=for-the-badge"></a>
