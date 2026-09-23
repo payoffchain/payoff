@@ -19,7 +19,7 @@ export default function Soon() {
       <h1>{APP}</h1>
       <p>paused</p>
       <span className="soon-note">{NOTE}</span>
-      <span className="soon-note">Should we start a new X account, or is there a better way for you to follow us? We would like to hear from you.</span>
+      <span className="soon-note"><b>Update:</b> we have read every message you left here, thank you. Based on your feedback we are starting a new X account, and once that is set up we will open a Discord for the community. We will post both links on this page as soon as they are ready.</span>
       <FeedbackForm />
       <span className="soon-note small">Contracts on chain are not affected. Vault owners keep full control of their vaults through the block explorer at any time.</span>
     </main>
