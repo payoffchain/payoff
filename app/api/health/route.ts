@@ -28,7 +28,7 @@ export const GET = handler("health", async () => {
   const snap = snapshotInfo();
   checks.snapshot = snap.chainId === CHAIN_ID && (!snap.morpho || snap.morpho.toLowerCase() === (checks.MORPHO_ADDRESS.ok ? checks.MORPHO_ADDRESS.detail.toLowerCase() : ""))
     ? { ok: true, detail: `${snap.count} markets as of ${snap.fetchedAt}` }
-    : { ok: false, detail: "lib/morpho-markets.json was synced for another chain or Morpho address; run npm run sync-markets" };
+    : { ok: false, detail: "lib/morpho-markets.json was synced for another chain or the market address; run npm run sync-markets" };
 
   let block: number | null = null;
   try {

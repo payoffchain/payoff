@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * The self-repaying loop, animated: stock tokens sit in a Morpho vault, USDG is borrowed
+ * The self-repaying loop, animated: stock tokens sit in a the market vault, USDG is borrowed
  * against them, the USDG earns fees in a Uniswap V3 pool, and the fees flow back onto
  * the debt, which shrinks. Pure SVG + CSS; nothing to load.
  *
@@ -44,7 +44,7 @@ export default function LoopDiagram({ symbol = "NVDA" }: { symbol?: string }) {
         <g className="node float-a">
           <rect x="20" y="60" width="150" height="80" rx="16" />
           <text x="95" y="90" className="t-l">{symbol}</text>
-          <text x="95" y="108" className="t-s">in Morpho</text>
+          <text x="95" y="108" className="t-s">in the market</text>
           <text x="95" y="126" className="t-xs">your vault</text>
         </g>
 

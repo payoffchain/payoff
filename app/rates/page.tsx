@@ -27,11 +27,11 @@ export default function Rates() {
   return (
     <>
       <Nav />
-      <DataBanner live={b.live && !!b.data?.live} loading={b.loading} error={b.error ?? b.data?.error ?? null} what={b.data && !b.data.live ? `Live rates unavailable — showing the snapshot from ${b.data.snapshot.fetchedAt.slice(0, 16).replace("T", " ")} UTC` : "Morpho rates"} />
+      <DataBanner live={b.live && !!b.data?.live} loading={b.loading} error={b.error ?? b.data?.error ?? null} what={b.data && !b.data.live ? `Live rates unavailable — showing the snapshot from ${b.data.snapshot.fetchedAt.slice(0, 16).replace("T", " ")} UTC` : "Lending rates"} />
       <main className="wrap" style={{ padding: "48px 24px 80px" }}>
-        <span className="eyebrow">Rate comparison · Morpho Blue on {CHAIN_NAME}</span>
+        <span className="eyebrow">Rate comparison · Lending on {CHAIN_NAME}</span>
         <h2>Every USDG market, by collateral.</h2>
-        <p className="lede">Borrow APY is read from each market's interest-rate model on chain. The cheapest market with at least {usd(b.data?.minLiquidityUsd ?? 100)} available is marked best. Click a collateral to see all of its markets — that spread is what a vault can hop between. Supplied and borrowed are totals for the whole Morpho market, from everyone who uses it, not only loans opened through PAYOFF.</p>
+        <p className="lede">Borrow APY is read from each market's interest-rate model on chain. The cheapest market with at least {usd(b.data?.minLiquidityUsd ?? 100)} available is marked best. Click a collateral to see all of its markets — that spread is what a vault can hop between. Supplied and borrowed are totals for the whole the market market, from everyone who uses it, not only loans opened through PAYOFF.</p>
         <div className="row" style={{ marginTop: 22 }}>
           <div className="seg"><button className={stocksOnly ? "on" : ""} onClick={() => setStocksOnly(true)}>Stocks</button><button className={!stocksOnly ? "on" : ""} onClick={() => setStocksOnly(false)}>All collateral</button></div>
           <input placeholder="Search ticker" value={q} onChange={(e) => setQ(e.target.value)} style={{ padding: "8px 12px", border: "1px solid var(--rule-2)", borderRadius: 999, background: "#fff" }} />
@@ -39,7 +39,7 @@ export default function Rates() {
         </div>
         <div className="tblwrap" style={{ marginTop: 22 }}>
           <table className="tbl">
-            <thead><tr><th>Collateral</th><th className="r">Price (oracle)</th><th className="r">Best borrow</th><th className="r">at LLTV</th><th className="r">Available</th><th className="r">Supplied on Morpho</th><th className="r">Borrowed on Morpho</th><th className="r">Markets</th></tr></thead>
+            <thead><tr><th>Collateral</th><th className="r">Price (oracle)</th><th className="r">Best borrow</th><th className="r">at LLTV</th><th className="r">Available</th><th className="r">Supplied</th><th className="r">Borrowed</th><th className="r">Markets</th></tr></thead>
             <tbody>
               {groups.map((g) => {
                 const supplied = g.rows.reduce((a, r) => a + r.totalSupplyUsd, 0);
@@ -60,7 +60,7 @@ export default function Rates() {
                     <tr key={g.collateral.address + "-x"}>
                       <td colSpan={8} style={{ background: "var(--paper-2)", padding: 0 }}>
                         <table className="tbl" style={{ fontSize: 12 }}>
-                          <thead><tr><th>Market</th><th className="r">LLTV</th><th className="r">Borrow APY</th><th className="r">Supply APY</th><th className="r">Utilization</th><th className="r">Available</th><th className="r">Supplied on Morpho</th><th className="r">Borrowed on Morpho</th><th></th></tr></thead>
+                          <thead><tr><th>Market</th><th className="r">LLTV</th><th className="r">Borrow APY</th><th className="r">Supply APY</th><th className="r">Utilization</th><th className="r">Available</th><th className="r">Supplied</th><th className="r">Borrowed</th><th></th></tr></thead>
                           <tbody>
                             {g.rows.map((r) => (
                               <tr key={r.id}>
@@ -86,7 +86,7 @@ export default function Rates() {
             </tbody>
           </table>
         </div>
-        <p className="note" style={{ marginTop: 24 }}>Market params (tokens, oracle, IRM, LLTV) come from a snapshot of the Morpho API; rates, totals and oracle prices are read on chain each time. A market with tiny liquidity can show any rate — that is why "best" needs a minimum.</p>
+        <p className="note" style={{ marginTop: 24 }}>Market params (tokens, oracle, IRM, LLTV) come from a snapshot of the market API; rates, totals and oracle prices are read on chain each time. A market with tiny liquidity can show any rate — that is why "best" needs a minimum.</p>
       </main>
     </>
   );

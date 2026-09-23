@@ -67,7 +67,7 @@ export default function FundLoan({ vault, symbol, token, price, maxLtvBps, loanS
       {phase === "deposit" && (
         <>
           <h4>1 · Put your {symbol} in</h4>
-          <p>It goes into Morpho under your vault's name. Only your wallet can take it back out.</p>
+          <p>It goes into the lending market under your vault's name. Only your wallet can take it back out.</p>
           <div className="row" style={{ marginTop: 10, alignItems: "flex-end" }}>
             <div className="field" style={{ flex: 1, marginBottom: 0 }}>
               <label>Amount of {symbol}</label>

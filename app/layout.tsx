@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE),
   title: { default: `${APP} — self-repaying loans on Robinhood Chain`, template: `%s — ${APP}` },
   description:
-    "Borrow USDG against tokenized stocks on Morpho, and let the loan pay itself: the USDG earns Uniswap V3 trading fees that go straight onto your debt. Non-custodial: only you can take money out.",
+    "Borrow USDG against tokenized stocks, and let the loan pay itself: the USDG earns Uniswap V3 trading fees that go straight onto your debt. Non-custodial: only you can take money out.",
   openGraph: {
     type: "website",
     siteName: APP,

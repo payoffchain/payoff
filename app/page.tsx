@@ -116,7 +116,7 @@ export default function Landing() {
               <span key={k} style={{ display: "inline-flex", gap: 40 }}>
                 {ticker.length ? ticker.map((g) => (
                   <span key={g.collateral.address + k}><b>{g.collateral.symbol}</b> borrow <span className="up">{pct(g.best!.borrowApy)}</span> · LLTV {(g.best!.lltv * 100).toFixed(0)}% · {usd(g.best!.liquidityUsd)} available</span>
-                )) : <span>{board.loading ? "reading Morpho markets on Robinhood Chain…" : "Morpho rates unavailable right now"}</span>}
+                )) : <span>{board.loading ? "reading lending markets on Robinhood Chain…" : "Lending rates unavailable right now"}</span>}
               </span>
             ))}
           </div>
@@ -142,7 +142,7 @@ export default function Landing() {
           <div className="wrap">
             <div className="row" style={{ justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 16 }}>
               <div>
-                <span className="eyebrow">Markets · Morpho Blue on {CHAIN_NAME}</span>
+                <span className="eyebrow">Markets · Lending on {CHAIN_NAME}</span>
                 <h2 style={{ marginTop: 10 }}>Pick a stock. Borrow USDG against it.</h2>
               </div>
               <div className="row faint mono" style={{ fontSize: 12, gap: 18 }}>
@@ -201,7 +201,7 @@ export default function Landing() {
             <Reveal delay={100} style={{ marginTop: 28, maxWidth: 640 }}><LoopDiagram symbol={ticker[1]?.collateral.symbol ?? "NVDA"} /></Reveal>
             <div className="desk3">
               {[
-                { t: "deposit", n: "01", href: "/borrow", cta: "Open a loan ↗", p: "Put NVDA, TSLA, SPY or WETH into a vault contract only you own. It sits in a Morpho market under your vault's name and can leave only to your wallet." },
+                { t: "deposit", n: "01", href: "/borrow", cta: "Open a loan ↗", p: "Put NVDA, TSLA, SPY or WETH into a vault contract only you own. It sits in a lending market under your vault's name and can leave only to your wallet." },
                 { t: "borrow", n: "02", href: "/rates", cta: "See the rates ↗", p: "Borrow USDG against it, up to a ceiling you set. The USDG goes straight into the Uniswap pool for that stock, in a range around today's price." },
                 { t: "earn", n: "03", href: "/docs", cta: "Read the docs ↗", p: "Every swap in the pool pays your range a fee. Each collection lands on the loan. A cheaper market appears? The debt moves. Price nears your line? It repays first." },
               ].map((s, i) => (
@@ -210,9 +210,9 @@ export default function Landing() {
             </div>
             <div className="timeline" hidden>
               {[
-                { t: "Collateral in, USDG out", p: `Your NVDA, TSLA, SPY or WETH goes into a Morpho Blue market under a vault contract only you own. You borrow USDG up to a ceiling you set; Morpho's liquidation line is further out.` },
+                { t: "Collateral in, USDG out", p: `Your NVDA, TSLA, SPY or WETH goes into a lending market under a vault contract only you own. You borrow USDG up to a ceiling you set; the liquidation line is further out.` },
                 { t: "The loan goes to work", p: `Your USDG goes into the Uniswap V3 pool for that stock, in a range around today's price. Stock-token pools on ${CHAIN_NAME} turn over millions a day, and every swap pays the range a fee.` },
-                { t: "Fees pay the debt", p: `Every fee collected goes straight onto the loan. A cheaper market for the same stock? The debt moves there in one transaction. Price falling toward your safety line? Part of the loan is repaid before Morpho could ever liquidate.` },
+                { t: "Fees pay the debt", p: `Every fee collected goes straight onto the loan. A cheaper market for the same stock? The debt moves there in one transaction. Price falling toward your safety line? Part of the loan is repaid before the market could ever liquidate.` },
               ].map((s, i) => (
                 <Reveal key={s.t} delay={i * 120} className="tstep"><span className="dot">0{i + 1}</span><h3>{s.t}</h3><p>{s.p}</p></Reveal>
               ))}
@@ -235,8 +235,8 @@ export default function Landing() {
                 <p>The part that repays your loan may put USDG into the pool, collect fees onto the debt, move the debt to a cheaper market, and repay early. It cannot send a token to any address. Even if its key leaked, nobody could steal from you.</p>
               </Reveal>
               <Reveal className="card feature b-2" delay={0}><div className="ico">{I.oracle}</div><h3>Oracle-policed prices</h3><p>Every swap must fill at the oracle price less the slippage you allow; the pool's price is checked against it too. No price, no trade.</p></Reveal>
-              <Reveal className="card feature b-2" delay={100}><div className="ico">{I.flash}</div><h3>Atomic refinancing</h3><p>Morpho's own flash loan: repay the old market, move the collateral, borrow in the new one, repay the loan. All or nothing.</p></Reveal>
-              <Reveal className="card feature b-2" delay={200}><div className="ico">{I.life}</div><h3>Liquidation protection</h3><p>Choose a safety line below where Morpho would liquidate. When the price gets there, part of the loan is repaid: from idle USDG first, then the pool position, and only then a slice of collateral.</p></Reveal>
+              <Reveal className="card feature b-2" delay={100}><div className="ico">{I.flash}</div><h3>Atomic refinancing</h3><p>The lending market's own flash loan: repay the old market, move the collateral, borrow in the new one, repay the loan. All or nothing.</p></Reveal>
+              <Reveal className="card feature b-2" delay={200}><div className="ico">{I.life}</div><h3>Liquidation protection</h3><p>Choose a safety line below where the market would liquidate. When the price gets there, part of the loan is repaid: from idle USDG first, then the pool position, and only then a slice of collateral.</p></Reveal>
               <Reveal className="card feature b-6" delay={0} style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: 20, alignItems: "center" }}>
                 <div className="ico" style={{ marginBottom: 0 }}>{I.eye}</div>
                 <div><h3>Nothing hidden</h3><p>The rules auto-repay follows are one readable file. What it will do next is shown on every loan page before it happens, with the reason. Every action lands on chain and in the activity log.</p></div>

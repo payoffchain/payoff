@@ -13,7 +13,7 @@ import { usd } from "../components/format";
  * the interest costs, and how long the loan would take to pay itself off at that pace.
  * A price slider shows how far the stock can fall before protection or liquidation.
  *
- * Every input is live: prices and rates from the Morpho markets, fees from the swaps
+ * Every input is live: prices and rates from the lending markets, fees from the swaps
  * in the stock's Uniswap pool over the last 6 hours. It is an estimate, and says so.
  */
 
@@ -126,7 +126,7 @@ export default function Simulate() {
 
             <div className="sim-grid">
               <div className="card"><span className="lbl">Pool fees to your loan</span><b>{feesDay === null ? (pools === null ? <span className="faint" style={{ fontSize: 14 }}>reading the pool…</span> : "—") : usd(feesDay * 30, 2)}</b><span className="faint">a month, at the pool's pace over the last {pool?.volume?.hours ?? 6} h ({pool?.volume ? `${usd(pool.volume.volumeLoan, 0)} traded, ${pool.volume.swaps} swaps` : "no swaps seen"})</span></div>
-              <div className="card"><span className="lbl">Interest</span><b>{ok ? usd(interestDay * 30, 2) : "—"}</b><span className="faint">a month, at today's Morpho rate</span></div>
+              <div className="card"><span className="lbl">Interest</span><b>{ok ? usd(interestDay * 30, 2) : "—"}</b><span className="faint">a month, at today's lending rate</span></div>
               <div className="card"><span className="lbl">Loan pays itself off in</span><b className={netDay !== null && netDay > 0 ? "good" : ""}>{netDay === null ? "—" : span(days)}</b><span className="faint">{netDay !== null && netDay <= 0 ? "fees are lower than interest right now" : "if fees and rates stay as they are"}</span></div>
               <div className="card"><span className="lbl">Safety lines</span><b>{ok ? usd(protectAt) : "—"}</b><span className="faint">protection starts here · liquidation at {ok && liqAt ? usd(liqAt) : "—"} (price now {ok ? usd(price!) : "—"})</span></div>
             </div>

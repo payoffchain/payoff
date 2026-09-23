@@ -57,7 +57,7 @@ const SCENES: Scene[] = [
   },
   {
     title: "Choose a stock",
-    caption: "NVDA here. The cheapest Morpho market with real liquidity is picked for you.",
+    caption: "NVDA here. The cheapest lending market with real liquidity is picked for you.",
     seconds: 6,
     render: (t) => (
       <div className="dm-stage">
@@ -96,7 +96,7 @@ const SCENES: Scene[] = [
                 <div className="dm-field" key={l}><span className="dm-lbl">{l}</span><span className="dm-val">{(v * k).toFixed(l === "Max slippage" ? 1 : 0)}{u}</span><div className="dm-bar"><i style={{ width: `${Math.min(100, v * k * (l === "Max slippage" ? 20 : 1.4))}%` }} /></div></div>
               ))}
             </div>
-            <div className="dm-note" style={{ opacity: t > 0.7 ? 1 : 0 }}>At $224.72 per NVDA, 10 tokens let you borrow up to $1,011 USDG. The loan starts repaying itself if NVDA falls to $183.86. Morpho liquidates at $161.80.</div>
+            <div className="dm-note" style={{ opacity: t > 0.7 ? 1 : 0 }}>At $224.72 per NVDA, 10 tokens let you borrow up to $1,011 USDG. The loan starts repaying itself if NVDA falls to $183.86. The market liquidates at $161.80.</div>
           </div>
         </div>
       );
@@ -192,7 +192,7 @@ const SCENES: Scene[] = [
   },
   {
     title: "Move to a cheaper market, stay safe",
-    caption: "A cheaper Morpho market for the same stock? The debt moves there in one transaction. Price at your safety line? The loan repays part of itself first.",
+    caption: "A cheaper lending market for the same stock? The debt moves there in one transaction. Price at your safety line? The loan repays part of itself first.",
     seconds: 7,
     render: (t) => (
       <div className="dm-stage">
@@ -200,13 +200,13 @@ const SCENES: Scene[] = [
           <div className="dm-h">What happens next</div>
           <div className="dm-card" style={{ opacity: t > 0.1 ? 1 : 0 }}>
             <div className="dm-row"><b>REFINANCE</b><span className="green mono">$0.42/yr</span></div>
-            <div className="dm-faint">market 0xbe3a5355 borrows at 0.31% vs 0.75% here (saves 44 bps) · atomic via Morpho flash loan</div>
+            <div className="dm-faint">market 0xbe3a5355 borrows at 0.31% vs 0.75% here (saves 44 bps) · atomic via flash loan</div>
             <div className="dm-bar" style={{ marginTop: 8 }}><i style={{ width: `${Math.min(100, Math.max(0, (t - 0.2) * 200))}%` }} /></div>
             {t > 0.7 && <div className="green" style={{ marginTop: 6 }}>✓ Refinanced · debt 60 → market 0xbe3a5355 · LTV 13.4%</div>}
           </div>
           <div className="dm-card" style={{ opacity: t > 0.55 ? 1 : 0.35 }}>
             <div className="dm-row"><b>PROTECT</b><span className="dm-faint mono">standing by</span></div>
-            <div className="dm-faint">at the 55% safety line: repays 25% of the debt from idle USDG, then the pool position, then a slice of collateral, before Morpho could liquidate at 63%.</div>
+            <div className="dm-faint">at the 55% safety line: repays 25% of the debt from idle USDG, then the pool position, then a slice of collateral, before the market could liquidate at 63%.</div>
           </div>
         </div>
       </div>

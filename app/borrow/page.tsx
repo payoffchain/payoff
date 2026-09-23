@@ -23,7 +23,7 @@ import FundLoan from "../components/FundLoan";
  * more than one decision at once.
  *
  *   1. connect the wallet that will OWN the vault
- *   2. choose the stock to borrow against (the best Morpho market is picked for you)
+ *   2. choose the stock to borrow against (the best the market market is picked for you)
  *   3. choose how careful the agent should be (three presets; fine-tune if you like)
  *   4. create the agent's key in this browser (it can work, it cannot withdraw)
  *   5. sign once; then deposit, borrow, and start the runner
@@ -95,7 +95,7 @@ function DeployInner() {
     if (p.maxLtvBps > 9500) return "the borrow ceiling cannot exceed 95%";
     if (p.triggerLtvBps < p.maxLtvBps) return "the protection trigger must be at or above the borrow ceiling";
     if (p.triggerLtvBps > 10_000) return "the trigger cannot exceed 100%";
-    if (!lltvOk) return `the trigger must sit below this market's liquidation line (${((market?.lltv ?? 0) * 100).toFixed(0)}%); otherwise Morpho liquidates before the agent can act`;
+    if (!lltvOk) return `the trigger must sit below this market's liquidation line (${((market?.lltv ?? 0) * 100).toFixed(0)}%); otherwise the market liquidates before the agent can act`;
     if (p.repayBps <= 0 || p.repayBps > 10_000) return "the repay share must be between 0.01% and 100%";
     if (p.maxSlippageBps < 10) return "slippage must be at least 0.1%, or no swap could ever clear the pool fee";
     if (p.maxSlippageBps > 2000) return "slippage cannot exceed 20%";
@@ -188,7 +188,7 @@ function DeployInner() {
             <span className="wz-num">2</span>
             <div>
               <h3>Choose the stock to borrow against</h3>
-              <p>You deposit this token as collateral and borrow USDG against it. The cheapest Morpho market with real liquidity is picked for you.</p>
+              <p>You deposit this token as collateral and borrow USDG against it. The cheapest lending market with real liquidity is picked for you.</p>
               <div className="mk-head" style={{ marginTop: 14 }}>
                 <label className="mk-search"><input placeholder="Search a ticker…" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Search" /><kbd>{groups.length}</kbd></label>
                 <div className="seg"><button className={stocksOnly ? "on" : ""} onClick={() => setStocksOnly(true)}>Stocks</button><button className={!stocksOnly ? "on" : ""} onClick={() => setStocksOnly(false)}>All collateral</button></div>
@@ -208,7 +208,7 @@ function DeployInner() {
               </div>
               {market && (
                 <div className="note" style={{ marginTop: 12 }}>
-                  <b>{sym}</b>: borrow at <b className="green">{pct(market.borrowApy)}</b> a year, {usd(market.liquidityUsd)} USDG available, Morpho liquidates above {(market.lltv * 100).toFixed(0)}% loan-to-value.
+                  <b>{sym}</b>: borrow at <b className="green">{pct(market.borrowApy)}</b> a year, {usd(market.liquidityUsd)} USDG available, the market liquidates above {(market.lltv * 100).toFixed(0)}% loan-to-value.
                   {market.liquidityUsd < 100 && <> <span className="amber">Almost nothing to lend right now; you can create the vault and borrow once someone supplies.</span></>}
                   <div style={{ marginTop: 8 }}><button className="btn xs" onClick={() => setAdvancedMarket((a) => !a)}>{advancedMarket ? "Hide" : "Choose a different market of this pair"}</button></div>
                 </div>
@@ -258,7 +258,7 @@ function DeployInner() {
               </div>
               {example && (
                 <div className="note good" style={{ marginTop: 14 }}>
-                  With <b>10 {sym}</b> at today's price of {usd(px!, 2)}: you can borrow up to <b>{usd(example.borrow)} USDG</b>. If {sym} falls to <b>{usd(example.protectAt, 2)}</b> the loan starts repaying itself. Morpho would only liquidate at <b>{usd(example.liqAt, 2)}</b>.
+                  With <b>10 {sym}</b> at today's price of {usd(px!, 2)}: you can borrow up to <b>{usd(example.borrow)} USDG</b>. If {sym} falls to <b>{usd(example.protectAt, 2)}</b> the loan starts repaying itself. The market would only liquidate at <b>{usd(example.liqAt, 2)}</b>.
                 </div>
               )}
               <div style={{ marginTop: 12 }}><button className="btn xs" onClick={() => setFineTune((f) => !f)}>{fineTune ? "Hide fine-tuning" : "Fine-tune the numbers"}</button></div>
