@@ -9,7 +9,7 @@ export const metadata: Metadata = { title: "Paused", robots: { index: false, fol
  * replaces the main message; the form under it collects messages for the team.
  */
 const NOTE = process.env.SITE_LOCKED_NOTE
-  ?? "We have created five X accounts for PAYOFF and every one of them was suspended, so we are stepping away from X and pausing the site for now.";
+  ?? "We have created an X account for PAYOFF 5 times and every one of them was suspended, so we are stepping away from X and pausing the site for now.";
 
 export default function Soon() {
   return (
